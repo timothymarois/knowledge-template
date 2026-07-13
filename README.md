@@ -16,15 +16,14 @@ template/
   AGENTS.md            ← the law for any agent in the repo (stack-neutral; fill the Stack section)
   .ai/                 ← EVERYTHING agent-facing lives here
     BRIEF.md             ┐ always-loaded orientation — read first, every task
-    CODEMAP.md           ┘   what we're building & why · where things are
+    CODEMAP.md           ┤   what & why · where things are · current friction
+    MEMORY.md            ┘   (MEMORY is a living list — delete an entry once solved)
     tmp/                 ← local scratch space (git-ignored) for AI temp files/assets
     docs/                ← the knowledge system, read on demand (see docs/README.md first)
-      research/            how the world already handled X (prior art) — input, never truth
-      references/          targets, competitors, inspiration — what to build toward; drives visuals
-      design/              proposals / drafts — rewrite freely until built
+      research/            prior art + what we're aiming at (references/ subfolder = visual targets)
+      PRD-drafts/          upcoming PRDs — proposals, rewrite freely until built
       PRD/                 tested contracts — the SOURCE OF TRUTH (requirements ↔ tests)
       guides/              how to perform a recurring task in this repo
-      lessons/             what we learned the hard way — never repeat (area-specific)
 ```
 
 Root `AGENTS.md`, this `README.md`, and `examples/` govern or illustrate the template repo itself and are
@@ -37,8 +36,8 @@ In short: copy the *contents* of `template/` into the target repo's root, adapt 
 project's stack and best practices, and fill `.ai/BRIEF.md` and `.ai/CODEMAP.md`. The documentation model
 itself never changes — only the `AGENTS.md` conventions and the orientation content do.
 
-**The full, authoritative playbook — including what stays invariant (the always-open-BRIEF/CODEMAP load
-order, one fact one home, PRD = tested contract) versus what you adapt per project — is in
+**The full, authoritative playbook — including what stays invariant (the always-open-BRIEF/CODEMAP/MEMORY
+load order, one fact one home, PRD = tested contract) versus what you adapt per project — is in
 [`AGENTS.md` → *Applying this template to a project*](./AGENTS.md).** Follow that.
 
 ## The one idea to internalize

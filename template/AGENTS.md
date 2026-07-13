@@ -18,15 +18,15 @@ the knowledge map is [`.ai/docs/README.md`](./.ai/docs/README.md). This file def
 
 **Load light by default, then pull depth only when the task reaches for it.**
 
-1. **Always** (keeps context light): read [`.ai/BRIEF.md`](./.ai/BRIEF.md) (what & why) and
-   [`.ai/CODEMAP.md`](./.ai/CODEMAP.md) (where things are). Nothing else is required up front.
-   [`.ai/docs/README.md`](./.ai/docs/README.md) is the map to everything below.
-2. **On demand, when your task enters an area — pull only what you need:** `.ai/docs/lessons/<area>.md`
-   (what we learned + the fix — **read before touching the area**); `.ai/docs/guides/<task>.md` (the
-   recipe for a recurring procedure); `.ai/docs/PRD/PRD-<System>.md` (the tested contract, if you're
-   changing its behavior); `.ai/docs/design/<slug>.md` (if it's proposed, not yet built);
-   `.ai/docs/research/` + `references/` (when designing or generating visuals). Current state is read
-   from here — what's in `design/` is in flight, what's in `PRD/` is shipped; there is no status file.
+1. **Always** (keeps context light): read [`.ai/BRIEF.md`](./.ai/BRIEF.md) (what & why),
+   [`.ai/CODEMAP.md`](./.ai/CODEMAP.md) (where things are), and [`.ai/MEMORY.md`](./.ai/MEMORY.md)
+   (current friction to avoid). [`.ai/docs/README.md`](./.ai/docs/README.md) is the map to everything below.
+2. **On demand, when your task enters an area — pull only what you need:** `.ai/docs/PRD/PRD-<System>.md`
+   (the tested contract, if you're changing its behavior); `.ai/docs/PRD-drafts/<slug>.md` (if it's
+   proposed, not yet built); `.ai/docs/guides/<task>.md` (the recipe for a recurring procedure);
+   `.ai/docs/research/` and its `references/` visuals (prior art and targets, when designing). Current
+   state is read from here — what's in `PRD-drafts/` is in flight, what's in `PRD/` is shipped; there is
+   no status file.
 3. Read every file before editing it. Search the codebase before writing new logic — if it exists,
    reuse, extend, or refactor. Never duplicate.
 4. When the user raises a concern, investigate before contradicting. Contradict only with evidence — a
@@ -92,6 +92,28 @@ the knowledge map is [`.ai/docs/README.md`](./.ai/docs/README.md). This file def
 
 - `<fill>`
 
+## Code documentation — (invariant principle; syntax adapts per stack)
+
+Document the **non-obvious**. A doc-block earns its place by answering what the code itself can't: *why*
+this exists, the *contract* it upholds (inputs → result, invariants, edge cases), and *which requirement*
+it satisfies. Trivial code — getters, plain CRUD, self-evident one-liners — gets nothing; a comment that
+restates the code is noise.
+
+- **Complex or non-obvious methods get a doc-block** — intent, the contract, and any gotcha a caller must
+  know. Explain *why*, not *what*.
+- **Cite the requirement.** When a method implements a `.ai/docs/PRD/` requirement, name its ID
+  (`R-<AREA>-<n>`) in the doc-block — linking the code to its tested contract, so the next agent finds the
+  guarantee and its test.
+- **Keep it true.** A stale doc-block is worse than none — update it in the same change.
+- ***(adapt)*** use this stack's doc-comment syntax: `<PHPDoc /** */ · TSDoc · Doxygen · docstrings>`.
+
+```
+✅ /** Applies a zone rectangle, skipping water and occupied tiles (R-ZONE-3).
+    *  Corners may be inverted; out-of-bounds or unknown kinds reject atomically.
+    *  Returns the exact dirty range so render invalidates only what changed. */
+❌ // sets the zone      ← restates the name; teaches nothing
+```
+
 ## Directory Structure — *(adapt per project)*
 
 ```
@@ -123,11 +145,13 @@ home: what belongs there, how to write it, and any ID convention (`R-`, `L-`). T
 to start a new doc. Don't write into a home whose rules you haven't read.
 
 - Restructured directories or moved files → update `.ai/CODEMAP.md`.
-- Learned something that would have saved you time (a trap, a non-obvious constraint, and the fix) →
-  add it to the relevant `.ai/docs/lessons/<area>.md`. Lessons are about *this codebase* only.
-- Shipped a system whose behavior is now guaranteed → its `.ai/docs/design/` proposal graduates to a
+- Hit friction (a trap, a non-obvious constraint, a workaround) → add a line to `.ai/MEMORY.md`, and
+  **delete it once the friction is genuinely solved**. This codebase only.
+- Shipped a system whose behavior is now guaranteed → its `.ai/docs/PRD-drafts/` draft graduates to a
   `.ai/docs/PRD/`, with every requirement mapped to a passing test. **Behavior and its PRD change in the
   same commit — they never drift.**
+- Implementing a `.ai/docs/PRD/` requirement in code → cite its `R-<AREA>-<n>` in the method's doc-block,
+  so code ↔ contract ↔ test stay linked.
 - Do not add rationale, history, or maintainer commentary to `.ai/` files — they address the next agent
   doing work, nothing else.
 - Need a scratch file — a throwaway draft, a generated asset, experiment output? Put it in `.ai/tmp/`.

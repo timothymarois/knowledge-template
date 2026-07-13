@@ -17,12 +17,12 @@ knowledge map is [`.ai/docs/README.md`](./.ai/docs/README.md). This file defines
 
 **Load light by default, then pull depth only when the task reaches for it.**
 
-1. **Always:** read [`.ai/BRIEF.md`](./.ai/BRIEF.md) (what & why) and [`.ai/CODEMAP.md`](./.ai/CODEMAP.md)
-   (where things are). [`.ai/docs/README.md`](./.ai/docs/README.md) is the map to everything below.
-2. **On demand, when your task enters an area:** `.ai/docs/lessons/<area>.md` (traps + the fix — **read
-   before touching the area**); `.ai/docs/guides/`; the feature's `.ai/docs/PRD/PRD-<System>.md` (tested
-   contract) or `.ai/docs/design/` (proposal, not built yet); `.ai/docs/research/` + `references/`.
-   Current state: `design/` = in flight, `PRD/` = shipped; there is no status file.
+1. **Always:** read [`.ai/BRIEF.md`](./.ai/BRIEF.md) (what & why), [`.ai/CODEMAP.md`](./.ai/CODEMAP.md)
+   (where things are), and [`.ai/MEMORY.md`](./.ai/MEMORY.md) (current friction to avoid).
+   [`.ai/docs/README.md`](./.ai/docs/README.md) is the map to everything below.
+2. **On demand, when your task enters an area:** the feature's `.ai/docs/PRD/PRD-<System>.md` (tested
+   contract) or `.ai/docs/PRD-drafts/` (proposal, not built yet); `.ai/docs/guides/`; `.ai/docs/research/`
+   and its `references/` visuals. Current state: `PRD-drafts/` = in flight, `PRD/` = shipped; no status file.
 3. Read every file before editing it — the architecture has load-bearing seams not obvious from one file.
 4. Search before writing new logic; reuse, extend, refactor. When the user raises a concern, investigate
    before contradicting — evidence (a header, a test, a benchmark), never a hunch.
@@ -88,6 +88,23 @@ stack would both want it, it goes in `sim/`. When unsure, default to `game/` —
   perspective camera; iso geometry off z=0 visibly converges). **Don't** relitigate settled render rules.
 - **Do** verify render work by building, running, and **looking** at the real window — not "it compiles."
 
+## Code documentation
+
+Document the non-obvious — *why* a method exists, its contract/invariants, and which PRD requirement it
+satisfies. Trivial accessors get nothing; a comment restating the code is noise.
+
+- **Complex `sim/` methods get a Doxygen block** (intent · invariants · determinism / edge cases).
+  Explain *why*, not *what*.
+- **Cite the requirement** — name the `R-<AREA>-<n>` it implements (see `.ai/docs/PRD/`).
+
+```cpp
+✅ /// Spreads terraform height outward with a bounded terrace step (R-TERRAFORM-3).
+   /// Reads last tick / writes next — safe to call mid-iteration; touches only the
+   /// edit region plus its declared footprint, never the whole map.
+   DirtyRect raiseRegion(TileSpan span, int step);
+❌ // raise the region      ← restates the name; teaches nothing
+```
+
 ## Directory Structure
 
 ```
@@ -117,9 +134,9 @@ Keep docs true in the same task that changes reality. **Before creating or editi
 home's `README.md` first** (its rules + ID convention), then copy its `TEMPLATE.md`.
 
 - Moved/restructured files → update `.ai/CODEMAP.md`.
-- Learned a trap + its fix → `.ai/docs/lessons/<area>.md` (this codebase only).
-- Shipped guaranteed behavior → graduate its `design/` to a `PRD/`, every `R-` mapped to a passing test;
-  behavior and PRD change in the same commit.
+- Hit friction (a trap, a non-obvious constraint) → add a line to `.ai/MEMORY.md`; delete it once solved.
+- Shipped guaranteed behavior → graduate its `PRD-drafts/` draft to a `PRD/`, every `R-` mapped to a
+  passing test; behavior and PRD change in the same commit.
 - Scratch/throwaway files → `.ai/tmp/` (git-ignored).
 
 ## Definition of Done

@@ -12,9 +12,10 @@ without approval.
 - **Root files** (`README.md`, this `AGENTS.md`) — govern *this* template repo. They are **not** copied
   into downstream projects.
 - **`template/`** — the copy-me payload, and the only thing downstream repos take. Everything
-  agent-facing lives under one root, `template/.ai/`: the always-loaded orientation pair (`BRIEF` — what
-  & why; `CODEMAP` — where) at its top, and the full `docs/` knowledge system beneath it. A stack-neutral
-  `AGENTS.md` sits at the payload root. Adoption = copy the contents of `template/` into the target repo.
+  agent-facing lives under one root, `template/.ai/`: the always-loaded orientation trio (`BRIEF` — what
+  & why; `CODEMAP` — where; `MEMORY` — current friction) at its top, and the `docs/` knowledge system
+  beneath it. A stack-neutral `AGENTS.md` sits at the payload root. Adoption = copy the contents of
+  `template/` into the target repo.
 - **`examples/`** — the template's `AGENTS.md` filled in for real stacks (Laravel, Axmol), as reference
   for how the skeleton adapts. Not copied downstream. When the model changes, keep these in step.
 
@@ -24,10 +25,10 @@ without approval.
 and load-bearing — every downstream repo inherits it:
 
 - **One fact, one home.** Every doc answers exactly one question; no fact is written twice.
-- **The maturity ladder:** `research/` + `references/` (inputs) → `design/` (proposal) → `PRD/` (tested
-  contract, the source of truth). `lessons/` and `guides/` sit alongside. There is no shared status/
-  roadmap file — current state is read from `design/` (in flight) vs `PRD/` (shipped); the *why* lives
-  in the always-loaded `.ai/BRIEF.md`.
+- **The maturity ladder:** `research/` (prior art + a `references/` subfolder for visual targets) →
+  `PRD-drafts/` (proposal) → `PRD/` (tested contract, the source of truth). `guides/` sits alongside.
+  There is no status/roadmap file — current state is read from `PRD-drafts/` (in flight) vs `PRD/`
+  (shipped). Friction we hit lives in the always-loaded `.ai/MEMORY.md` (a living list, pruned when solved).
 - **A PRD is a *tested* contract, born when a system ships — not a plan.** Requirements carry IDs and
   map to tests; behavior and its PRD change in the same commit.
 
@@ -49,14 +50,14 @@ that it's the same everywhere, while the rules bend to each stack.
    practices as enforceable rules** — specific and checkable, with a right/wrong example where it helps;
    vague conventions get ignored. Set the **Definition of Done** command (the one check that must pass).
 3. **Write the orientation.** Fill `.ai/BRIEF.md` (what/why/who) and `.ai/CODEMAP.md` (the structure) for
-   this project.
-4. **Leave the homes alone.** The six `docs/<home>/` READMEs and TEMPLATEs are stack-neutral and work as
+   this project. `.ai/MEMORY.md` starts empty — friction accrues as you work.
+4. **Leave the homes alone.** The `docs/<home>/` READMEs and TEMPLATEs are stack-neutral and work as
    shipped. Deleting a `TEMPLATE.md` after the first real doc is optional; changing a home's rules is not.
 
 **Invariant — keep when adopting, adapt only the specifics, never the discipline:**
 
-- **The top rule is always "open `.ai/BRIEF.md` + `.ai/CODEMAP.md` first."** Every project's `AGENTS.md`
-  keeps the light-by-default load order and depth-on-demand — that is the point of the setup.
+- **The top rule is always "open `.ai/BRIEF.md` + `.ai/CODEMAP.md` + `.ai/MEMORY.md` first."** Every
+  project's `AGENTS.md` keeps the light-by-default load order and depth-on-demand — that is the point.
 - **Read a home's `README.md` before writing a doc there.** The doc-writing gate stays.
 - **The homes and the ladder**, **one fact, one home**, **PRD = tested contract**, and **self-contained,
   PII-free docs** — unchanged in every repo.

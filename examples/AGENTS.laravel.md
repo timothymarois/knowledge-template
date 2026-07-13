@@ -16,12 +16,12 @@ knowledge map is [`.ai/docs/README.md`](./.ai/docs/README.md). This file defines
 
 **Load light by default, then pull depth only when the task reaches for it.**
 
-1. **Always:** read [`.ai/BRIEF.md`](./.ai/BRIEF.md) (what & why) and [`.ai/CODEMAP.md`](./.ai/CODEMAP.md)
-   (where things are). [`.ai/docs/README.md`](./.ai/docs/README.md) is the map to everything below.
-2. **On demand, when your task enters an area:** `.ai/docs/lessons/<area>.md` (traps + the fix — **read
-   before touching the area**); `.ai/docs/guides/`; the feature's `.ai/docs/PRD/PRD-<System>.md` (tested
-   contract) or `.ai/docs/design/` (proposal); `.ai/docs/research/` + `references/`. Current state:
-   `design/` = in flight, `PRD/` = shipped; there is no status file.
+1. **Always:** read [`.ai/BRIEF.md`](./.ai/BRIEF.md) (what & why), [`.ai/CODEMAP.md`](./.ai/CODEMAP.md)
+   (where things are), and [`.ai/MEMORY.md`](./.ai/MEMORY.md) (current friction to avoid).
+   [`.ai/docs/README.md`](./.ai/docs/README.md) is the map to everything below.
+2. **On demand, when your task enters an area:** the feature's `.ai/docs/PRD/PRD-<System>.md` (tested
+   contract) or `.ai/docs/PRD-drafts/` (proposal, not built yet); `.ai/docs/guides/`; `.ai/docs/research/`
+   and its `references/` visuals. Current state: `PRD-drafts/` = in flight, `PRD/` = shipped; no status file.
 3. Read every file before editing it. Search before writing new logic — reuse, extend, refactor.
 4. When the user raises a concern, investigate before contradicting — evidence, not a hunch.
 
@@ -93,6 +93,25 @@ the component showcase before building a new one — it likely exists.
 ❌ <script setup> const name = ref(''); const errors = ref({}); /* manual + client validation */ </script>
 ```
 
+## Code documentation
+
+Document the non-obvious — *why* a method exists, its contract, and which PRD requirement it satisfies.
+Trivial controllers and accessors get nothing; a comment restating the code is noise.
+
+- **Complex Services/Actions get a PHPDoc block** (intent · contract · edge cases). Non-trivial
+  composables/utils get TSDoc. Explain *why*, not *what*.
+- **Cite the requirement** — name the `R-<AREA>-<n>` a method implements (see `.ai/docs/PRD/`).
+
+```php
+✅ /**
+    * Provisions a tenant database and seeds its owner (R-TENANT-2).
+    * Idempotent: a re-run on a half-provisioned tenant resumes — never duplicates.
+    * @throws ProvisioningException when the central connection is unreachable.
+    */
+   public function provision(Tenant $tenant): void
+❌ // provision the tenant      ← restates the name; teaches nothing
+```
+
 ## Directory Structure
 
 ```
@@ -119,9 +138,9 @@ Keep docs true in the same task that changes reality. **Before creating or editi
 home's `README.md` first** (its rules + ID convention), then copy its `TEMPLATE.md`.
 
 - Moved/restructured files → update `.ai/CODEMAP.md`.
-- Learned a trap + its fix → `.ai/docs/lessons/<area>.md` (this codebase only).
-- Shipped guaranteed behavior → graduate its `design/` to a `PRD/`, every `R-` mapped to a passing Pest
-  test; behavior and PRD change in the same commit.
+- Hit friction (a trap, a non-obvious constraint) → add a line to `.ai/MEMORY.md`; delete it once solved.
+- Shipped guaranteed behavior → graduate its `PRD-drafts/` draft to a `PRD/`, every `R-` mapped to a
+  passing Pest test; behavior and PRD change in the same commit.
 - Scratch/throwaway files → `.ai/tmp/` (git-ignored).
 
 ## Definition of Done

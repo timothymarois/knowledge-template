@@ -1,0 +1,20 @@
+name: doc-lint
+
+# doc-template's own CI: prove the linter still has teeth, then lint the payload.
+# A project that adopts the payload runs the same two commands against its own docs:
+#     python3 .ai/scripts/test_doc_lint.py
+#     python3 .ai/scripts/doc-lint .ai
+on: [push, pull_request]
+
+jobs:
+  doc-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Teeth-test the linter (valid passes, each mutation fails)
+        run: python3 template/.ai/scripts/test_doc_lint.py
+      - name: Lint the shipped payload
+        run: python3 template/.ai/scripts/doc-lint template/.ai

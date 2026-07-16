@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+"""doc-lint — enforces the .ai/ documentation standard (see guides/docs-prd.md).
+
+Ships inside the copied payload (.ai/scripts/), so every project runs the same version.
+Zero dependencies: standard library only.
+
+    python3 .ai/scripts/doc-lint [PATH_TO_.ai]   # lint (defaults to the parent .ai/)
+
+Its teeth-test lives beside it: python3 .ai/scripts/test_doc_lint.py
+Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
+"""
+import os
+import re
+import sys
+
+R_ID = re.compile(r"R-[A-Z0-9]+-\d+")
+R_ID_NS = re.compile(r"R-([A-Z0-9]+)-\d+")
+WORD = re.compile(r"\S+")
+NUMERIC = re.compile(r"(?<![A-Za-z0-9_-])\d+(?![A-Za-z0-9_-])")
+
+
+class Lint:
+    def __init__(self, root):
+        self.root = root
+        self.errors = []
+
+    def err(self, where, msg):
+        self.errors.append((where, msg))
+
+    # ---- helpers ----------------------------------------------------------
+    def read(self, path):
+        with open(path, encoding="utf-8") as fh:
+            return fh.read()
+
+    def frontmatter(self, text):
+        if not text.startswith("---"):
+            return {}, text
+        end = text.find("\n---", 3)
+        if end == -1:
+            return {}, text
+        block = text[3:end].strip().splitlines()
+        fm = {}
+        for line in block:
+            if ":" in line:
+                k, v = line.split(":", 1)
+                fm[k.strip()] = v.strip()
+        return fm, text[end + 4:]
+
+    def table_rows(self, body):
+        """Yield requirement rows [glyph, id, requirement, evidence] under ## Requirements."""
+        in_req = False
+        for line in body.splitlines():
+            if line.startswith("## "):
+                in_req = line.strip() == "## Requirements"
+                continue
+            if in_req and line.lstrip().startswith("|"):
+                cells = [c.strip() for c in line.strip().strip("|").split("|")]
+                if len(cells) == 4 and R_ID.fullmatch(cells[1] or ""):
+                    yield cells
+
+    def headings(self, body):
+        return [l[3:].strip() for l in body.splitlines() if l.startswith("## ")]
+
+    def collect_prd(self, home):
+        """Return {path: (fm, body)} for every non-README .md in a home."""
+        d = os.path.join(self.root, home)
+        out = {}
+        if not os.path.isdir(d):
+            return out
+        for name in sorted(os.listdir(d)):
+            if name.endswith(".md") and name != "README.md":
+                fm, body = self.frontmatter(self.read(os.path.join(d, name)))
+                out[os.path.join(home, name)] = (fm, body)
+        return out
+
+    def components(self):
+        """Parse the Components fenced list in prd/README.md -> [prefix,...] in order."""
+        path = os.path.join(self.root, "prd", "README.md")
+        if not os.path.isfile(path):
+            return []
+        text = self.read(path)
+        m = re.search(r"## Components.*?```(.*?)```", text, re.S)
+        prefixes = []
+        if m:
+            for line in m.group(1).splitlines():
+                cm = re.match(r"\s*\d+\.\s+(\S+?)\s+—\s+.+", line)
+                if cm:
+                    prefixes.append(cm.group(1))
+                elif line.strip() and not line.strip().startswith("#"):
+                    self.err("prd/README.md", f"Components line not `N. prefix — gloss`: {line.strip()}")
+        return prefixes
+
+    # ---- checks -----------------------------------------------------------
+    def check(self):
+        prefixes = self.components()
+        rank = {p: i for i, p in enumerate(prefixes)}
+        prd = self.collect_prd("prd")
+        drafts = self.collect_prd("prd-drafts")
+
+        defined = {}
+        draft_ids = set()
+
+        for scope, files in (("prd", prd), ("prd-drafts", drafts)):
+            for path, (fm, body) in files.items():
+                fid = fm.get("id")
+                if not fid:
+                    self.err(path, "missing frontmatter `id:`")
+                if not fm.get("name"):
+                    self.err(path, "missing frontmatter `name:`")
+                rows = list(self.table_rows(body))
+                has_pass = False
+
+                base = os.path.basename(path)
+                if scope == "prd" and prefixes and not any(base.startswith(p) for p in prefixes):
+                    self.err(path, f"filename prefix not a listed component: {base}")
+
+                for glyph, rid, req, evid in rows:
+                    ns = R_ID_NS.match(rid).group(1)
+                    if fid and ns != fid:
+                        self.err(path, f"{rid} does not match file namespace `{fid}` (one namespace per file)")
+                    if rid in defined:
+                        self.err(path, f"{rid} already defined in {defined[rid]} (no ID in two files)")
+                    else:
+                        defined[rid] = path
+                    if scope == "prd-drafts":
+                        draft_ids.add(rid)
+                    if glyph == "✅":
+                        has_pass = True
+                        if not evid or evid == "—":
+                            self.err(path, f"{rid} is ✅ but names no test in Evidence")
+                    elif glyph != "❌":
+                        self.err(path, f"{rid} has invalid glyph `{glyph}` (only ✅/❌)")
+                    words = WORD.findall(req)
+                    if len(words) > 25:
+                        self.err(path, f"{rid} requirement is {len(words)} words (max 25)")
+                    if NUMERIC.search(req):
+                        self.err(path, f"{rid} requirement has a numeric literal (name the tunable instead)")
+
+                allowed = {"What this is", "Why it exists", "Requirements", "Open questions"}
+                for h in self.headings(body):
+                    if h not in allowed:
+                        self.err(path, f"`## {h}` is not in the closed schema")
+                if "/" in (fid or "") or " " in (fid or ""):
+                    self.err(path, "compound/invalid namespace in `id:`")
+
+                lv = "last_verified" in fm
+                if scope == "prd":
+                    if has_pass and not lv:
+                        self.err(path, "has a ✅ row but no `last_verified:`")
+                    if lv and not has_pass:
+                        self.err(path, "has `last_verified:` but no ✅ row")
+
+        for path, (fm, body) in prd.items():
+            fid = fm.get("id")
+            cited = {rid for rid in R_ID.findall(body) if R_ID_NS.match(rid).group(1) != fid}
+            for rid in cited:
+                if rid in draft_ids:
+                    self.err(path, f"cites {rid} which is a prd-drafts/ proposal (contracts never cite drafts)")
+                elif rid not in defined:
+                    self.err(path, f"cites {rid} which resolves nowhere")
+                elif prefixes:
+                    dep = defined[rid]
+                    dp = next((p for p in prefixes if os.path.basename(dep).startswith(p)), None)
+                    sp = next((p for p in prefixes if os.path.basename(path).startswith(p)), None)
+                    if dp is not None and sp is not None and rank[dp] > rank[sp]:
+                        self.err(path, f"cites {rid} in a later layer `{dp}` (citations only go up the stack)")
+
+        self.check_catalog(prd)
+        self.check_research()
+        return not self.errors
+
+    def check_catalog(self, prd):
+        path = os.path.join(self.root, "prd", "README.md")
+        if not os.path.isfile(path):
+            self.err("prd/", "missing catalog README.md")
+            return
+        text = self.read(path)
+        if "## Components" not in text:
+            self.err("prd/README.md", "catalog missing `## Components`")
+        if "## Contents" not in text:
+            self.err("prd/README.md", "catalog missing `## Contents`")
+        for rel in prd:
+            base = os.path.basename(rel)
+            if base not in text:
+                self.err("prd/README.md", f"catalog Contents omits {base}")
+        for link in re.findall(r"\(\./([a-z0-9-]+\.md)\)", text):
+            if not os.path.isfile(os.path.join(self.root, "prd", link)):
+                self.err("prd/README.md", f"catalog links dangling file ./{link}")
+
+    def check_research(self):
+        d = os.path.join(self.root, "research")
+        if not os.path.isdir(d):
+            return
+        for name in sorted(os.listdir(d)):
+            if not name.endswith(".md") or name == "README.md":
+                continue
+            path = os.path.join("research", name)
+            text = self.read(os.path.join(d, name))
+            if "**Last updated:**" not in text:
+                self.err(path, "research note missing `**Last updated:**`")
+            cites = set(re.findall(r"\[(\d+)\]", text))
+            listed = set(re.findall(r"^\s*(\d+)\.\s", text.split("## Sources", 1)[-1], re.M))
+            for n in sorted(cites - listed):
+                self.err(path, f"citation [{n}] has no Sources entry")
+
+
+def main():
+    here = os.path.dirname(os.path.abspath(__file__))  # .ai/scripts
+    root = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.dirname(here)
+    lint = Lint(root)
+    if lint.check():
+        print(f"doc-lint: OK ({root})")
+        return 0
+    for where, msg in lint.errors:
+        print(f"doc-lint: {where}: {msg}")
+    print(f"\ndoc-lint: {len(lint.errors)} problem(s)")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

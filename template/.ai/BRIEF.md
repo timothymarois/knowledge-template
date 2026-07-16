@@ -28,5 +28,5 @@ a decision is unclear, agents come back here to resolve it. (The rules for *how*
 - `<system>` — <what the project relies on it for>
 
 ---
-*Follows the writing & upkeep rules in [`docs/README.md`](./docs/README.md): one question per section,
-say it once, keep it ~one screen, prune when stale.*
+*Full standard: [`guides/docs-brief.md`](./guides/docs-brief.md). One screen, one idea per line, PII-free,
+no placeholders left.*

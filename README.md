@@ -1,47 +1,54 @@
 # doc-template
 
-A project-agnostic documentation scaffold for AI-assisted repos. Copy it into any project — a
-Laravel app, a web app, an Axmol game, a library — and it gives every kind of knowledge exactly one
-home, so the docs **compound instead of sprawling**.
+A project-agnostic, **versioned** documentation system for AI-assisted repos. Copy it into any project —
+a web app, a game, a browser extension, a library — and it gives every kind of knowledge exactly one home,
+enforced by a linter, so the docs **compound instead of sprawling** and never silently drift.
 
-It replaces heavyweight doc sites (VitePress and friends) with plain Markdown that lives beside the
-code, versions with it, and is readable by both humans and agents with zero tooling.
+Plain Markdown that lives beside the code, versions with it, and is read by humans and agents with zero
+tooling — plus one stdlib-Python linter that ships in the payload.
 
 ## What's in the box
 
-The copy-me payload lives in `template/`. Everything agent-facing sits under one root, `.ai/`:
-
 ```
-template/
-  AGENTS.md            ← the law for any agent in the repo (stack-neutral; fill the Stack section)
-  .ai/                 ← EVERYTHING agent-facing lives here
-    BRIEF.md             ┐ always-loaded orientation — read first, every task
-    CODEMAP.md           ┤   what & why · where things are · current friction
-    MEMORY.md            ┘   (MEMORY is a living list — delete an entry once solved)
-    tmp/                 ← local scratch space (git-ignored) for AI temp files/assets
-    docs/                ← the knowledge system, read on demand (see docs/README.md first)
-      research/            prior art + what we're aiming at (references/ subfolder = visual targets)
-      PRD-drafts/          upcoming PRDs — proposals, rewrite freely until built
-      PRD/                 tested contracts — the SOURCE OF TRUTH (requirements ↔ tests)
-      guides/              how to perform a recurring task in this repo
+template/              ← the copy-me payload — the ONLY thing a project takes
+  .ai/
+    BRIEF.md  CODEMAP.md  MEMORY.md    always-loaded orientation (fill per project)
+    README.md                          the map of the doc system
+    .doc-version                       which doc-template version this project is on
+    scripts/doc-lint                   the linter (stdlib Python, zero install)
+    scripts/test_doc_lint.py           its teeth-test (ships with it)
+    prd/            catalog + tested contracts (the source of truth)
+    prd-drafts/     catalog + proposals, isolated until approved
+    research/       catalog + prior-art notes        references/  catalog + visual targets
+    guides/         the docs-* standards (rules, template built in) + project how-tos
+    tmp/            git-ignored scratch
+
+VERSION                the current doc-template version
+CHANGELOG.md           version history → links to each migration
+.changes/              one dated migration file per release (how to upgrade a project)
 ```
 
-Root `AGENTS.md`, this `README.md`, and `examples/` govern or illustrate the template repo itself and are
-**not** copied. `examples/` holds the `AGENTS.md` filled in for real stacks (Laravel, Axmol) so you can
-see how the skeleton adapts before writing your own.
+Everything under `template/.ai/` is copied into a project. Everything else governs *this* repo and is not
+copied.
 
-## How to adopt it in a new project
+## The two ideas to internalize
 
-In short: copy the *contents* of `template/` into the target repo's root, adapt its `AGENTS.md` to the
-project's stack and best practices, and fill `.ai/BRIEF.md` and `.ai/CODEMAP.md`. The documentation model
-itself never changes — only the `AGENTS.md` conventions and the orientation content do.
+1. **One fact, one home.** Every doc answers one question; no fact is written twice. A home's `README.md`
+   is its **catalog** (what's inside); the **rules** for writing live in `guides/docs-*.md`.
+2. **A PRD is a tested contract.** Requirements carry IDs and map to tests; a proposal stays isolated in
+   `prd-drafts/` until it's approved, built, and proven. `doc-lint` enforces the whole model.
 
-**The full, authoritative playbook — including what stays invariant (the always-open-BRIEF/CODEMAP/MEMORY
-load order, one fact one home, PRD = tested contract) versus what you adapt per project — is in
-[`AGENTS.md` → *Applying this template to a project*](./AGENTS.md).** Follow that.
+## Adopt it in a project
 
-## The one idea to internalize
+1. Copy the contents of `template/` into the target repo (its `.ai/`, including hidden `.doc-version`).
+2. Adapt the repo's `AGENTS.md` to the stack; fill `.ai/BRIEF.md` and `.ai/CODEMAP.md`.
+3. Declare the project's components in `.ai/prd/README.md` (the owner's call).
+4. Wire CI to run `python3 .ai/scripts/test_doc_lint.py` and `python3 .ai/scripts/doc-lint .ai`.
 
-**One fact, one home.** Every doc answers exactly one question, and no fact is written in two places.
-`.ai/` is the always-loaded orientation; `.ai/docs/` is the on-demand depth.
-`.ai/docs/README.md` defines every home and the flow between them — read it before adding a doc.
+The model never changes between projects — only the orientation content and the component list do.
+
+## Versioning
+
+SemVer, in `VERSION`. A project records its adopted version in `.ai/.doc-version`. When it falls behind,
+`CHANGELOG.md` and the dated files in `.changes/` give an agent the exact steps to migrate. See
+[`AGENTS.md`](./AGENTS.md) for how to cut a new version.

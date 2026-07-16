@@ -140,7 +140,7 @@ home's `README.md` first** (its rules + ID convention), then copy its `TEMPLATE.
 - Moved/restructured files → update `.ai/CODEMAP.md`.
 - Hit friction (a trap, a non-obvious constraint) → add a line to `.ai/MEMORY.md`; delete it once solved.
 - Shipped guaranteed behavior → graduate its `PRD-drafts/` draft to a `PRD/`, every `R-` mapped to a
-  passing Pest test; behavior and PRD change in the same commit.
+  passing Pest test, and **delete the draft** (no pointer stub); behavior and PRD change in the same commit.
 - Scratch/throwaway files → `.ai/tmp/` (git-ignored).
 
 ## Definition of Done

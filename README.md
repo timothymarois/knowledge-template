@@ -56,10 +56,10 @@ Two rules hold it together: **one fact, one home** · **a PRD is a tested contra
 
 ### 🛡️ What the linter enforces
 
-**19 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
+**21 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
 
 <details>
-<summary>See all 19 rules</summary>
+<summary>See all 21 rules</summary>
 
 |  | ID | Requirement |
 |:--:|---|---|
@@ -82,6 +82,8 @@ Two rules hold it together: **one fact, one home** · **a PRD is a tested contra
 | ✅ | R-DOC-17 | Every research citation resolves to a source |
 | ✅ | R-DOC-18 | Every catalog link resolves to a real file |
 | ✅ | R-DOC-19 | Every shipped README keeps its required sections |
+| ✅ | R-DOC-20 | Every catalog links to its writing guide |
+| ✅ | R-DOC-21 | Only the shipped files and homes sit at the root |
 
 </details>
 

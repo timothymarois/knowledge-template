@@ -19,6 +19,8 @@ PAYLOAD = os.path.dirname(HERE)  # the real .knowledge/ this script ships in
 
 CATALOG = """# prd/ — catalog
 
+To write or modify one, follow [../guides/docs-prd.md](../guides/docs-prd.md).
+
 ## Components
 
 ```
@@ -177,6 +179,13 @@ def main():
          lambda a: w(a, "research/market.md",
                      "# Research: market\n\n**Last updated:** 2026-07-16\n\n## What they do\n\nA claim [1].\n"),
          False, "no Sources entry"),
+        ("a catalog is missing its guide link",
+         lambda a: w(a, "prd/README.md",
+                     CATALOG.replace("To write or modify one, follow [../guides/docs-prd.md](../guides/docs-prd.md).\n\n", "")),
+         False, "must link to"),
+        ("an unexpected entry at the root",
+         lambda a: w(a, "SCRATCH.md", "not allowed here\n"),
+         False, "unexpected entry at the .knowledge/ root"),
     ]
     results = [case(*c) for c in cases]
     print(f"\n{sum(results)}/{len(results)} checks passed")

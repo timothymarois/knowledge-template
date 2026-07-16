@@ -1,71 +1,59 @@
 # How to write a PRD — the standard
 
-This guide **is the standard** for every PRD in [`../prd/`](../prd/): the rules for writing one, with the
-template built in. It is shipped and versioned by `knowledge-template` — do not rewrite it per project. The
-per-project **catalog** (the components a project declares + its file list) lives in
-[`../prd/README.md`](../prd/README.md), not here.
+This guide **is the standard** for every PRD in [`../prd/`](../prd/), with the template built in. It is
+shipped and versioned by `knowledge-template` — do not rewrite it per project. The per-project **catalog**
+(declared components + file list) lives in [`../prd/README.md`](../prd/README.md), not here.
 
 `../prd/` holds the **ratified, test-backed contracts** for what the product does: one file per built
-system, every requirement carrying an ID and a status. If a claim lives there with a ✅, a test proves it.
+system, every requirement carrying an ID and a status. A PRD asserts *what must be true, why, and whether
+it is* — not how it's built. If a claim there has a ✅, a test proves it.
 
-A PRD is **not a description of the system.** It is the set of claims the system must satisfy: *what it
-must do, why, and whether it does.* A reader answers "does it do this or not" without opening the code.
-The design doc explains *how it's built*; the PRD states *what must be true*.
+## A PRD asserts, it never explains
 
-## The one rule: a PRD asserts, it never explains
-
-The most common failure is a PRD that grows an explanation for every imperfection — an apology for code
-in the wrong file, a paragraph on what the tests miss, a caveat about what's deferred. None of it is
-wrong. All of it is prose, and none of it is checkable.
-
-**If the file grows while the row count doesn't, this guide has failed.**
-
-Every fact has exactly one home, so every urge to explain has one, and it is not the PRD.
+If the file grows while the row count doesn't, you're writing prose instead of requirements. Every fact
+has one home; the urge to explain has one, and it is not the PRD:
 
 | The urge | Where it goes |
 |---|---|
 | Explain how it's built | The design doc |
 | Justify why it's built that way | The decision log |
 | Say it isn't built, or isn't proven | The ❌ already says it |
-| Say this requirement belongs in another file | Nothing — **move it.** That's a stop-and-ask, not a row. |
-| Say it's undecided, so the requirement can't be written | `## Open questions`, one line |
-| Say something is deliberately deferred | A stub in `../prd-drafts/` — `id`, `name`, one sentence. |
-| Say what you'll build next | Nowhere here. That's work, not spec. |
-| Record what the tests don't prove | A ❌ on the row it doesn't prove |
+| A requirement belongs in another file | **Move it** — a stop-and-ask, not a row |
+| Undecided, so the requirement can't be written | `## Open questions`, one line |
+| Something deliberately deferred | A `../prd-drafts/` stub — `id`, `name`, one sentence |
+| Record what tests don't prove | A ❌ on the row it doesn't prove |
 | Restate a rule another PRD owns | Cite its ID |
-| Record a value or tunable | The header owns it. Cite the symbol. |
+| Record a value or tunable | The header owns it — cite the symbol |
 
-If none of those fit, you are about to write something with no home. **Raise it, don't write it.**
+If none of those fit, you're about to write something with no home. **Raise it, don't write it.**
 
 ## Where a requirement lives
 
-**Each project declares its own components in [`../prd/README.md`](../prd/README.md), in order.** They are
-domain ontology, not architecture — they name what the product is made of, in the order it must be understood.
-The universal rules are only two:
+Each project declares its own components (layers) in [`../prd/README.md`](../prd/README.md), **in order** —
+domain ontology, not architecture. Two universal rules:
 
-1. **Layers are ordered, and reading goes one way.** A lower layer may cite an upper one. Never the
-   reverse — the lint enforces it, so a rule in the wrong layer fails the build.
-2. **Shared behavior goes up, never sideways.** If two entities obey the same rule, that rule belongs to
-   their base or to the layer above. One ID, cited by both — never written twice, never given two IDs.
+1. **Layers are ordered; reading goes one way.** A lower layer may cite an upper one, never the reverse.
+2. **Shared behavior goes up, never sideways.** If two entities obey the same rule, it belongs to their
+   base or the layer above — one ID, cited by both, never written twice.
 
 ### Placement
 
-Given a requirement, ask in order and **stop at the first yes**:
+Ask in order, **stop at the first yes**:
 
-1. Does it name a thing that can be placed? **No** → it is about the substrate itself → the **base** layer.
-2. Does it name exactly one kind of placed thing? → the **entity** layer, in that kind's file.
-3. Does it need two or more placed things to mean anything? → the **flow** layer.
-4. Is it about what appears on screen? → **not a PRD requirement.** Presentation.
+1. Names no placeable thing? → it's about the substrate → **base** layer.
+2. Names exactly one kind of placed thing? → **entity** layer, in that kind's file.
+3. Needs two or more placed things to mean anything? → **flow** layer.
+4. About what appears on screen? → **not a PRD requirement.** Presentation.
 
-**A requirement never spans two layers.** If it seems to, it is two requirements — split it. Placing an
-idea across layers is architectural, so plan it, and if it doesn't fit one layer cleanly, **stop and ask.**
+**A requirement never spans two layers.** If it seems to, it's two — split it. If it doesn't fit one layer
+cleanly, **stop and ask.**
 
 ## Naming
 
 ### Files
 
-**One flat directory. The filename prefix is the layer, and it is the layer's only home** — never also a
-frontmatter field, never also a subdirectory. Lowercase, hyphenated, one file per node.
+**One flat directory. The filename prefix is the layer** — never also a frontmatter field or a subdirectory.
+Lowercase, hyphenated, one file per node.
 
 ```
 prd/
@@ -74,22 +62,17 @@ prd/
   flow-<emergent-behavior>.md
 ```
 
-Entities are singular nouns. Flow files are noun phrases for the emergent thing — never a verb, never a
-question, never a computation. **A file named for a question is a computation promoted to a document**:
-`<thing>-access` is a question the graph answers, not a thing that exists.
-
-Every file in `prd/` matches a listed component's prefix or the lint fails. No subdirectories; the only
-non-PRD file is this `README.md`.
+Entities are singular nouns. Flow files are noun phrases for the emergent thing — never a verb, question,
+or computation (`<thing>-access` is a question the graph answers, not a thing). Every file matches a listed
+component's prefix or the lint fails. No subdirectories; the only non-PRD file is `README.md`.
 
 ### Namespaces and IDs
 
 - Form: `R-<NS>-<n>`. `<NS>` is declared once, in the file's frontmatter `id:`.
-- **One namespace per file. One file per namespace.** No exceptions. A second namespace means a second
-  file — as does a table past ~15 rows.
+- **One namespace per file. One file per namespace.** A second namespace means a second file — as does a
+  table past ~15 rows.
 - `<n>` is assigned once, monotonically, **permanent**. Never renumber, reuse, or close a gap.
-- **Never compound.** `R-A-2 / R-B-2` is illegal: one heading, two IDs, an unstated number of claims.
-  Hoist it to a shared file, cited by both.
-- The registry is generated by scanning frontmatter. Never hand-maintain one.
+- **Never compound.** `R-A-2 / R-B-2` is illegal — hoist it to a shared file, cited by both.
 
 ## The template
 
@@ -128,66 +111,49 @@ last_verified: 2026-07-16
 - <an unresolved decision>
 ```
 
-**The glyph is the first column and its header stays blank.** Do not add a heading. The schema is closed;
-changing it needs approval.
+**The glyph is the first column and its header stays blank.** The schema is closed — the only `##` headings
+are `What this is`, `Why it exists`, `Requirements`, `Open questions`. Changing it needs approval.
 
-Deleted on sight, with where the content goes instead:
-
-| Was | Now |
-|---|---|
-| Ownership / Does not own | Frontmatter `id` + the filename prefix. |
-| Summary / Reference / Scope / Overview | `What this is` + `Why it exists`. Nothing else. |
-| Core contract *(narrative)* | The requirement rows. |
-| Determinism / cross-cutting rules | A row in the layer that owns them, cited. |
-| Decisions carried forward | The decision log. Append-only, outside PRDs. |
-| Data / tunables | The header owns the value. Cite the symbol. |
-| Tests *(as a separate table)* | The **Evidence** column, inline on each row. |
-
-An idea enters as a `../prd-drafts/` stub — two frontmatter lines and a sentence. **You do not write a
-PRD to have an idea.**
+An idea enters as a `../prd-drafts/` stub — two frontmatter lines and a sentence. **You do not write a PRD
+to have an idea.**
 
 ## Section guidance
 
-- **`What this is`** — what the thing is to someone who doesn't know the system, in the product's
-  vocabulary. Not what it owns or depends on. If you can't say it in three sentences, it's two files.
-- **`Why it exists`** — goals as **outcomes**: what is true for the user when this works. Not reasoning.
-  Every requirement should serve one of these.
+- **`What this is`** — what the thing is to someone who doesn't know the system, in the product's vocabulary.
+  Not what it owns or depends on. Can't say it in three sentences → it's two files.
+- **`Why it exists`** — goals as **outcomes**: what is true for the user when this works. Every requirement
+  should serve one.
 - **`Requirements`** — the document. Everything else is scaffolding.
-- **`last_verified`** — the date **the whole file** was last read row-by-row against its tests. A passing
-  CI run does not move it, and neither does editing the file. Absent until the first review — that is what
-  makes a file a draft. What changed and when is git's.
-- **`Open questions`** — design decisions not yet made. One line each; needs a paragraph, it's a design
-  doc. Not build gaps — a requirement that exists and isn't proven is a ❌ row.
+- **`last_verified`** — the date **the whole file** was last read row-by-row against its tests. CI runs and
+  edits don't move it. Absent until the first review — that's what makes a file a draft.
+- **`Open questions`** — design decisions not yet made, one line each. Not build gaps (a requirement that
+  exists and isn't proven is a ❌ row).
 
 ## Writing a requirement
 
-Requirements come from the owner. **You are transcribing, not authoring** — thin, exact, fewer words. The
-rewrite may tighten the sentence and nothing else.
+Requirements come from the owner. **You are transcribing, not authoring** — the rewrite may tighten the
+sentence and nothing else.
 
 - **Never add.** If the owner didn't say it, it isn't a requirement.
 - **Never generalize.** "No recipients" is not "an invalid recipient set."
 - **Never hedge.** "Cannot" does not become "should generally not."
-- **Never turn behavior into mechanism.** They said *what must be true*; *how* is the design doc's.
-- **A gap is an open question, not a guess.** Inventing the answer puts your judgment in their contract.
+- **Never turn behavior into mechanism** — *how* is the design doc's.
+- **A gap is an open question, not a guess.**
 - **Contradicts something already written? Stop and ask.** Never reconcile two of the owner's claims.
 
 ### Splitting
 
-**Split where it would be built and tested separately.** *"Valid token required; missing → 401; wrong
-scope → 403"* is three claims — three rows. The inverse: **one assertion proven by several tests is still
-one requirement** — empty list, all-invalid list, and filtered-to-zero are situations, not claims. The
-tests show the seam; they never end up in the row.
+**Split where it would be built and tested separately.** *"Valid token required; missing → 401; wrong scope
+→ 403"* is three rows. Inverse: **one assertion proven by several tests is still one requirement** — empty
+list, all-invalid, filtered-to-zero are situations, not claims.
 
 ### Form
 
-**The owner is the reader.** Read the row aloud to them: if a word makes them ask "what's that?", it does
-not belong. That test outranks every rule below it.
-
-- **No implementation symbols. No exception.** Not a type, function, class, or file. Crossing a seam
-  doesn't make a symbol readable.
+- **No implementation symbols** — not a type, function, class, or file.
 - **Tunables by name, never by value** — and only where the name is already the owner's word.
-- **One assertion.** Contains "and", "also", "except", or a joining semicolon? Suspect two.
+- **One assertion.** "and", "also", "except", or a joining semicolon? Suspect two.
 - **Under 25 words.** If it won't fit, it isn't atomic.
+- **No numeric literal in the text** — name the tunable instead.
 - Present tense, declarative, observable.
 - **Cite IDs, never documents.** `R-OTHER-2` is an edge the lint sorts; "see the other doc" is invisible.
 
@@ -198,47 +164,38 @@ not belong. That test outranks every rule below it.
 
 Every row answers **one** question: *does an automated test prove this?* ✅ or ❌. No third answer.
 
-- **❌ means failed, blocked, skipped, or not run.** Code that exists but nothing tests is a ❌.
-- **Evidence says which kind of ❌.** Test names → ✅. A `file:line` + `— no test` → built, unproven.
-  `—` → nothing exists. **Evidence is empty if and only if nothing exists.**
+- **❌ means failed, blocked, skipped, or not run.** Code that exists but nothing tests is ❌.
+- **Evidence says which kind of ❌.** Test name → ✅. `file:line` + `— no test` → built, unproven. `—` →
+  nothing exists. **Evidence is empty iff nothing exists.**
 - **Never write ✅ without naming the test that proves it.** Can't find one? The row is ❌.
-- **A compile is not a test.** It proves the types agree and asserts nothing else.
-- **Evidence names the test, never describes it.** A name a linter can assert exists — not prose that goes
-  stale on the next rename.
+- **A compile is not a test.**
+- **Evidence names the test, never describes it** — a name a linter can assert exists.
 - A **removed** requirement keeps its ID forever: strike the text, `—` in the glyph column.
 - Untestable presentation requirements carry `Evidence: signoff:<date>`.
 
-**A ✅ is a claim, so it carries its evidence.** A change in behavior flips a row, and the test that proves
-the change is that row's Evidence. **A ✅ with no test named is an opinion, not a status.**
-
 ## Drafts and graduation
 
-Proposals live isolated in [`../prd-drafts/`](../prd-drafts/) until approved — see its README. The rules
-that touch this folder:
+Proposals live isolated in [`../prd-drafts/`](../prd-drafts/) until approved — see its README.
 
 - **A ratified PRD may never cite a draft.** Every ID a `prd/` file cites resolves inside `prd/`. The lint
-  enforces it — a contract cannot depend on unapproved spec.
-- **Graduation is a move, not a rewrite.** `git mv ../prd-drafts/<file>.md ./<file>.md`; the IDs, reserved
-  at draft creation, carry across unchanged. Then the first conformance review sets glyphs and stamps
-  `last_verified`.
+  enforces it.
+- **Graduation is a move, not a rewrite.** `git mv ../prd-drafts/<file>.md ./<file>.md`; the IDs carry
+  across unchanged. The first conformance review then sets glyphs and stamps `last_verified`.
 
 ## Refining
 
-This is where PRDs die — agents asked to "update the PRD" append, nothing is removed, the file doubles.
-
 - **Change only what the contract changed.** Edit a row when the owner's claim changed or the code drifted
-  from it — never to reword, and never a row the change doesn't touch (unless a deliberate larger refactor).
-- **The only writable surfaces are a table row, the three sentences, and the three bullets.** Never add
-  prose.
-- New behavior → **new row, new ID, appended.** Changed → **edit that row in place.** Removed → **strike
-  it; the row and ID stay.**
-- Never restate a requirement that has an ID elsewhere. Cite it. Never add a `##` heading.
+  — never to reword, and never a row the change doesn't touch.
+- **The only writable surfaces are a table row, the three sentences, and the three bullets.** Never add prose.
+- New behavior → **new row, new ID, appended.** Changed → **edit in place.** Removed → **strike it; row and
+  ID stay.**
+- Never restate a requirement that has an ID elsewhere — cite it. Never add a `##` heading.
 
 ### Stop and ask
 
-Architectural — guessing is how the tree rots. Do not proceed if the requirement doesn't fit one layer;
-needs a new namespace, file, or component; would move a requirement between files; would make this file
-cite one it never cited; would create a cycle; or contradicts an existing requirement.
+Do not proceed if the requirement doesn't fit one layer; needs a new namespace, file, or component; would
+move a requirement between files; would make this file cite one it never cited; would create a cycle; or
+contradicts an existing requirement.
 
 ## Lint
 
@@ -253,4 +210,4 @@ Mechanical, in CI (`doc-lint`). A red lint is a broken PRD, not a style note.
 - **Citations only go up the stack**; the citation graph is a DAG (no cycles).
 - No `##` outside the schema. No requirement over 25 words. No numeric literal in requirement text.
 - **The catalog is well-formed** — `../prd/README.md` has a Components list (`prefix — gloss`) and a
-  Contents tree byte-identical to the generator's output.
+  Contents list of every PRD.

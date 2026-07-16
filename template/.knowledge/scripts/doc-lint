@@ -30,6 +30,14 @@ REQUIRED_FILES = [
 ]
 # Always-loaded trio: each must end with its edit-gated standard pointer (so it can't be dropped).
 TRIO = {"BRIEF.md": "docs-brief.md", "CODEMAP.md": "docs-codemap.md", "MEMORY.md": "docs-memory.md"}
+# Each home catalog must link to the guide for writing or modifying its docs.
+CATALOG_GUIDE = {
+    "prd/README.md": "docs-prd.md",
+    "prd-drafts/README.md": "docs-prd.md",
+    "research/README.md": "docs-research.md",
+}
+# Only these may sit at the .knowledge/ root — anything else added there is drift.
+ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md"}
 # Every shipped README keeps these sections (matched by prefix) — a gutted catalog is drift.
 REQUIRED_SECTIONS = {
     "README.md": ["## The homes"],
@@ -135,9 +143,26 @@ class Lint:
             if "Editing this file" not in last or guide not in last:
                 self.err(fname, f"must end with its standard pointer to guides/{guide} (last line)")
 
+    def check_root(self):
+        """Only the known top-level files and homes may sit at the .knowledge/ root."""
+        for name in sorted(os.listdir(self.root)):
+            if name not in ALLOWED_ROOT:
+                self.err(name, "unexpected entry at the .knowledge/ root (only shipped files and homes allowed)")
+
+    def check_guide_links(self):
+        """Each home catalog must link to the guide for writing or modifying its docs."""
+        for rel, guide in CATALOG_GUIDE.items():
+            path = os.path.join(self.root, rel)
+            if not os.path.isfile(path):
+                continue  # manifest flags a missing catalog
+            if f"guides/{guide}" not in self.read(path):
+                self.err(rel, f"catalog must link to `../guides/{guide}` (write or modify)")
+
     def check(self):
         self.check_manifest()
         self.check_trio()
+        self.check_root()
+        self.check_guide_links()
         prefixes = self.components()
         rank = {p: i for i, p in enumerate(prefixes)}
         prd = self.collect_prd("prd")

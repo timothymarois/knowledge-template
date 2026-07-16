@@ -25,10 +25,13 @@ Load light; pull depth only when the task reaches for it.
    `.knowledge/MEMORY.md` (current friction). `.knowledge/README.md` is the map to everything else.
 2. **On demand, when the task enters an area:** `.knowledge/prd/` (tested contracts — the source of
    truth), `.knowledge/prd-drafts/` (proposals, not yet approved), `.knowledge/research/` +
-   `.knowledge/references/` (prior art and visual targets), `.knowledge/guides/` (how to write each doc).
-3. Before writing or editing a doc, follow its `.knowledge/guides/docs-*.md` standard. A new guaranteed
-   behavior is a `prd/` requirement backed by a test.
-4. Run `python3 .knowledge/scripts/doc-lint .knowledge` before finishing.
+   `.knowledge/references/` (prior art and visual targets), `.knowledge/guides/` (how to write each doc —
+   the `docs-*` standards — plus project how-tos for recurring tasks).
+3. Before writing or modifying a doc, follow its guide in `.knowledge/guides/`; for a recurring task, check
+   `guides/` for a how-to first. A new guaranteed behavior is a `prd/` requirement backed by a test.
+4. `.knowledge/scripts/` holds the doc linter (and is where project helper scripts go); `.knowledge/tmp/`
+   is git-ignored scratch for anything you generate.
+5. Run `python3 .knowledge/scripts/doc-lint .knowledge` before finishing.
 ```
 
 That's the whole footprint in `AGENTS.md`. The deeper rules — PRD graduation, citing `R-<AREA>-<n>` in
@@ -77,15 +80,26 @@ python3 .knowledge/scripts/doc-lint .knowledge  # the docs are valid
 { "scripts": { "lint:docs": "python3 .knowledge/scripts/doc-lint .knowledge" } }
 ```
 
-**CI** — a reference workflow ships at `.github/workflows/doc-lint.yml`:
+**GitHub Action (do this).** Create `.github/workflows/doc-lint.yml` in the project so the linter runs on
+every push and PR — modeled on knowledge-template's own workflow:
 
 ```yaml
-- run: python3 .knowledge/scripts/test_doc_lint.py
-- run: python3 .knowledge/scripts/doc-lint .knowledge
+name: doc-lint
+on: [push, pull_request]
+jobs:
+  doc-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.x' }
+      - run: python3 .knowledge/scripts/test_doc_lint.py
+      - run: python3 .knowledge/scripts/doc-lint .knowledge
 ```
 
 ## Done
 
-Run `python3 .knowledge/scripts/doc-lint .knowledge` — green means the project is **set up ready to go**:
-agent rules wired, orientation written, components declared. From here, the docs stay current because a
-broken one fails the build.
+Once everything's in place, **run the linter**: `python3 .knowledge/scripts/doc-lint .knowledge` (and
+`test_doc_lint.py`). Green means the project is **set up ready to go** — agent rules wired, orientation
+written, components declared, CI auto-checking. From here the docs stay current, because a broken one fails
+the build.

@@ -24,11 +24,12 @@ drift and stay drifted. Versioning lets every repo catch up on demand instead of
 
 - **`template/`** — the copy-me payload, and the only thing downstream repos take. Everything lives under
   `template/.knowledge/`: the always-loaded trio (`BRIEF`/`CODEMAP`/`MEMORY`), the map (`README.md`), the version
-  stamp (`.doc-version`), the homes, and `scripts/` (the linter and its teeth-test — they ship **with** the
+  stamp (`.version`), the homes, and `scripts/` (the linter and its teeth-test — they ship **with** the
   docs so every repo self-enforces).
 - **Root files** — govern *this* repo and are **not** copied: `README.md` (the consumer-facing pitch + the
-  `R-DOC` enforced-requirements table), this `AGENTS.md`, `VERSION`, `CHANGELOG.md`, `.changes/` (one dated
-  migration per release), `.github/`.
+  `R-DOC` enforced-requirements table), `ADOPT.md` (the step-by-step install guide an adopting agent
+  follows), this `AGENTS.md`, `VERSION`, `CHANGELOG.md`, `.changes/` (one dated migration per release),
+  `.github/`.
 
 ## The model you must preserve
 
@@ -84,7 +85,7 @@ The version is how downstream repos stay in sync without drift. To release a cha
    + the `R-DOC` table.
 3. **Write the migration.** Add `.changes/<YYYY-MM-DD>-v<version>.md` with the exact ordered steps an agent
    runs to move a project onto this version, and a **Verify** section. Add a row to `CHANGELOG.md`.
-4. **Bump `VERSION`** and `template/.knowledge/.doc-version` to match.
+4. **Bump `VERSION`** and `template/.knowledge/.version` to match.
 5. **Tag** `v<version>` after review.
 
 ## Definition of Done
@@ -96,5 +97,5 @@ A change here is done when the payload is internally consistent and copy-paste r
 3. Nothing in `template/` is stack-specific; all placeholders are intact.
 4. `README.md`, `template/.knowledge/README.md`, and the `guides/` still describe the actual tree; every
    cross-reference resolves; if a rule changed, its check, its test, and its `R-DOC` row all match.
-5. If the model changed: `VERSION`, `.doc-version`, `CHANGELOG.md`, and a `.changes/` migration are all
+5. If the model changed: `VERSION`, `.version`, `CHANGELOG.md`, and a `.changes/` migration are all
    updated together.

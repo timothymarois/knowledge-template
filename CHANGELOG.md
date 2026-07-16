@@ -7,8 +7,8 @@ The version history of the `.knowledge/` documentation system. Each release has 
 a lint rule that fails previously-valid docs). **MINOR** = additive (a new optional section or a
 non-breaking check). **PATCH** = wording.
 
-**Upgrading a project:** compare the project's `.knowledge/.doc-version` to the `VERSION` here. For each release
-in between (oldest first), open its `.changes/` file, apply the steps, bump `.knowledge/.doc-version`, and re-run
+**Upgrading a project:** compare the project's `.knowledge/.version` to the `VERSION` here. For each release
+in between (oldest first), open its `.changes/` file, apply the steps, bump `.knowledge/.version`, and re-run
 `doc-lint`.
 
 | Version | Date | Summary | Migration |

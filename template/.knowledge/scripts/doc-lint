@@ -21,7 +21,7 @@ NUMERIC = re.compile(r"(?<![A-Za-z0-9_-])\d+(?![A-Za-z0-9_-])")
 # The shipped payload. Every entry must exist in a project's .knowledge/ — a removal or rename is drift.
 REQUIRED_DIRS = ["prd", "prd-drafts", "research", "references", "guides", "scripts", "tmp"]
 REQUIRED_FILES = [
-    "README.md", ".doc-version", "BRIEF.md", "CODEMAP.md", "MEMORY.md",
+    "README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md",
     "prd/README.md", "prd-drafts/README.md", "research/README.md", "references/README.md",
     "guides/README.md", "scripts/README.md", "tmp/README.md",
     "guides/docs-prd.md", "guides/docs-research.md", "guides/docs-brief.md",

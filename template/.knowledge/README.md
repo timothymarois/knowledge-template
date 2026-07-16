@@ -68,6 +68,6 @@ Then, for every doc:
 ## Versioning
 
 This knowledge base is versioned by **[knowledge-template](https://github.com/timothymarois/knowledge-template)**;
-the adopted version is stamped in `.doc-version`. To update, follow the upgrade steps in that upstream repo.
+the adopted version is stamped in `.version`. To update, follow the upgrade steps in that upstream repo.
 Run `python3 .knowledge/scripts/doc-lint .knowledge` to check the structure (and `scripts/test_doc_lint.py`
 to verify the linter itself).

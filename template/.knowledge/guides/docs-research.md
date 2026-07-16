@@ -76,6 +76,8 @@ uncited is visibly ours.
 ## Sourcing
 
 - **Every non-obvious claim carries `[n]`** — every number, date, "the industry does X", legal posture.
+- **Keep the real link.** Every `## Sources` entry carries the actual URL you read — one a reader can open
+  and verify. A name with no link isn't checkable.
 - **Cite the specific page you read, not the vendor.** A source blob at the top is not sourcing.
 - **Never cite a source you didn't open.**
 

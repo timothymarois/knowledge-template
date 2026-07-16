@@ -25,7 +25,7 @@ REQUIRED_FILES = [
     "prd/README.md", "prd-drafts/README.md", "research/README.md", "references/README.md",
     "guides/README.md", "scripts/README.md", "tmp/README.md",
     "guides/docs-prd.md", "guides/docs-research.md", "guides/docs-brief.md",
-    "guides/docs-codemap.md", "guides/docs-memory.md",
+    "guides/docs-codemap.md", "guides/docs-memory.md", "guides/docs-agents.md",
     "scripts/doc-lint", "scripts/test_doc_lint.py",
 ]
 # Always-loaded trio: each must end with its edit-gated standard pointer (so it can't be dropped).

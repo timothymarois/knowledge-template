@@ -9,34 +9,13 @@ orientation docs written, the components declared, and the linter green.
 Copy the **contents of `template/`** into the target repo's root. You get a `.knowledge/` directory —
 include the hidden `.knowledge/.version` stamp. Nothing outside `template/` is copied.
 
-## 2. Wire it into `AGENTS.md` — the important step
+## 2. Write the project's `AGENTS.md`
 
-`AGENTS.md`'s job here is small: make the agent **aware** of the knowledge base and route it to the right
-doc. It states *what's available and what to follow* — it does **not** restate the rules, which already
-live in `.knowledge/guides/` and the map. Add a compact block like this near the top, ahead of the stack
-rules (adapt the wording, keep it lean):
-
-```md
-## Documentation (`.knowledge/`)
-
-Load light; pull depth only when the task reaches for it.
-
-1. **Always:** read `.knowledge/BRIEF.md` (what & why), `.knowledge/CODEMAP.md` (where things are),
-   `.knowledge/MEMORY.md` (current friction). `.knowledge/README.md` is the map to everything else.
-2. **On demand, when the task enters an area:** `.knowledge/prd/` (tested contracts — the source of
-   truth), `.knowledge/prd-drafts/` (proposals, not yet approved), `.knowledge/research/` +
-   `.knowledge/references/` (prior art and visual targets), `.knowledge/guides/` (how to write each doc —
-   the `docs-*` standards — plus project how-tos for recurring tasks).
-3. Before writing or modifying a doc, follow its guide in `.knowledge/guides/`; for a recurring task, check
-   `guides/` for a how-to first. A new guaranteed behavior is a `prd/` requirement backed by a test.
-4. `.knowledge/scripts/` holds the doc linter (and is where project helper scripts go); `.knowledge/tmp/`
-   is git-ignored scratch for anything you generate.
-5. Run `python3 .knowledge/scripts/doc-lint .knowledge` before finishing.
-```
-
-That's the whole footprint in `AGENTS.md`. The deeper rules — PRD graduation, citing `R-<AREA>-<n>` in
-code, keeping docs true in the same task — live in the guides and the map; the agent reads them on demand,
-so they're never copied here (and never drift).
+`AGENTS.md` sits at the repo root and is the first thing an agent reads — it routes into `.knowledge/` and
+encodes this stack's rules. **Write it following `.knowledge/guides/docs-agents.md`**, which carries the full
+template: the ship-as-written sections (the `.knowledge/` load order, hard gates, documentation duties) plus
+the stack sections you research and adapt (tech, architecture, best practices, build / test / run). Keep the
+ship-as-written sections verbatim so this repo behaves like every other.
 
 ## 3. Produce the orientation docs
 
@@ -50,8 +29,6 @@ doc has a guide that defines its format:
 - **`.knowledge/CODEMAP.md`** — the structural map: where each layer and kind of thing lives. Survey the repo
   layer by layer and write it following `.knowledge/guides/docs-codemap.md`.
 - **`.knowledge/MEMORY.md`** — starts empty; friction accrues as you work.
-
-Then adapt the rest of `AGENTS.md` to the stack.
 
 ## 4. Declare the components
 

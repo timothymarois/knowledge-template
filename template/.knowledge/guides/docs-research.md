@@ -1,7 +1,7 @@
 # How to write a research note — the standard
 
 This guide **is the standard** for every note in [`../research/`](../research/), with the template built
-in. Shipped and versioned by `doc-template`; the per-project catalog of notes lives in
+in. Shipped and versioned by `knowledge-template`; the per-project catalog of notes lives in
 [`../research/README.md`](../research/README.md).
 
 A research note is **a dated report on how the world works outside this codebase**, written so we can

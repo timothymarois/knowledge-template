@@ -37,7 +37,7 @@ A map that mirrors the whole tree rots on the next commit; one that names the la
 
 ## Docs
 
-- `.ai/` — the knowledge system (prd/, prd-drafts/, research/, references/, guides/). See `.ai/README.md`.
+- `.knowledge/` — the knowledge system (prd/, prd-drafts/, research/, references/, guides/). See `.knowledge/README.md`.
 
 ---
 *Editing this file? Follow the standard first: [`guides/docs-codemap.md`](./guides/docs-codemap.md).*

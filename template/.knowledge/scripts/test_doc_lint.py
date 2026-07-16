@@ -5,7 +5,7 @@ The valid base is a *copy of the real payload* with two sample PRDs added, so th
 structural checks (every shipped dir/guide present, the trio's standard pointer) are
 exercised against the actual shipped tree. Each mutation must fail on its own rule.
 
-    python3 .ai/scripts/test_doc_lint.py
+    python3 .knowledge/scripts/test_doc_lint.py
 """
 import os
 import shutil
@@ -15,7 +15,7 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOC_LINT = os.path.join(HERE, "doc-lint")
-PAYLOAD = os.path.dirname(HERE)  # the real .ai/ this script ships in
+PAYLOAD = os.path.dirname(HERE)  # the real .knowledge/ this script ships in
 
 CATALOG = """# prd/ — catalog
 
@@ -87,7 +87,7 @@ def run(aidir):
 
 def case(name, mutate, expect_ok, sub=None):
     with tempfile.TemporaryDirectory() as d:
-        aidir = os.path.join(d, ".ai")
+        aidir = os.path.join(d, ".knowledge")
         build_base(aidir)
         mutate(aidir)
         code, out = run(aidir)

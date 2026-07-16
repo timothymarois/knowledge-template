@@ -1,4 +1,4 @@
-# .ai/ — how this project remembers what it learns
+# .knowledge/ — how this project remembers what it learns
 
 Read this first. It maps every home so the docs **compound instead of sprawling**. The rule behind all of
 it: **one fact, one home.**
@@ -67,7 +67,7 @@ Then, for every doc:
 
 ## Versioning
 
-This doc system is versioned by **[doc-template](https://github.com/timothymarois/doc-template)** — the
-adopted version is stamped in `.doc-version`. When it's behind, the source repo's `CHANGELOG.md` and the
-dated files in `.changes/` say exactly how to migrate. Run `python3 .ai/scripts/doc-lint .ai` to check the
-structure (and `scripts/test_doc_lint.py` to verify the linter itself).
+This knowledge base is versioned by **[knowledge-template](https://github.com/timothymarois/knowledge-template)**;
+the adopted version is stamped in `.doc-version`. To update, follow the upgrade steps in that upstream repo.
+Run `python3 .knowledge/scripts/doc-lint .knowledge` to check the structure (and `scripts/test_doc_lint.py`
+to verify the linter itself).

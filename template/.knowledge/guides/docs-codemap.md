@@ -1,7 +1,7 @@
 # How to write a CODEMAP — the standard
 
 This guide **is the standard** for `../CODEMAP.md`, the always-loaded structural map. Shipped and versioned
-by `doc-template`. **The template is `../CODEMAP.md` itself** — start from its skeleton and adapt the
+by `knowledge-template`. **The template is `../CODEMAP.md` itself** — start from its skeleton and adapt the
 sections to the stack.
 
 A codemap is a **structural inventory** — the table of contents of a codebase. It answers "where does X

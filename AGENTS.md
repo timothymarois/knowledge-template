@@ -1,8 +1,8 @@
-# AGENTS — doc-template
+# AGENTS — knowledge-template
 
 ## What this is
 
-**doc-template is a versioned documentation system that keeps AI coding agents standardized.** It is copied
+**knowledge-template is a versioned documentation system that keeps AI coding agents standardized.** It is copied
 into other repos (web apps, games, extensions, libraries — any stack) and gives every kind of knowledge one
 home, one writing standard, and a linter that fails the build when a doc drifts.
 
@@ -16,14 +16,14 @@ These rules are law. Do not modify this file without approval; if a rule seems w
 
 AI agents write docs well and keep them consistent badly. Left alone, each invents its own structure — PRDs
 in three shapes, notes that contradict each other, the same fact in five files — and the docs rot until the
-next agent trusts the rot. doc-template makes the standard **executable, not a wiki page nobody rereads:**
+next agent trusts the rot. knowledge-template makes the standard **executable, not a wiki page nobody rereads:**
 the rules ship as guides with the template built in, and a linter enforces them in CI, so agents can't
 drift and stay drifted. Versioning lets every repo catch up on demand instead of forking its own rules.
 
 ## What this repo contains
 
 - **`template/`** — the copy-me payload, and the only thing downstream repos take. Everything lives under
-  `template/.ai/`: the always-loaded trio (`BRIEF`/`CODEMAP`/`MEMORY`), the map (`README.md`), the version
+  `template/.knowledge/`: the always-loaded trio (`BRIEF`/`CODEMAP`/`MEMORY`), the map (`README.md`), the version
   stamp (`.doc-version`), the homes, and `scripts/` (the linter and its teeth-test — they ship **with** the
   docs so every repo self-enforces).
 - **Root files** — govern *this* repo and are **not** copied: `README.md` (the consumer-facing pitch + the
@@ -32,7 +32,7 @@ drift and stay drifted. Versioning lets every repo catch up on demand instead of
 
 ## The model you must preserve
 
-`template/.ai/README.md` is the map; the standards in `guides/docs-*.md` are the rules. The shape is
+`template/.knowledge/README.md` is the map; the standards in `guides/docs-*.md` are the rules. The shape is
 load-bearing — every downstream repo inherits it. **Do not add, remove, rename, or re-scope a home without
 approval.**
 
@@ -50,9 +50,9 @@ approval.**
 
 ## The linter is the law
 
-The rules that matter are checks in `template/.ai/scripts/doc-lint`, each **teeth-tested** in
-`template/.ai/scripts/test_doc_lint.py` — a valid project passes, and breaking a rule fails on that rule.
-The full enforced set is the **`R-DOC` requirement table in `README.md`**: doc-template holds itself to the
+The rules that matter are checks in `template/.knowledge/scripts/doc-lint`, each **teeth-tested** in
+`template/.knowledge/scripts/test_doc_lint.py` — a valid project passes, and breaking a rule fails on that rule.
+The full enforced set is the **`R-DOC` requirement table in `README.md`**: knowledge-template holds itself to the
 same keyed-table standard it enforces on PRDs. Prose that isn't enforced is teaching, not law.
 
 **So a rule is three things, changed together:** a check in `doc-lint`, a mutation case in
@@ -68,7 +68,7 @@ without the others.
 3. **Plain Markdown + one stdlib linter.** No doc-site generators, no build step, no linter dependencies —
    a human or an agent reads and runs it with nothing installed.
 4. **A rule = check + test + table row** (see *The linter is the law*). Enforce it, prove it, document it.
-5. **Keep everything in sync.** Change the model → update `template/.ai/README.md`, the relevant
+5. **Keep everything in sync.** Change the model → update `template/.knowledge/README.md`, the relevant
    `guides/docs-*.md`, and this repo's `README.md` in the same commit. Every cross-reference must resolve
    (the linter checks catalog links; check the rest by eye).
 6. **PII-free and public.** Assume world-readable. No names, secrets, or machine paths — refer to people by
@@ -84,17 +84,17 @@ The version is how downstream repos stay in sync without drift. To release a cha
    + the `R-DOC` table.
 3. **Write the migration.** Add `.changes/<YYYY-MM-DD>-v<version>.md` with the exact ordered steps an agent
    runs to move a project onto this version, and a **Verify** section. Add a row to `CHANGELOG.md`.
-4. **Bump `VERSION`** and `template/.ai/.doc-version` to match.
+4. **Bump `VERSION`** and `template/.knowledge/.doc-version` to match.
 5. **Tag** `v<version>` after review.
 
 ## Definition of Done
 
 A change here is done when the payload is internally consistent and copy-paste ready:
 
-1. `python3 template/.ai/scripts/test_doc_lint.py` passes (the linter still has teeth).
-2. `python3 template/.ai/scripts/doc-lint template/.ai` passes (the shipped payload is clean).
+1. `python3 template/.knowledge/scripts/test_doc_lint.py` passes (the linter still has teeth).
+2. `python3 template/.knowledge/scripts/doc-lint template/.knowledge` passes (the shipped payload is clean).
 3. Nothing in `template/` is stack-specific; all placeholders are intact.
-4. `README.md`, `template/.ai/README.md`, and the `guides/` still describe the actual tree; every
+4. `README.md`, `template/.knowledge/README.md`, and the `guides/` still describe the actual tree; every
    cross-reference resolves; if a rule changed, its check, its test, and its `R-DOC` row all match.
 5. If the model changed: `VERSION`, `.doc-version`, `CHANGELOG.md`, and a `.changes/` migration are all
    updated together.

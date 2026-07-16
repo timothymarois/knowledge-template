@@ -3,8 +3,8 @@
 The **catalog** of guides. Two kinds live here:
 
 - **`docs-*.md` — shipped standards.** How to write each kind of doc (`docs-prd.md`, `docs-research.md`),
-  template built in. These are shipped and **versioned by `doc-template`** — do not rewrite them per
-  project; they update by version bump (see the root `CHANGELOG.md`).
+  template built in. These are shipped and **versioned by `knowledge-template`** — do not rewrite them per
+  project; they update by version bump from the upstream repo.
 - **`<verb-noun>.md` — project how-tos.** Recipes for tasks that repeat in *this* repo
   (`add-a-migration.md`, `deploy.md`). Authored fresh per project; a recipe, not a rationale.
 

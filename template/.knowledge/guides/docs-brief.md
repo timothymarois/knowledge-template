@@ -1,7 +1,7 @@
 # How to write a BRIEF — the standard
 
 This guide **is the standard** for `../BRIEF.md`, the always-loaded orientation an agent reads first.
-Shipped and versioned by `doc-template`. **The template is `../BRIEF.md` itself** — start from it and fill
+Shipped and versioned by `knowledge-template`. **The template is `../BRIEF.md` itself** — start from it and fill
 each section by answering its question.
 
 A brief is a short orientation doc: **what the project is, who it serves, and what it covers.** Keep it to

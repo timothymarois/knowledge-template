@@ -1,7 +1,7 @@
 # How to write a PRD — the standard
 
 This guide **is the standard** for every PRD in [`../prd/`](../prd/): the rules for writing one, with the
-template built in. It is shipped and versioned by `doc-template` — do not rewrite it per project. The
+template built in. It is shipped and versioned by `knowledge-template` — do not rewrite it per project. The
 per-project **catalog** (the components a project declares + its file list) lives in
 [`../prd/README.md`](../prd/README.md), not here.
 

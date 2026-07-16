@@ -1,4 +1,4 @@
-# doc-template
+# knowledge-template
 
 **Keep your AI coding agents' documentation standardized.** One home for every kind of doc, one writing
 standard, and a linter that fails the build when a doc drifts. Plain Markdown, one stdlib linter, zero setup.
@@ -6,7 +6,7 @@ standard, and a linter that fails the build when a doc drifts. Plain Markdown, o
 ### 💡 Why
 
 Agents write docs well and keep them consistent badly — left alone, each invents its own structure and the
-docs rot. doc-template makes the standard **executable**:
+docs rot. knowledge-template makes the standard **executable**:
 
 - **One home per kind of doc** — nothing is written twice
 - **Rules ship as guides** — every agent produces the same shape
@@ -18,20 +18,20 @@ docs rot. doc-template makes the standard **executable**:
 Hand this to your coding agent:
 
 ```
-Adopt the doc-template documentation system into this repo:
-https://github.com/timothymarois/doc-template
+Adopt the knowledge-template documentation system into this repo:
+https://github.com/timothymarois/knowledge-template
 
 Follow its README "Adopting this doc template" section:
-copy template/.ai into our repo root, embed the .ai/ load-order rules as the FIRST rules in
+copy template/.knowledge into our repo root, embed the .knowledge/ load-order rules as the FIRST rules in
 AGENTS.md, fill BRIEF.md + CODEMAP.md, declare our components in prd/README.md, and wire
-python3 .ai/scripts/doc-lint .ai into CI.
+python3 .knowledge/scripts/doc-lint .knowledge into CI.
 ```
 
 ### 📦 What's inside
 
 ```
 template/                      the copy-me payload — the only thing a repo takes
-  .ai/
+  .knowledge/
     BRIEF.md                   what & why
     CODEMAP.md                 where things are
     MEMORY.md                  current friction
@@ -86,8 +86,8 @@ Two rules hold it together: **one fact, one home** · **a PRD is a tested contra
 ### 🔌 Wire it into your build
 
 ```
-python3 .ai/scripts/doc-lint .ai         # the docs are valid
-python3 .ai/scripts/test_doc_lint.py     # the linter has teeth
+python3 .knowledge/scripts/doc-lint .knowledge         # the docs are valid
+python3 .knowledge/scripts/test_doc_lint.py     # the linter has teeth
 ```
 
 Chain both into your existing check gate so docs fail alongside code.
@@ -99,35 +99,35 @@ Chain both into your existing check gate so docs fail alongside code.
 
 ```json
 { "scripts": {
-  "lint:docs": "python3 .ai/scripts/doc-lint .ai",
-  "test:docs": "python3 .ai/scripts/test_doc_lint.py"
+  "lint:docs": "python3 .knowledge/scripts/doc-lint .knowledge",
+  "test:docs": "python3 .knowledge/scripts/test_doc_lint.py"
 } }
 ```
 
 **Composer** — `composer.json`:
 
 ```json
-{ "scripts": { "lint:docs": "python3 .ai/scripts/doc-lint .ai" } }
+{ "scripts": { "lint:docs": "python3 .knowledge/scripts/doc-lint .knowledge" } }
 ```
 
 **CI** — reference workflow: `.github/workflows/doc-lint.yml`
 
 ```yaml
-- run: python3 .ai/scripts/test_doc_lint.py
-- run: python3 .ai/scripts/doc-lint .ai
+- run: python3 .knowledge/scripts/test_doc_lint.py
+- run: python3 .knowledge/scripts/doc-lint .knowledge
 ```
 
 </details>
 
 ### 🔁 Upgrading
 
-SemVer in `VERSION`; each repo stamps its version in `.ai/.doc-version`. Behind? Hand this to your agent:
+SemVer in `VERSION`; each repo stamps its version in `.knowledge/.doc-version`. Behind? Hand this to your agent:
 
 ```
-Update this repo's doc-template to the latest version:
-https://github.com/timothymarois/doc-template
+Update this repo's knowledge-template to the latest version:
+https://github.com/timothymarois/knowledge-template
 
-Compare .ai/.doc-version to the upstream VERSION. If behind, apply each
-.changes/<date>-v<version>.md between them in order, re-run python3 .ai/scripts/doc-lint .ai
-until clean, then bump .ai/.doc-version.
+Compare .knowledge/.doc-version to the upstream VERSION. If behind, apply each
+.changes/<date>-v<version>.md between them in order, re-run python3 .knowledge/scripts/doc-lint .knowledge
+until clean, then bump .knowledge/.doc-version.
 ```

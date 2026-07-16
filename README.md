@@ -30,19 +30,24 @@ python3 .ai/scripts/doc-lint .ai into CI.
 ### 📦 What's inside
 
 ```
-template/                          the copy-me payload — the only thing a repo takes
+template/                      the copy-me payload — the only thing a repo takes
   .ai/
-    BRIEF · CODEMAP · MEMORY        read first, every task  (what · where · friction)
-    README.md                      the map
-    .doc-version                   the adopted version
-    prd/                           tested contracts — the source of truth
-    prd-drafts/                    proposals, isolated until approved
-    research/ · references/        prior art · visual targets
-    guides/                        the writing standards + project how-tos
-    scripts/                       the linter + its test
-    tmp/                           git-ignored scratch
+    BRIEF.md                   what & why
+    CODEMAP.md                 where things are
+    MEMORY.md                  current friction
+    README.md                  the map
+    .doc-version               the adopted version
+    prd/                       tested contracts — the source of truth
+    prd-drafts/                proposals, isolated until approved
+    research/                  prior-art notes
+    references/                visual targets
+    guides/                    the writing standards + project how-tos
+    scripts/                   the linter + its test
+    tmp/                       git-ignored scratch
 
-VERSION · CHANGELOG.md · .changes/   version + a dated migration per release (not copied)
+VERSION                        the current version
+CHANGELOG.md                   version history
+.changes/                      dated migrations (how to upgrade)
 ```
 
 Two rules hold it together: **one fact, one home** · **a PRD is a tested contract** (IDs mapped to tests).

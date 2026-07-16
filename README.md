@@ -3,17 +3,17 @@
 **Keep your AI coding agents' documentation standardized.** One home for every kind of doc, one writing
 standard, and a linter that fails the build when a doc drifts. Plain Markdown, one stdlib linter, zero setup.
 
-### Why
+### 💡 Why
 
 Agents write docs well and keep them consistent badly — left alone, each invents its own structure and the
 docs rot. doc-template makes the standard **executable**:
 
-- 🏠 **One home per kind of doc** — nothing is written twice
-- 📐 **Rules ship as guides** — every agent produces the same shape
-- ✅ **A linter enforces it in CI** — a broken doc fails like broken code
-- 🔁 **Versioned** — upgrade any repo with a dated migration
+- **One home per kind of doc** — nothing is written twice
+- **Rules ship as guides** — every agent produces the same shape
+- **A linter enforces it in CI** — a broken doc fails like broken code
+- **Versioned** — upgrade any repo with a dated migration
 
-### Adopt it
+### 🚀 Adopt it
 
 Hand this to your coding agent:
 
@@ -27,21 +27,27 @@ AGENTS.md, fill BRIEF.md + CODEMAP.md, declare our components in prd/README.md, 
 python3 .ai/scripts/doc-lint .ai into CI.
 ```
 
-### What's inside
+### 📦 What's inside
 
 ```
-.ai/
-  BRIEF · CODEMAP · MEMORY   read first, every task  (what · where · friction)
-  prd/          tested contracts — the source of truth
-  prd-drafts/   proposals, isolated until approved
-  research/     prior-art notes      references/   visual targets
-  guides/       the writing standards + project how-tos
-  scripts/      the linter (doc-lint) + its test
+template/                          the copy-me payload — the only thing a repo takes
+  .ai/
+    BRIEF · CODEMAP · MEMORY        read first, every task  (what · where · friction)
+    README.md                      the map
+    .doc-version                   the adopted version
+    prd/                           tested contracts — the source of truth
+    prd-drafts/                    proposals, isolated until approved
+    research/ · references/        prior art · visual targets
+    guides/                        the writing standards + project how-tos
+    scripts/                       the linter + its test
+    tmp/                           git-ignored scratch
+
+VERSION · CHANGELOG.md · .changes/   version + a dated migration per release (not copied)
 ```
 
 Two rules hold it together: **one fact, one home** · **a PRD is a tested contract** (IDs mapped to tests).
 
-### What the linter enforces
+### 🛡️ What the linter enforces
 
 **19 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
 
@@ -72,7 +78,7 @@ Two rules hold it together: **one fact, one home** · **a PRD is a tested contra
 
 </details>
 
-### Wire it into your build
+### 🔌 Wire it into your build
 
 ```
 python3 .ai/scripts/doc-lint .ai         # the docs are valid
@@ -108,7 +114,7 @@ Chain both into your existing check gate so docs fail alongside code.
 
 </details>
 
-### Versioning
+### 🔁 Upgrading
 
 SemVer in `VERSION`; each repo stamps its version in `.ai/.doc-version`. Behind? Hand this to your agent:
 
@@ -120,5 +126,3 @@ Compare .ai/.doc-version to the upstream VERSION. If behind, apply each
 .changes/<date>-v<version>.md between them in order, re-run python3 .ai/scripts/doc-lint .ai
 until clean, then bump .ai/.doc-version.
 ```
-
-More detail on the model and how to cut a version: [`AGENTS.md`](./AGENTS.md).

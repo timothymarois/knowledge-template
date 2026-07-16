@@ -28,5 +28,4 @@ a decision is unclear, agents come back here to resolve it. (The rules for *how*
 - `<system>` — <what the project relies on it for>
 
 ---
-*Full standard: [`guides/docs-brief.md`](./guides/docs-brief.md). One screen, one idea per line, PII-free,
-no placeholders left.*
+*Editing this file? Follow the standard first: [`guides/docs-brief.md`](./guides/docs-brief.md).*

@@ -7,8 +7,6 @@ drop, or add sections to match the stack. Delete any section with nothing to lis
 **Stay high-level.** List entry points, layers, and where each *kind* of thing lives — not every file.
 A map that mirrors the whole tree rots on the next commit; one that names the landmarks stays true.
 
-*Full standard: [`guides/docs-codemap.md`](./guides/docs-codemap.md).*
-
 ## Entry Points
 
 - _(none)_
@@ -40,3 +38,6 @@ A map that mirrors the whole tree rots on the next commit; one that names the la
 ## Docs
 
 - `.ai/` — the knowledge system (prd/, prd-drafts/, research/, references/, guides/). See `.ai/README.md`.
+
+---
+*Editing this file? Follow the standard first: [`guides/docs-codemap.md`](./guides/docs-codemap.md).*

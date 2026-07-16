@@ -21,11 +21,42 @@ Hand this to your coding agent:
 Adopt the knowledge-template documentation system into this repo:
 https://github.com/timothymarois/knowledge-template
 
-Follow its README "Adopting this doc template" section:
-copy template/.knowledge into our repo root, embed the .knowledge/ load-order rules as the FIRST rules in
-AGENTS.md, fill BRIEF.md + CODEMAP.md, declare our components in prd/README.md, and wire
-python3 .knowledge/scripts/doc-lint .knowledge into CI.
+Follow the "Adopt it" steps in its README:
+1. Copy template/.knowledge into our repo root (including hidden .doc-version).
+2. Embed its rules into our AGENTS.md as the FIRST rules — the load order AND how work flows
+   through the docs (PRDs are tested contracts; proposals stay in prd-drafts; keep docs true in
+   the same task; run the linter before done). See the "What to embed in AGENTS.md" list below.
+3. Fill BRIEF.md + CODEMAP.md; declare our components in prd/README.md.
+4. Wire python3 .knowledge/scripts/doc-lint .knowledge into CI.
 ```
+
+<details>
+<summary>Manual steps + <b>what to embed in AGENTS.md</b></summary>
+
+1. **Copy the payload** — `template/`'s contents into the repo root (its `.knowledge/`, including `.doc-version`).
+2. **Embed the rules in `AGENTS.md`** (below), at the top, ahead of the stack rules.
+3. **Fill orientation** — `.knowledge/BRIEF.md`, `CODEMAP.md`; adapt `AGENTS.md` to the stack.
+4. **Declare components** in `.knowledge/prd/README.md`.
+5. **Wire the linter** into your build (see *Wire it into your build*).
+
+**What to embed in `AGENTS.md`** — not just the load order, but the whole way work flows through the docs.
+Fold the substance into your own rules; don't paste verbatim:
+
+- **Load order.** Every task, read first: `.knowledge/BRIEF.md` (what & why), `CODEMAP.md` (where),
+  `MEMORY.md` (friction); map is `.knowledge/README.md`. On demand, when the task enters an area: `prd/`
+  (tested contracts — the source of truth), `prd-drafts/` (proposals — never cite as settled), `research/`
+  + `references/` (prior art, visual targets), `guides/` (how to write each doc).
+- **PRDs are the contract.** A new guaranteed behavior needs a `prd/` requirement **and** a test — behavior
+  and its PRD change in the same commit. Requirements come from the owner; a proposal stays in `prd-drafts/`
+  until approved, built, and proven, then graduates by `git mv`. When code implements a requirement, cite
+  its `R-<AREA>-<n>` so contract ↔ code ↔ test stay linked.
+- **Keep docs true in the same task.** Before editing any doc, read its home `README.md` (catalog) and its
+  `guides/docs-*.md` (rules). Restructured files → update `CODEMAP.md`. Hit friction → add a line to
+  `MEMORY.md`, and delete it once solved.
+- **Enforce it.** Run `python3 .knowledge/scripts/doc-lint .knowledge` before finishing; wire it into CI so
+  drift fails the build.
+
+</details>
 
 ### 📦 What's inside
 

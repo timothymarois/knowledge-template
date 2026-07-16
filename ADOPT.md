@@ -64,7 +64,7 @@ python3 .knowledge/scripts/doc-lint .knowledge  # the docs are valid
 every push and PR — modeled on knowledge-template's own workflow:
 
 ```yaml
-name: doc-lint
+name: Knowledge Lint
 on: [push, pull_request]
 jobs:
   doc-lint:

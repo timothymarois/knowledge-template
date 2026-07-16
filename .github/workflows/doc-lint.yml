@@ -1,4 +1,4 @@
-name: doc-lint
+name: Knowledge Lint
 
 # knowledge-template's own CI: prove the linter still has teeth, then lint the payload.
 # A project that adopts the payload runs the same two commands against its own docs:

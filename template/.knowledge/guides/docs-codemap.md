@@ -50,4 +50,6 @@ The only invariant: **one section per layer, each listing what exists.**
 
 - **Refresh on drift, not on a timer.** When a change adds or removes a layer or shifts counts, update the
   affected sections. A count that no longer matches the repo is the first sign the map is stale.
+- **Only the sections the change touched.** Don't reword or restructure unrelated layers for its own sake —
+  update the map where the code moved, and leave the rest.
 - Record removals too — drop the lines and note it.

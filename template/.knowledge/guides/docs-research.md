@@ -90,7 +90,9 @@ contaminated claim quietly becomes a borrow, then a verdict, then a requirement.
 **`Last updated` is the date the whole note was last re-read against its sources** — not when the file was
 touched. A typo fix does not move it. A note that says *"current posture"* with no date is a landmine.
 Because the date is whole-note, **updating means re-reading, not patching**: fix one section and re-stamp
-and you make every stale paragraph look fresh. What the note said before is git's.
+and you make every stale paragraph look fresh. What the note said before is git's. So change a note only
+when its sources actually moved (or the owner asks) — never to reword, and never a section the change
+doesn't touch.
 
 ## What a note is not
 

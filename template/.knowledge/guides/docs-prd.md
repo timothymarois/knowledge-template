@@ -226,6 +226,8 @@ that touch this folder:
 
 This is where PRDs die — agents asked to "update the PRD" append, nothing is removed, the file doubles.
 
+- **Change only what the contract changed.** Edit a row when the owner's claim changed or the code drifted
+  from it — never to reword, and never a row the change doesn't touch (unless a deliberate larger refactor).
 - **The only writable surfaces are a table row, the three sentences, and the three bullets.** Never add
   prose.
 - New behavior → **new row, new ID, appended.** Changed → **edit that row in place.** Removed → **strike

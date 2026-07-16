@@ -1,4 +1,4 @@
-# knowledge-template
+# Knowledge Template for Agents
 
 **Keep your AI coding agents' documentation standardized.** One home for every kind of doc, one writing
 standard, and a linter that fails the build when a doc drifts. Plain Markdown, one stdlib linter, zero setup.

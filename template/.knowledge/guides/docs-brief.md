@@ -31,3 +31,5 @@ admin", "a buyer"); refer to the product only by its public brand or repo name.
 - **No placeholders left** — replace every `<...>` and `_(none)_`; delete a section rather than writing "none".
 - **Public and PII-free** — people by role, never by name; no private data, secrets, or machine paths.
 - **Shape is universal** — the same sections fit any kind of project; adjust the words, not the shape.
+- **Change only when it changed** — update the brief when the project's story, users, scope, or systems
+  actually shifted, not to reword; leave the rest untouched.

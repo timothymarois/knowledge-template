@@ -29,3 +29,5 @@ own memory, never here. `MEMORY.md` is about *this repo's* traps and nothing els
 - **Concrete, not vague.** "The X build is flaky" helps no one; "run `X` twice — the first run races the
   codegen and fails intermittently" does.
 - **Not a changelog.** What changed and when is git's. This is only what's *still* true and still bites.
+- **Only touch an entry to add, delete, or correct it** — a newly-hit trap, a solved one (delete), or one
+  now inaccurate. Never reword an entry for its own sake.

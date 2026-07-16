@@ -11,34 +11,29 @@ include the hidden `.knowledge/.version` stamp. Nothing outside `template/` is c
 
 ## 2. Wire it into `AGENTS.md` — the important step
 
-The system only works if agents load and follow it. Add the following as the **first rules** in the
-project's `AGENTS.md`, ahead of the stack rules. **Adapt the wording to the repo; keep the substance** —
-this is the map that sends an agent to the right doc at the right time.
+`AGENTS.md`'s job here is small: make the agent **aware** of the knowledge base and route it to the right
+doc. It states *what's available and what to follow* — it does **not** restate the rules, which already
+live in `.knowledge/guides/` and the map. Add a compact block like this near the top, ahead of the stack
+rules (adapt the wording, keep it lean):
 
-### Load order
-- **Every task, read first:** `.knowledge/BRIEF.md` (what & why), `.knowledge/CODEMAP.md` (where things
-  are), `.knowledge/MEMORY.md` (current friction). The map of it all is `.knowledge/README.md`.
-- **On demand, when the task enters an area:**
-  - `.knowledge/prd/` — tested contracts, the source of truth for what the product must do
-  - `.knowledge/prd-drafts/` — proposals, not yet approved; never cite as settled
-  - `.knowledge/research/` + `.knowledge/references/` — prior art and visual targets
-  - `.knowledge/guides/` — how to write each kind of doc (`docs-*.md`) and recurring how-tos
+```md
+## Documentation (`.knowledge/`)
 
-### PRDs are the contract
-- A new guaranteed behavior needs a `prd/` requirement **and** a test — behavior and its PRD change in the
-  same commit.
-- Requirements come from the owner. A proposal stays in `prd-drafts/` until approved, built, and proven,
-  then graduates by `git mv` (its IDs carry over unchanged).
-- When code implements a requirement, cite its `R-<AREA>-<n>` in the code so contract ↔ code ↔ test stay
-  linked.
+Load light; pull depth only when the task reaches for it.
 
-### Keep docs true in the same task
-- Before editing any doc, read its home `README.md` (the catalog) and its `guides/docs-*.md` (the rules).
-- Restructured files → update `CODEMAP.md`. Hit friction → add a line to `MEMORY.md`, and delete it once
-  solved.
+1. **Always:** read `.knowledge/BRIEF.md` (what & why), `.knowledge/CODEMAP.md` (where things are),
+   `.knowledge/MEMORY.md` (current friction). `.knowledge/README.md` is the map to everything else.
+2. **On demand, when the task enters an area:** `.knowledge/prd/` (tested contracts — the source of
+   truth), `.knowledge/prd-drafts/` (proposals, not yet approved), `.knowledge/research/` +
+   `.knowledge/references/` (prior art and visual targets), `.knowledge/guides/` (how to write each doc).
+3. Before writing or editing a doc, follow its `.knowledge/guides/docs-*.md` standard. A new guaranteed
+   behavior is a `prd/` requirement backed by a test.
+4. Run `python3 .knowledge/scripts/doc-lint .knowledge` before finishing.
+```
 
-### Enforce it
-- Run `python3 .knowledge/scripts/doc-lint .knowledge` before finishing.
+That's the whole footprint in `AGENTS.md`. The deeper rules — PRD graduation, citing `R-<AREA>-<n>` in
+code, keeping docs true in the same task — live in the guides and the map; the agent reads them on demand,
+so they're never copied here (and never drift).
 
 ## 3. Produce the orientation docs
 

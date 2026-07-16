@@ -40,12 +40,15 @@ so they're never copied here (and never drift).
 
 ## 3. Produce the orientation docs
 
-Write these for this project — leave no placeholders. Each has a guide that defines its format:
+Write these for this project — leave no placeholders. This means **researching the codebase**, not guessing
+from memory. If your harness supports subagents, delegate that research: fan out parallel readers over the
+repo's layers and synthesize their findings into the docs — faster, and it keeps your own context lean. Each
+doc has a guide that defines its format:
 
 - **`.knowledge/BRIEF.md`** — what the project is, who it serves, and its scope. Write it following
   `.knowledge/guides/docs-brief.md`.
-- **`.knowledge/CODEMAP.md`** — the structural map: where each layer and kind of thing lives. **Survey the
-  repo** (don't guess from memory) and write it following `.knowledge/guides/docs-codemap.md`.
+- **`.knowledge/CODEMAP.md`** — the structural map: where each layer and kind of thing lives. Survey the repo
+  layer by layer and write it following `.knowledge/guides/docs-codemap.md`.
 - **`.knowledge/MEMORY.md`** — starts empty; friction accrues as you work.
 
 Then adapt the rest of `AGENTS.md` to the stack.

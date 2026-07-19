@@ -24,3 +24,4 @@ behavior.
 | ✅ | R-RESEARCH-3 | A research note uses only the closed schema headings | `research heading outside the schema` |
 | ✅ | R-RESEARCH-4 | Every source carries a link | `a source with no link` |
 | ✅ | R-RESEARCH-5 | Every source is cited at least once | `a source that is never cited` |
+| ✅ | R-RESEARCH-6 | The reporting section cites at least one source | `reporting with no citation` |

@@ -44,6 +44,10 @@ CATALOG_CONTENTS = {"prd": "md", "prd-drafts": "md", "research": "md", "guides":
 # still load the orientation trio, or every doc below it goes unread.
 AGENTS_TRIO = ["BRIEF.md", "CODEMAP.md", "MEMORY.md"]
 # A research note's schema is closed, same as a PRD's.
+# Shipped placeholder markers. If these survive adoption the docs were never filled in — and a green
+# lint would tell the project it is "ready" when nothing has been written. Skipped under --payload,
+# where they are supposed to be present.
+PLACEHOLDERS = {"BRIEF.md": ["<project>", "_(none)_"], "CODEMAP.md": ["<project>", "_(none)_"]}
 RESEARCH_HEADINGS = {
     "What they do", "What we can borrow", "What to avoid", "Verdict for us", "Open questions", "Sources",
 }
@@ -208,6 +212,18 @@ class Lint:
                     self.err(f"{home}/README.md",
                              f"`{name}/` is a subdirectory — {home}/ is flat, and nothing inside it is linted")
 
+    def check_filled(self):
+        """The orientation docs must actually be written — shipped placeholders may not survive adoption."""
+        for fname, markers in PLACEHOLDERS.items():
+            path = os.path.join(self.root, fname)
+            if not os.path.isfile(path):
+                continue  # manifest flags a missing trio file
+            text = self.read(path)
+            for marker in markers:
+                if marker in text:
+                    self.err(fname, f"still contains the shipped placeholder `{marker}` — fill this in "
+                                    "(or delete the section) before calling the project adopted")
+
     def check_agents(self):
         """The repo root must have an AGENTS.md that still routes an agent to the orientation trio."""
         path = os.path.join(os.path.dirname(self.root), "AGENTS.md")
@@ -226,6 +242,7 @@ class Lint:
         self.check_guide_links()
         if not self.payload:
             self.check_agents()
+            self.check_filled()
         prefixes = self.components()
         rank = {p: i for i, p in enumerate(prefixes)}
         prd = self.collect_prd("prd")
@@ -381,6 +398,9 @@ class Lint:
                     self.err(path, f"`## {h}` is not in the closed schema")
 
             cites = set(re.findall(r"\[(\d+)\]", text))
+            body = text.split("## What they do", 1)
+            if len(body) > 1 and not re.search(r"\[\d+\]", body[1].split("\n## ", 1)[0]):
+                self.err(path, "`What they do` cites no source — reporting with no citation is assertion")
             sources = {}
             if "## Sources" in text:
                 tail = text.split("## Sources", 1)[1].split("\n## ", 1)[0]

@@ -17,7 +17,7 @@ Load light; pull depth only when the task needs it.
 
 1. **Always read first:** `.knowledge/BRIEF.md` (what & why), `.knowledge/CODEMAP.md` (where things are),
    `.knowledge/MEMORY.md` (current friction). `.knowledge/README.md` maps the rest.
-2. **On demand, when the task enters an area:** `.knowledge/prd/` (tested contracts — source of truth),
+2. **On demand, when the task enters an area:** `.knowledge/prd/` (ratified contracts — source of truth),
    `.knowledge/prd-drafts/` (proposals), `.knowledge/research/` + `.knowledge/references/` (prior art, visual
    targets), `.knowledge/guides/` (how to write each doc + project how-tos).
 3. **How work flows:** `research/` -> `prd-drafts/` -> `prd/`; a `prd/` contract never cites a draft. New
@@ -145,8 +145,9 @@ Keep docs true in the same task that changes reality. Before creating or editing
 
 - Moved/restructured files -> update `.knowledge/CODEMAP.md`.
 - Hit friction -> add a line to `.knowledge/MEMORY.md`; delete it once solved.
-- Shipped guaranteed behavior -> graduate its `prd-drafts/` draft to `prd/` (every `R-` mapped to a passing
-  test, delete the draft); behavior and PRD change in the same commit.
+- Owner ratifies a proposal -> `git mv` its `prd-drafts/` draft into `prd/`; IDs carry over unchanged and
+  the conformance review then sets glyphs. **Approval moves a draft, not proof** — proof is the glyph
+  column. Behavior and its requirement row change in the same commit.
 - Scratch -> `.knowledge/tmp/` (git-ignored).
 
 ## Cutting a new version

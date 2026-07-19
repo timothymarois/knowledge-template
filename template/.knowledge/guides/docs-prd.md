@@ -4,9 +4,10 @@ This guide **is the standard** for every PRD in [`../prd/`](../prd/), with the t
 shipped and versioned by `knowledge-template` — do not rewrite it per project. The per-project **catalog**
 (declared components + file list) lives in [`../prd/README.md`](../prd/README.md), not here.
 
-`../prd/` holds the **ratified, test-backed contracts** for what the product does: one file per built
-system, every requirement carrying an ID and a status. A PRD asserts *what must be true, why, and whether
-it is* — not how it's built. If a claim there has a ✅, a test proves it.
+`../prd/` holds the **ratified contracts** for what the product does: one file per built system, every
+requirement carrying an ID and a status — ✅ where a test proves it, ❌ where nothing does yet. A PRD
+asserts *what must be true, why, and whether it is* — not how it's built. If a claim there has a ✅, a test
+proves it.
 
 ## A PRD asserts, it never explains
 
@@ -187,6 +188,10 @@ Proposals live isolated in [`../prd-drafts/`](../prd-drafts/) until approved —
 
 - **A ratified PRD may never cite a draft.** Every ID a `prd/` file cites resolves inside `prd/`. The lint
   enforces it.
+- **The line between the two homes is approval, not proof.** A draft becomes a contract when the owner
+  ratifies its claims — not when its tests go green. **Proof is the glyph column**, and a ratified contract
+  is expected to carry ❌ rows: that is what `file:line — no test` exists to say. Waiting for an all-green
+  file leaves the source of truth empty and the real knowledge stranded in a home contracts may not cite.
 - **Graduation is a move, not a rewrite.** `git mv ../prd-drafts/<file>.md ./<file>.md`; the IDs carry
   across unchanged. The first conformance review then sets glyphs and stamps `last_verified`.
 

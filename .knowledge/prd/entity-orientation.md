@@ -23,3 +23,4 @@ into context only by an agent about to edit it.
 | ✅ | R-ORIENT-1 | Brief, codemap, and memory end with their standard pointer | `a trio file lost its standard pointer` |
 | ✅ | R-ORIENT-2 | The repo root has an agent rulebook | `the repo has no AGENTS.md` |
 | ✅ | R-ORIENT-3 | The rulebook names every file in the orientation trio | `AGENTS.md no longer loads the trio` |
+| ✅ | R-ORIENT-4 | No shipped placeholder survives adoption | `an unfilled orientation doc` |

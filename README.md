@@ -57,7 +57,7 @@ Two rules hold it together: **one fact, one home** · **a PRD is a tested contra
 
 ### 🛡️ What the linter enforces
 
-**29 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
+**31 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
 
 The rules are themselves written as contracts under this repo's own `.knowledge/` — because this repo
 adopts the system it ships. Each row names the test case that proves it:

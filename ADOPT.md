@@ -34,6 +34,9 @@ doc has a guide that defines its format:
   layer by layer and write it following `.knowledge/guides/docs-codemap.md`.
 - **`.knowledge/MEMORY.md`** — starts empty; friction accrues as you work.
 
+**Leave no placeholder.** `doc-lint` fails while `BRIEF.md` or `CODEMAP.md` still carries a shipped
+`<project>` title or a `_(none)_` marker — a green lint is supposed to mean the project really is set up.
+
 ## 4. Declare the components
 
 Declare the project's ontology — its layers, in order — in `.knowledge/prd/README.md`, following

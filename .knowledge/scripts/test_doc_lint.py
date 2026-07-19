@@ -70,6 +70,49 @@ A widget, built on R-CORE-1.
 
 # Minimal catalogs for the homes we clear — a real project's catalogs link to the files we just
 # deleted, so they must be reset too or the fixture fails on its own dangling links.
+# The fixture is a *populated* project, not an empty one: a draft, a research note, a reference set and
+# a project how-to. Rules that only bite on a populated home stayed untested for a long time — both bugs
+# found by piloting on a real repo were of exactly that shape.
+DRAFT = """---
+id: FUTURE
+name: Future thing
+---
+
+## What this is
+
+Something proposed, not yet ratified.
+
+## Requirements
+
+|  | ID | Requirement | Evidence |
+|:--:|---|---|---|
+| \u274c | R-FUTURE-1 | A future thing is proposed | \u2014 |
+"""
+NOTE = """# Research: how others do it
+
+**Last updated:** 2026-07-16
+**Question it answers:** what shape does the rest of the world use
+
+## What they do
+
+They do a thing [1], and we have seen it ourselves [2].
+
+## Verdict for us
+
+Borrow the shape.
+
+## Sources
+
+1. A public page — https://example.com/a-page
+2. Our own walkthrough (internal)
+"""
+HOWTO = """# How to do the recurring thing
+
+The steps, in order, with the commands.
+
+1. Run the first command.
+2. Check it worked.
+"""
 STUB_CATALOGS = {
     "prd-drafts/README.md": """# prd-drafts/ — proposals (catalog)
 
@@ -79,7 +122,7 @@ Isolated until approved. To write one, follow [../guides/docs-prd.md](../guides/
 
 | Draft | Proposes | Reserved namespace |
 |---|---|---|
-| _(none)_ | | |
+| [entity-future](./entity-future.md) | a future thing | FUTURE |
 """,
     "research/README.md": """# research/ — prior art (catalog)
 
@@ -89,7 +132,7 @@ To write one, follow [../guides/docs-research.md](../guides/docs-research.md).
 
 | Last updated | Note | Question it answers |
 |---|---|---|
-| _(none)_ | | |
+| 2026-07-16 | [how-others-do-it](./how-others-do-it.md) | what shape the world uses |
 """,
     "references/README.md": """# references/ — visual targets (catalog)
 
@@ -97,13 +140,32 @@ To write one, follow [../guides/docs-research.md](../guides/docs-research.md).
 
 | Set | Competitor / platform | What we're comparing |
 |---|---|---|
-| _(none)_ | | |
+| [acme](./acme/) | Acme | their onboarding |
 
 ## How to add one
 
 - One folder per source.
 """,
 }
+
+BRIEF = """# Brief — Sample Project
+
+## Story
+
+A sample project, filled in as an adopted repo would be.
+
+---
+*Editing this file? Follow the standard first: [`guides/docs-brief.md`](./guides/docs-brief.md).*
+"""
+CODEMAP = """# Codemap — Sample Project
+
+## Entry Points
+
+- `src/main.ext` — where it starts.
+
+---
+*Editing this file? Follow the standard first: [`guides/docs-codemap.md`](./guides/docs-codemap.md).*
+"""
 
 AGENTS = """# AGENTS
 
@@ -137,6 +199,17 @@ def build_base(aidir):
             shutil.rmtree(path) if os.path.isdir(path) else os.remove(path)
     for rel, body in STUB_CATALOGS.items():  # ...and reset their catalogs, which linked to those files
         w(aidir, rel, body)
+    w(aidir, "prd-drafts/entity-future.md", DRAFT)      # a populated project, not an empty one
+    w(aidir, "research/how-others-do-it.md", NOTE)
+    w(aidir, "references/acme/NOTES.md", "What inspires: the layout. Provenance: public marketing page.\n")
+    w(aidir, "guides/do-the-thing.md", HOWTO)
+    w(aidir, "BRIEF.md", BRIEF)                             # an adopted project has these filled in
+    w(aidir, "CODEMAP.md", CODEMAP)
+    gr = os.path.join(aidir, "guides/README.md")            # ...and list it in the guides catalog
+    with open(gr, encoding="utf-8") as fh:
+        text = fh.read()
+    w(aidir, "guides/README.md",
+      text.replace("| _(none yet)_ | |", "| [do-the-thing.md](./do-the-thing.md) | do the recurring thing |"))
     w(aidir, "prd/README.md", CATALOG)       # add two sample PRDs + a matching catalog
     w(aidir, "prd/base-core.md", BASE)
     w(aidir, "prd/entity-widget.md", WIDGET)
@@ -297,6 +370,18 @@ def main():
         ("an unexpected entry at the root",
          lambda a: w(a, "SCRATCH.md", "not allowed here\n"),
          False, "unexpected entry at the .knowledge/ root"),
+        ("an unfilled orientation doc",
+         lambda a: w(a, "BRIEF.md", "# Brief — <project>\n\nUnfilled.\n\n---\n"
+                                    "*Editing this file? Follow the standard first: [`guides/docs-brief.md`]"
+                                    "(./guides/docs-brief.md).*\n"),
+         False, "shipped placeholder"),
+        ("reporting with no citation",
+         lambda a: w(a, "research/how-others-do-it.md",
+                     NOTE.replace("They do a thing [1], and we have seen it ourselves [2].",
+                                  "They do a thing, and we have seen it ourselves.")
+                         .replace("1. A public page — https://example.com/a-page\n", "")
+                         .replace("2. Our own walkthrough (internal)\n", "")),
+         False, "cites no source"),
         # --- the entry point that routes agents into .knowledge/ at all ---
         ("the repo has no AGENTS.md",
          lambda a: os.remove(os.path.join(os.path.dirname(a), "AGENTS.md")),

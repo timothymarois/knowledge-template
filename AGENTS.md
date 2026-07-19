@@ -26,10 +26,12 @@ drift and stay drifted. Versioning lets every repo catch up on demand instead of
   `template/.knowledge/`: the always-loaded trio (`BRIEF`/`CODEMAP`/`MEMORY`), the map (`README.md`), the version
   stamp (`.version`), the homes, and `scripts/` (the linter and its teeth-test — they ship **with** the
   docs so every repo self-enforces).
-- **Root files** — govern *this* repo and are **not** copied: `README.md` (the consumer-facing pitch + the
-  `R-DOC` enforced-requirements table), `ADOPT.md` (the step-by-step install guide an adopting agent
-  follows), this `AGENTS.md`, `VERSION`, `CHANGELOG.md`, `.changes/` (one dated migration per release),
-  `.github/`.
+- **`.knowledge/`** — this repo's **own adopted copy** of the payload: it eats what it ships. Its `prd/`
+  holds the contracts for what `doc-lint` guarantees. Its `guides/` and `scripts/` are byte-identical to
+  `template/.knowledge/` (CI diffs them) — **edit the payload, then re-copy; never the reverse.**
+- **Root files** — govern *this* repo and are **not** copied: `README.md` (the consumer-facing pitch),
+  `ADOPT.md` (the step-by-step install guide an adopting agent follows), this `AGENTS.md`, `VERSION`,
+  `CHANGELOG.md`, `.changes/` (one dated migration per release), `.github/`.
 
 ## The model you must preserve
 
@@ -53,12 +55,12 @@ approval.**
 
 The rules that matter are checks in `template/.knowledge/scripts/doc-lint`, each **teeth-tested** in
 `template/.knowledge/scripts/test_doc_lint.py` — a valid project passes, and breaking a rule fails on that rule.
-The full enforced set is the **`R-DOC` requirement table in `README.md`**: knowledge-template holds itself to the
-same keyed-table standard it enforces on PRDs. Prose that isn't enforced is teaching, not law.
+The full enforced set is the **contracts in `.knowledge/prd/`**: knowledge-template holds itself to the
+same standard it enforces on PRDs, in the same shape. Prose that isn't enforced is teaching, not law.
 
 **So a rule is three things, changed together:** a check in `doc-lint`, a mutation case in
-`test_doc_lint.py` that proves it fails, and an `R-DOC-*` row in the README citing that case. Never one
-without the others.
+`test_doc_lint.py` that proves it fails, and a requirement row in `.knowledge/prd/` whose Evidence names
+that case. Never one without the others.
 
 ## Rules for working in this repo
 
@@ -68,10 +70,10 @@ without the others.
    `guides/docs-*.md` standard. Keep the voice consistent across all of them.
 3. **Plain Markdown + one stdlib linter.** No doc-site generators, no build step, no linter dependencies —
    a human or an agent reads and runs it with nothing installed.
-4. **A rule = check + test + table row** (see *The linter is the law*). Enforce it, prove it, document it.
+4. **A rule = check + test + requirement row** (see *The linter is the law*). Enforce it, prove it, document it.
 5. **Keep everything in sync.** Change the model → update `template/.knowledge/README.md`, the relevant
-   `guides/docs-*.md`, and this repo's `README.md` in the same commit. Every cross-reference must resolve
-   (the linter checks catalog links; check the rest by eye).
+   `guides/docs-*.md`, this repo's `README.md`, and the root `.knowledge/` copy in the same commit. Every
+   cross-reference must resolve (the linter checks catalog links; check the rest by eye).
 6. **PII-free and public.** Assume world-readable. No names, secrets, or machine paths — refer to people by
    role.
 
@@ -94,8 +96,10 @@ A change here is done when the payload is internally consistent and copy-paste r
 
 1. `python3 template/.knowledge/scripts/test_doc_lint.py` passes (the linter still has teeth).
 2. `python3 template/.knowledge/scripts/doc-lint template/.knowledge` passes (the shipped payload is clean).
-3. Nothing in `template/` is stack-specific; all placeholders are intact.
-4. `README.md`, `template/.knowledge/README.md`, and the `guides/` still describe the actual tree; every
-   cross-reference resolves; if a rule changed, its check, its test, and its `R-DOC` row all match.
-5. If the model changed: `VERSION`, `.version`, `CHANGELOG.md`, and a `.changes/` migration are all
-   updated together.
+3. `python3 .knowledge/scripts/doc-lint .knowledge` passes, and `diff -r` shows this repo's adopted
+   `guides/` + `scripts/` still match the payload's (we run what we ship).
+4. Nothing in `template/` is stack-specific; all placeholders are intact.
+5. `README.md`, `template/.knowledge/README.md`, and the `guides/` still describe the actual tree; every
+   cross-reference resolves; if a rule changed, its check, its test, and its `.knowledge/prd/` row all match.
+6. If the model changed: `VERSION`, both `.version` stamps, `CHANGELOG.md`, and a `.changes/` migration
+   are all updated together.

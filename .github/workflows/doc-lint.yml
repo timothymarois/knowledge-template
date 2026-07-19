@@ -18,3 +18,9 @@ jobs:
         run: python3 template/.knowledge/scripts/test_doc_lint.py
       - name: Lint the shipped payload
         run: python3 template/.knowledge/scripts/doc-lint template/.knowledge
+      - name: Lint this repo's own docs (we adopt what we ship)
+        run: python3 .knowledge/scripts/doc-lint .knowledge
+      - name: The adopted copy matches the payload
+        run: |
+          diff -r template/.knowledge/guides .knowledge/guides
+          diff -r template/.knowledge/scripts .knowledge/scripts

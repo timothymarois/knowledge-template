@@ -47,6 +47,7 @@ template/                      the copy-me payload — the only thing a repo tak
     scripts/                   the linter + its test
     tmp/                       git-ignored scratch
 
+.knowledge/                    this repo's own adopted copy — we run what we ship
 VERSION                        the current version
 CHANGELOG.md                   version history
 .changes/                      dated migrations (how to upgrade)
@@ -58,34 +59,17 @@ Two rules hold it together: **one fact, one home** · **a PRD is a tested contra
 
 **21 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
 
-<details>
-<summary>See all 21 rules</summary>
+The rules are themselves written as contracts under this repo's own `.knowledge/` — because this repo
+adopts the system it ships. Each row names the test case that proves it:
 
-|  | ID | Requirement |
-|:--:|---|---|
-| ✅ | R-DOC-1 | Every shipped directory exists |
-| ✅ | R-DOC-2 | Every shipped file and guide exists |
-| ✅ | R-DOC-3 | BRIEF, CODEMAP, MEMORY end with their standard pointer |
-| ✅ | R-DOC-4 | A PRD file holds exactly one namespace |
-| ✅ | R-DOC-5 | No requirement ID is defined in two files |
-| ✅ | R-DOC-6 | A requirement is at most 25 words |
-| ✅ | R-DOC-7 | A requirement names its tunables, never a numeric literal |
-| ✅ | R-DOC-8 | A verified requirement names the test that proves it |
-| ✅ | R-DOC-9 | `last_verified` is present only with a verified row |
-| ✅ | R-DOC-10 | Every cited requirement ID resolves |
-| ✅ | R-DOC-11 | A contract never cites an unapproved draft |
-| ✅ | R-DOC-12 | Citations only go up the layer stack |
-| ✅ | R-DOC-13 | A PRD's filename prefix is a declared component |
-| ✅ | R-DOC-14 | A PRD uses only the closed schema headings |
-| ✅ | R-DOC-15 | The prd catalog lists every PRD |
-| ✅ | R-DOC-16 | Every research note is dated |
-| ✅ | R-DOC-17 | Every research citation resolves to a source |
-| ✅ | R-DOC-18 | Every catalog link resolves to a real file |
-| ✅ | R-DOC-19 | Every shipped README keeps its required sections |
-| ✅ | R-DOC-20 | Every catalog links to its writing guide |
-| ✅ | R-DOC-21 | Only the shipped files and homes sit at the root |
-
-</details>
+| Contract | Enforces |
+|---|---|
+| [`base-payload`](./.knowledge/prd/base-payload.md) | The shipped tree — every home and file present, nothing else at the root |
+| [`entity-orientation`](./.knowledge/prd/entity-orientation.md) | The always-loaded trio keeps its standard pointer |
+| [`entity-prd`](./.knowledge/prd/entity-prd.md) | Namespaces, word cap, tunables, evidence, schema |
+| [`entity-research`](./.knowledge/prd/entity-research.md) | Notes are dated and sourced |
+| [`entity-catalog`](./.knowledge/prd/entity-catalog.md) | Every home's README lists what's in it and links its guide |
+| [`flow-citations`](./.knowledge/prd/flow-citations.md) | IDs are unique, resolve, go up the stack, never cite a draft |
 
 ### 🔌 Wire it into your build
 

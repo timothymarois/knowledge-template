@@ -1,0 +1,314 @@
+#!/usr/bin/env python3
+"""doc-lint — enforces the .knowledge/ documentation standard (see guides/docs-prd.md).
+
+Ships inside the copied payload (.knowledge/scripts/), so every project runs the same version.
+Zero dependencies: standard library only.
+
+    python3 .knowledge/scripts/doc-lint [PATH_TO_.knowledge]   # lint (defaults to the parent .knowledge/)
+
+Its teeth-test lives beside it: python3 .knowledge/scripts/test_doc_lint.py
+Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
+"""
+import os
+import re
+import sys
+
+R_ID = re.compile(r"R-[A-Z0-9]+-\d+")
+R_ID_NS = re.compile(r"R-([A-Z0-9]+)-\d+")
+WORD = re.compile(r"\S+")
+NUMERIC = re.compile(r"(?<![A-Za-z0-9_-])\d+(?![A-Za-z0-9_-])")
+
+# The shipped payload. Every entry must exist in a project's .knowledge/ — a removal or rename is drift.
+REQUIRED_DIRS = ["prd", "prd-drafts", "research", "references", "guides", "scripts", "tmp"]
+REQUIRED_FILES = [
+    "README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md",
+    "prd/README.md", "prd-drafts/README.md", "research/README.md", "references/README.md",
+    "guides/README.md", "scripts/README.md", "tmp/README.md",
+    "guides/docs-prd.md", "guides/docs-research.md", "guides/docs-brief.md",
+    "guides/docs-codemap.md", "guides/docs-memory.md", "guides/docs-agents.md",
+    "scripts/doc-lint", "scripts/test_doc_lint.py",
+]
+# Always-loaded trio: each must end with its edit-gated standard pointer (so it can't be dropped).
+TRIO = {"BRIEF.md": "docs-brief.md", "CODEMAP.md": "docs-codemap.md", "MEMORY.md": "docs-memory.md"}
+# Each home catalog must link to the guide for writing or modifying its docs.
+CATALOG_GUIDE = {
+    "prd/README.md": "docs-prd.md",
+    "prd-drafts/README.md": "docs-prd.md",
+    "research/README.md": "docs-research.md",
+}
+# Only these may sit at the .knowledge/ root — anything else added there is drift.
+ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md"}
+# Every shipped README keeps these sections (matched by prefix) — a gutted catalog is drift.
+REQUIRED_SECTIONS = {
+    "README.md": ["## The homes"],
+    "prd/README.md": ["## Components", "## Contents"],
+    "prd-drafts/README.md": ["## Drafts"],
+    "research/README.md": ["## Notes"],
+    "references/README.md": ["## Sets", "## How to add one"],
+    "guides/README.md": ["## Contents", "## Rules for a project how-to"],
+    "scripts/README.md": ["## Contents", "## Usage"],
+    "tmp/README.md": ["## Rules"],
+}
+
+
+class Lint:
+    def __init__(self, root):
+        self.root = root
+        self.errors = []
+
+    def err(self, where, msg):
+        self.errors.append((where, msg))
+
+    # ---- helpers ----------------------------------------------------------
+    def read(self, path):
+        with open(path, encoding="utf-8") as fh:
+            return fh.read()
+
+    def frontmatter(self, text):
+        if not text.startswith("---"):
+            return {}, text
+        end = text.find("\n---", 3)
+        if end == -1:
+            return {}, text
+        block = text[3:end].strip().splitlines()
+        fm = {}
+        for line in block:
+            if ":" in line:
+                k, v = line.split(":", 1)
+                fm[k.strip()] = v.strip()
+        return fm, text[end + 4:]
+
+    def table_rows(self, body):
+        """Yield requirement rows [glyph, id, requirement, evidence] under ## Requirements."""
+        in_req = False
+        for line in body.splitlines():
+            if line.startswith("## "):
+                in_req = line.strip() == "## Requirements"
+                continue
+            if in_req and line.lstrip().startswith("|"):
+                cells = [c.strip() for c in line.strip().strip("|").split("|")]
+                if len(cells) == 4 and R_ID.fullmatch(cells[1] or ""):
+                    yield cells
+
+    def headings(self, body):
+        return [l[3:].strip() for l in body.splitlines() if l.startswith("## ")]
+
+    def collect_prd(self, home):
+        """Return {path: (fm, body)} for every non-README .md in a home."""
+        d = os.path.join(self.root, home)
+        out = {}
+        if not os.path.isdir(d):
+            return out
+        for name in sorted(os.listdir(d)):
+            if name.endswith(".md") and name != "README.md":
+                fm, body = self.frontmatter(self.read(os.path.join(d, name)))
+                out[os.path.join(home, name)] = (fm, body)
+        return out
+
+    def components(self):
+        """Parse the Components fenced list in prd/README.md -> [prefix,...] in order."""
+        path = os.path.join(self.root, "prd", "README.md")
+        if not os.path.isfile(path):
+            return []
+        text = self.read(path)
+        m = re.search(r"## Components.*?```(.*?)```", text, re.S)
+        prefixes = []
+        if m:
+            for line in m.group(1).splitlines():
+                cm = re.match(r"\s*\d+\.\s+(\S+?)\s+—\s+.+", line)
+                if cm:
+                    prefixes.append(cm.group(1))
+                elif line.strip() and not line.strip().startswith("#"):
+                    self.err("prd/README.md", f"Components line not `N. prefix — gloss`: {line.strip()}")
+        return prefixes
+
+    # ---- checks -----------------------------------------------------------
+    def check_manifest(self):
+        """Every shipped directory and file must still exist — catch removals/renames."""
+        for d in REQUIRED_DIRS:
+            if not os.path.isdir(os.path.join(self.root, d)):
+                self.err("manifest", f"required directory `{d}/` is missing (removed or renamed?)")
+        for fp in REQUIRED_FILES:
+            if not os.path.isfile(os.path.join(self.root, fp)):
+                self.err("manifest", f"required file `{fp}` is missing (removed or renamed?)")
+
+    def check_trio(self):
+        """BRIEF/CODEMAP/MEMORY must end with their edit-gated standard pointer."""
+        for fname, guide in TRIO.items():
+            path = os.path.join(self.root, fname)
+            if not os.path.isfile(path):
+                continue  # manifest already flags a missing trio file
+            nonempty = [l for l in self.read(path).splitlines() if l.strip()]
+            last = nonempty[-1] if nonempty else ""
+            if "Editing this file" not in last or guide not in last:
+                self.err(fname, f"must end with its standard pointer to guides/{guide} (last line)")
+
+    def check_root(self):
+        """Only the known top-level files and homes may sit at the .knowledge/ root."""
+        for name in sorted(os.listdir(self.root)):
+            if name not in ALLOWED_ROOT:
+                self.err(name, "unexpected entry at the .knowledge/ root (only shipped files and homes allowed)")
+
+    def check_guide_links(self):
+        """Each home catalog must link to the guide for writing or modifying its docs."""
+        for rel, guide in CATALOG_GUIDE.items():
+            path = os.path.join(self.root, rel)
+            if not os.path.isfile(path):
+                continue  # manifest flags a missing catalog
+            if f"guides/{guide}" not in self.read(path):
+                self.err(rel, f"catalog must link to `../guides/{guide}` (write or modify)")
+
+    def check(self):
+        self.check_manifest()
+        self.check_trio()
+        self.check_root()
+        self.check_guide_links()
+        prefixes = self.components()
+        rank = {p: i for i, p in enumerate(prefixes)}
+        prd = self.collect_prd("prd")
+        drafts = self.collect_prd("prd-drafts")
+
+        defined = {}
+        draft_ids = set()
+
+        for scope, files in (("prd", prd), ("prd-drafts", drafts)):
+            for path, (fm, body) in files.items():
+                fid = fm.get("id")
+                if not fid:
+                    self.err(path, "missing frontmatter `id:`")
+                if not fm.get("name"):
+                    self.err(path, "missing frontmatter `name:`")
+                rows = list(self.table_rows(body))
+                has_pass = False
+
+                base = os.path.basename(path)
+                if scope == "prd" and prefixes and not any(base.startswith(p) for p in prefixes):
+                    self.err(path, f"filename prefix not a listed component: {base}")
+
+                for glyph, rid, req, evid in rows:
+                    ns = R_ID_NS.match(rid).group(1)
+                    if fid and ns != fid:
+                        self.err(path, f"{rid} does not match file namespace `{fid}` (one namespace per file)")
+                    if rid in defined:
+                        self.err(path, f"{rid} already defined in {defined[rid]} (no ID in two files)")
+                    else:
+                        defined[rid] = path
+                    if scope == "prd-drafts":
+                        draft_ids.add(rid)
+                    if glyph == "✅":
+                        has_pass = True
+                        if not evid or evid == "—":
+                            self.err(path, f"{rid} is ✅ but names no test in Evidence")
+                    elif glyph != "❌":
+                        self.err(path, f"{rid} has invalid glyph `{glyph}` (only ✅/❌)")
+                    words = WORD.findall(req)
+                    if len(words) > 25:
+                        self.err(path, f"{rid} requirement is {len(words)} words (max 25)")
+                    if NUMERIC.search(req):
+                        self.err(path, f"{rid} requirement has a numeric literal (name the tunable instead)")
+
+                allowed = {"What this is", "Why it exists", "Requirements", "Open questions"}
+                for h in self.headings(body):
+                    if h not in allowed:
+                        self.err(path, f"`## {h}` is not in the closed schema")
+                if "/" in (fid or "") or " " in (fid or ""):
+                    self.err(path, "compound/invalid namespace in `id:`")
+
+                lv = "last_verified" in fm
+                if scope == "prd":
+                    if has_pass and not lv:
+                        self.err(path, "has a ✅ row but no `last_verified:`")
+                    if lv and not has_pass:
+                        self.err(path, "has `last_verified:` but no ✅ row")
+
+        for path, (fm, body) in prd.items():
+            fid = fm.get("id")
+            cited = {rid for rid in R_ID.findall(body) if R_ID_NS.match(rid).group(1) != fid}
+            for rid in cited:
+                if rid in draft_ids:
+                    self.err(path, f"cites {rid} which is a prd-drafts/ proposal (contracts never cite drafts)")
+                elif rid not in defined:
+                    self.err(path, f"cites {rid} which resolves nowhere")
+                elif prefixes:
+                    dep = defined[rid]
+                    dp = next((p for p in prefixes if os.path.basename(dep).startswith(p)), None)
+                    sp = next((p for p in prefixes if os.path.basename(path).startswith(p)), None)
+                    if dp is not None and sp is not None and rank[dp] > rank[sp]:
+                        self.err(path, f"cites {rid} in a later layer `{dp}` (citations only go up the stack)")
+
+        self.check_sections()
+        self.check_catalog(prd)
+        self.check_catalog_links()
+        self.check_research()
+        return not self.errors
+
+    def check_sections(self):
+        """Every shipped README keeps its required sections — a gutted catalog is drift."""
+        for rel, sections in REQUIRED_SECTIONS.items():
+            path = os.path.join(self.root, rel)
+            if not os.path.isfile(path):
+                continue  # manifest flags a missing README
+            headings = [l for l in self.read(path).splitlines() if l.startswith("## ")]
+            for sec in sections:
+                if not any(h.startswith(sec) for h in headings):
+                    self.err(rel, f"README missing required section `{sec}`")
+
+    def check_catalog(self, prd):
+        """Every PRD file is listed in the prd/ catalog Contents."""
+        path = os.path.join(self.root, "prd", "README.md")
+        if not os.path.isfile(path):
+            return  # manifest flags a missing catalog
+        text = self.read(path)
+        for rel in prd:
+            base = os.path.basename(rel)
+            if base not in text:
+                self.err("prd/README.md", f"catalog Contents omits {base}")
+
+    def check_catalog_links(self):
+        """Every link in every home catalog must resolve to a real file or directory."""
+        for home in ["prd", "prd-drafts", "research", "references", "guides"]:
+            readme = os.path.join(self.root, home, "README.md")
+            if not os.path.isfile(readme):
+                continue  # manifest flags a missing catalog
+            for target in re.findall(r"\]\(([^)]+)\)", self.read(readme)):
+                raw = target.strip()
+                if raw.startswith(("http", "#", "mailto:")) or "://" in raw:
+                    continue
+                rel = raw.split()[0].split("#", 1)[0]  # drop any title / anchor
+                if not rel:
+                    continue
+                if not os.path.exists(os.path.normpath(os.path.join(self.root, home, rel))):
+                    self.err(f"{home}/README.md", f"catalog links to missing `{rel}`")
+
+    def check_research(self):
+        d = os.path.join(self.root, "research")
+        if not os.path.isdir(d):
+            return
+        for name in sorted(os.listdir(d)):
+            if not name.endswith(".md") or name == "README.md":
+                continue
+            path = os.path.join("research", name)
+            text = self.read(os.path.join(d, name))
+            if "**Last updated:**" not in text:
+                self.err(path, "research note missing `**Last updated:**`")
+            cites = set(re.findall(r"\[(\d+)\]", text))
+            listed = set(re.findall(r"^\s*(\d+)\.\s", text.split("## Sources", 1)[-1], re.M))
+            for n in sorted(cites - listed):
+                self.err(path, f"citation [{n}] has no Sources entry")
+
+
+def main():
+    here = os.path.dirname(os.path.abspath(__file__))  # .knowledge/scripts
+    root = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.dirname(here)
+    lint = Lint(root)
+    if lint.check():
+        print(f"doc-lint: OK ({root})")
+        return 0
+    for where, msg in lint.errors:
+        print(f"doc-lint: {where}: {msg}")
+    print(f"\ndoc-lint: {len(lint.errors)} problem(s)")
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

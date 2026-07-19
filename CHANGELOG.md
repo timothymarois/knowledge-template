@@ -13,6 +13,4 @@ in between (oldest first), open its `.changes/` file, apply the steps, bump `.kn
 
 | Version | Date | Summary | Migration |
 |---|---|---|---|
-| 2.0.0 | 2026-07-19 | Catalogs are maintained by hand (and every home is completeness-checked); `AGENTS.md` must exist and load the trio; one file per namespace enforced; stack-neutral placement ladder. | [`.changes/2026-07-19-v2.0.0.md`](./.changes/2026-07-19-v2.0.0.md) |
-| 1.0.1 | 2026-07-19 | Fix: the teeth-test failed its own valid base in any project that had written a PRD. | [`.changes/2026-07-19-v1.0.1.md`](./.changes/2026-07-19-v1.0.1.md) |
 | 1.0.0 | 2026-07-16 | First versioned release. Flat `.knowledge/`, catalog READMEs + `guides/` rules, isolated `prd-drafts/`, glyph-table PRDs, `doc-lint`. | [`.changes/2026-07-16-v1.0.0.md`](./.changes/2026-07-16-v1.0.0.md) |

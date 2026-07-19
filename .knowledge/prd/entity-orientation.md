@@ -14,9 +14,12 @@ into context only by an agent about to edit it.
 
 - An agent orients on every task without paying for the standards it isn't using.
 - An agent that edits one of the trio is routed to the rule before it writes.
+- The trio is actually reached, rather than sitting unread behind a rulebook that stopped naming it.
 
 ## Requirements
 
 |  | ID | Requirement | Evidence |
 |:--:|---|---|---|
 | ✅ | R-ORIENT-1 | Brief, codemap, and memory end with their standard pointer | `a trio file lost its standard pointer` |
+| ✅ | R-ORIENT-2 | The repo root has an agent rulebook | `the repo has no AGENTS.md` |
+| ✅ | R-ORIENT-3 | The rulebook names every file in the orientation trio | `AGENTS.md no longer loads the trio` |

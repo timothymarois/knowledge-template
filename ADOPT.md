@@ -17,6 +17,10 @@ template: the ship-as-written sections (the `.knowledge/` load order, hard gates
 the stack sections you research and adapt (tech, architecture, best practices, build / test / run). Keep the
 ship-as-written sections verbatim so this repo behaves like every other.
 
+**This step is required, not optional** — `doc-lint` fails if the repo root has no `AGENTS.md`, or if it
+doesn't name all three of `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, and `.knowledge/MEMORY.md`.
+Nothing else about the file is inspected; write the rest however this project wants.
+
 ## 3. Produce the orientation docs
 
 Write these for this project — leave no placeholders. This means **researching the codebase**, not guessing

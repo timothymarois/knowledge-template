@@ -38,11 +38,13 @@ domain ontology, not architecture. Two universal rules:
 
 ### Placement
 
-Ask in order, **stop at the first yes**:
+Read the ladder against **the components this project declared** — the shipped default is
+`base-` / `entity-` / `flow-`, but a project may name its own, and the questions apply to whatever it
+listed. Ask in order, **stop at the first yes**:
 
-1. Names no placeable thing? → it's about the substrate → **base** layer.
-2. Names exactly one kind of placed thing? → **entity** layer, in that kind's file.
-3. Needs two or more placed things to mean anything? → **flow** layer.
+1. True regardless of which kind of thing is involved? → it's about the substrate → the **lowest** layer.
+2. True of exactly one kind of thing? → that kind's file, one layer up.
+3. Needs two or more kinds interacting before it means anything? → the **emergent** layer above them.
 4. About what appears on screen? → **not a PRD requirement.** Presentation.
 
 **A requirement never spans two layers.** If it seems to, it's two — split it. If it doesn't fit one layer
@@ -210,4 +212,5 @@ Mechanical, in CI (`doc-lint`). A red lint is a broken PRD, not a style note.
 - **Citations only go up the stack**; the citation graph is a DAG (no cycles).
 - No `##` outside the schema. No requirement over 25 words. No numeric literal in requirement text.
 - **The catalog is well-formed** — `../prd/README.md` has a Components list (`prefix — gloss`) and a
-  Contents list of every PRD.
+  Contents list naming every PRD. Catalogs are **maintained by hand**; nothing regenerates them. Add the
+  row in the same task you add the file, or the build goes red.

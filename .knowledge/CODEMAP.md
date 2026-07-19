@@ -38,10 +38,11 @@ downstream repo never edits them.
 
 ## The tooling (`template/.knowledge/scripts/`)
 
-- `doc-lint` — the enforcement. Python 3 standard library only, no arguments beyond the `.knowledge/`
-  path. One `Lint` class; `check()` drives the structural checks (manifest, trio pointer, closed root,
-  catalog guide links) then walks `prd/` + `prd-drafts/` for namespace, ID, glyph, word-count, and
-  citation rules, then the catalog and research checks. Exits non-zero on any error.
+- `doc-lint` — the enforcement. Python 3 standard library only; takes the `.knowledge/` path and an
+  optional `--payload` (skips the root-`AGENTS.md` check, for a payload not inside an adopting repo). One
+  `Lint` class; `check()` drives the structural checks (manifest, trio pointer, closed root, catalog guide
+  links, `AGENTS.md`) then walks `prd/` + `prd-drafts/` for namespace ownership, ID, glyph, word-count, and
+  citation rules, then catalog completeness, catalog links, and research. Exits non-zero on any error.
 - `test_doc_lint.py` — the teeth-test. Builds a valid base by copying **the real payload** into a temp
   dir and adding two sample PRDs, then applies one mutation per rule and asserts the matching failure.
   Every enforced rule has a case here.

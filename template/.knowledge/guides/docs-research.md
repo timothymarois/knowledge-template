@@ -104,3 +104,5 @@ Never `research → requirement`. Screenshots, competitor captures, and UI targe
 - The note carries a `**Last updated:**` date.
 - Every `[n]` resolves to a Sources entry; every Sources entry is cited at least once.
 - No `##` outside the schema.
+- The note has a row in [`../research/README.md`](../research/README.md). The catalog is **maintained by
+  hand** — nothing regenerates it; add the row in the same task you add the note.

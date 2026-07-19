@@ -68,11 +68,22 @@ A widget, built on R-CORE-1.
 """
 
 
+AGENTS = """# AGENTS
+
+Always read first: `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, `.knowledge/MEMORY.md`.
+"""
+
+
 def w(aidir, rel, content):
     path = os.path.join(aidir, rel)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(content)
+
+
+def w_repo(aidir, rel, content):
+    """Write beside .knowledge/, at the repo root — where AGENTS.md lives."""
+    w(os.path.dirname(aidir), rel, content)
 
 
 def build_base(aidir):
@@ -90,6 +101,7 @@ def build_base(aidir):
     w(aidir, "prd/README.md", CATALOG)       # add two sample PRDs + a matching catalog
     w(aidir, "prd/base-core.md", BASE)
     w(aidir, "prd/entity-widget.md", WIDGET)
+    w_repo(aidir, "AGENTS.md", AGENTS)       # the repo root the payload is adopted into
 
 
 def run(aidir):
@@ -157,7 +169,15 @@ def main():
          False, "resolves nowhere"),
         ("catalog omits a PRD file",
          lambda a: w(a, "prd/README.md", CATALOG.replace("  - [entity-widget](./entity-widget.md)\n", "")),
-         False, "Contents omits"),
+         False, "catalog omits"),
+        ("catalog omits a research note",
+         lambda a: w(a, "research/market.md",
+                     "# Research: market\n\n**Last updated:** 2026-07-16\n\n## What they do\n\nA claim.\n"),
+         False, "research/README.md: catalog omits market.md"),
+        ("two files claim one namespace",
+         lambda a: (w(a, "prd/base-core.md", BASE.replace("id: CORE", "id: WIDGET").replace("R-CORE-1", "R-WIDGET-9")),
+                    w(a, "prd/entity-widget.md", WIDGET.replace("built on R-CORE-1.", "standalone."))),
+         False, "one file per namespace"),
         ("a catalog links to a missing file",
          lambda a: w(a, "guides/README.md",
                      open(os.path.join(a, "guides/README.md"), encoding="utf-8").read()
@@ -196,6 +216,13 @@ def main():
         ("an unexpected entry at the root",
          lambda a: w(a, "SCRATCH.md", "not allowed here\n"),
          False, "unexpected entry at the .knowledge/ root"),
+        # --- the entry point that routes agents into .knowledge/ at all ---
+        ("the repo has no AGENTS.md",
+         lambda a: os.remove(os.path.join(os.path.dirname(a), "AGENTS.md")),
+         False, "no AGENTS.md"),
+        ("AGENTS.md no longer loads the trio",
+         lambda a: w_repo(a, "AGENTS.md", "# AGENTS\n\nBuild well. Nothing about the knowledge base.\n"),
+         False, "must load the orientation trio"),
     ]
     results = [case(*c) for c in cases]
     print(f"\n{sum(results)}/{len(results)} checks passed")

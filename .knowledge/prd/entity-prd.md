@@ -27,3 +27,4 @@ thing is built.
 | ✅ | R-PRD-5 | A last-verified stamp is present only with a verified row | `last_verified without a checkmark` |
 | ✅ | R-PRD-6 | A PRD's filename prefix is a declared component | `filename prefix not a component` |
 | ✅ | R-PRD-7 | A PRD uses only the closed schema headings | `heading outside the schema` |
+| ✅ | R-PRD-8 | A namespace is owned by exactly one file | `two files claim one namespace` |

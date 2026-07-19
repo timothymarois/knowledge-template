@@ -20,7 +20,7 @@ guide.
 
 |  | ID | Requirement | Evidence |
 |:--:|---|---|---|
-| ✅ | R-CATALOG-1 | The contracts catalog lists every contract | `catalog omits a PRD file` |
+| ✅ | R-CATALOG-1 | Every catalog lists everything in its home | `catalog omits a PRD file`, `catalog omits a research note` |
 | ✅ | R-CATALOG-2 | Every catalog link resolves to a real file | `a catalog links to a missing file` |
 | ✅ | R-CATALOG-3 | Every shipped catalog keeps its required sections | `a README is missing a required section` |
 | ✅ | R-CATALOG-4 | Every catalog links to its writing guide | `a catalog is missing its guide link` |

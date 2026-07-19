@@ -119,6 +119,19 @@ Before you respond to the user, do any task, or any action, you must read and fo
 If you have not read it, your next step must be to read it first, always.
 ```
 
+## Lint
+
+`doc-lint` checks this file too — it is the entry point that sends an agent into `.knowledge/` at all, so
+losing it silently unloads every doc below it. Two checks, deliberately shallow:
+
+- The repo root has an `AGENTS.md`.
+- Somewhere in it, all three of `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, and `.knowledge/MEMORY.md`
+  are named.
+
+**Nothing else is inspected** — not sections, not wording, not order. How a project writes its rules is its
+own business; the lint only guarantees the orientation trio still gets loaded. (Linting a payload not yet
+adopted into a repo? Pass `--payload` to skip both.)
+
 ## Rules
 
 - **Ship-as-written stays verbatim** across repos — that's what keeps every project consistent.

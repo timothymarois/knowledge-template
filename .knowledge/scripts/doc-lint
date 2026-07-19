@@ -5,6 +5,7 @@ Ships inside the copied payload (.knowledge/scripts/), so every project runs the
 Zero dependencies: standard library only.
 
     python3 .knowledge/scripts/doc-lint [PATH_TO_.knowledge]   # lint (defaults to the parent .knowledge/)
+    python3 .knowledge/scripts/doc-lint --payload <path>       # an unadopted payload: skip the AGENTS.md check
 
 Its teeth-test lives beside it: python3 .knowledge/scripts/test_doc_lint.py
 Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
@@ -36,6 +37,12 @@ CATALOG_GUIDE = {
     "prd-drafts/README.md": "docs-prd.md",
     "research/README.md": "docs-research.md",
 }
+# Each home's catalog must list everything in that home: "md" = every non-README .md,
+# "dir" = every subfolder (a reference set). Catalogs are maintained by hand; this is what keeps them true.
+CATALOG_CONTENTS = {"prd": "md", "prd-drafts": "md", "research": "md", "guides": "md", "references": "dir"}
+# The repo root's AGENTS.md is the entry point that sends an agent into .knowledge/ at all — it must
+# still load the orientation trio, or every doc below it goes unread.
+AGENTS_TRIO = ["BRIEF.md", "CODEMAP.md", "MEMORY.md"]
 # Only these may sit at the .knowledge/ root — anything else added there is drift.
 ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md"}
 # Every shipped README keeps these sections (matched by prefix) — a gutted catalog is drift.
@@ -52,8 +59,9 @@ REQUIRED_SECTIONS = {
 
 
 class Lint:
-    def __init__(self, root):
+    def __init__(self, root, payload=False):
         self.root = root
+        self.payload = payload  # an unadopted payload has no repo around it — skip the AGENTS.md check
         self.errors = []
 
     def err(self, where, msg):
@@ -158,11 +166,23 @@ class Lint:
             if f"guides/{guide}" not in self.read(path):
                 self.err(rel, f"catalog must link to `../guides/{guide}` (write or modify)")
 
+    def check_agents(self):
+        """The repo root must have an AGENTS.md that still routes an agent to the orientation trio."""
+        path = os.path.join(os.path.dirname(self.root), "AGENTS.md")
+        if not os.path.isfile(path):
+            self.err("AGENTS.md", "the repo root has no AGENTS.md (the entry point into .knowledge/)")
+            return
+        missing = [f for f in AGENTS_TRIO if f".knowledge/{f}" not in self.read(path)]
+        if missing:
+            self.err("AGENTS.md", "must load the orientation trio — no reference to " + ", ".join(missing))
+
     def check(self):
         self.check_manifest()
         self.check_trio()
         self.check_root()
         self.check_guide_links()
+        if not self.payload:
+            self.check_agents()
         prefixes = self.components()
         rank = {p: i for i, p in enumerate(prefixes)}
         prd = self.collect_prd("prd")
@@ -170,6 +190,7 @@ class Lint:
 
         defined = {}
         draft_ids = set()
+        ns_owner = {}
 
         for scope, files in (("prd", prd), ("prd-drafts", drafts)):
             for path, (fm, body) in files.items():
@@ -178,6 +199,12 @@ class Lint:
                     self.err(path, "missing frontmatter `id:`")
                 if not fm.get("name"):
                     self.err(path, "missing frontmatter `name:`")
+                if fid:
+                    if fid in ns_owner:
+                        self.err(path, f"namespace `{fid}` is already owned by {ns_owner[fid]} "
+                                       "(one file per namespace)")
+                    else:
+                        ns_owner[fid] = path
                 rows = list(self.table_rows(body))
                 has_pass = False
 
@@ -237,7 +264,7 @@ class Lint:
                         self.err(path, f"cites {rid} in a later layer `{dp}` (citations only go up the stack)")
 
         self.check_sections()
-        self.check_catalog(prd)
+        self.check_catalog_complete()
         self.check_catalog_links()
         self.check_research()
         return not self.errors
@@ -253,16 +280,22 @@ class Lint:
                 if not any(h.startswith(sec) for h in headings):
                     self.err(rel, f"README missing required section `{sec}`")
 
-    def check_catalog(self, prd):
-        """Every PRD file is listed in the prd/ catalog Contents."""
-        path = os.path.join(self.root, "prd", "README.md")
-        if not os.path.isfile(path):
-            return  # manifest flags a missing catalog
-        text = self.read(path)
-        for rel in prd:
-            base = os.path.basename(rel)
-            if base not in text:
-                self.err("prd/README.md", f"catalog Contents omits {base}")
+    def check_catalog_complete(self):
+        """Every doc in a home is listed in that home's catalog — a catalog behind the tree misleads."""
+        for home, kind in CATALOG_CONTENTS.items():
+            d = os.path.join(self.root, home)
+            readme = os.path.join(d, "README.md")
+            if not os.path.isdir(d) or not os.path.isfile(readme):
+                continue  # manifest flags a missing home or catalog
+            text = self.read(readme)
+            for name in sorted(os.listdir(d)):
+                if name == "README.md" or name.startswith("."):
+                    continue
+                is_dir = os.path.isdir(os.path.join(d, name))
+                if is_dir != (kind == "dir") or (kind == "md" and not name.endswith(".md")):
+                    continue
+                if name not in text:
+                    self.err(f"{home}/README.md", f"catalog omits {name}")
 
     def check_catalog_links(self):
         """Every link in every home catalog must resolve to a real file or directory."""
@@ -298,9 +331,14 @@ class Lint:
 
 
 def main():
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    flags = [a for a in sys.argv[1:] if a.startswith("--")]
+    if [f for f in flags if f != "--payload"] or len(args) > 1:
+        print("usage: doc-lint [--payload] [PATH_TO_.knowledge]")
+        return 2
     here = os.path.dirname(os.path.abspath(__file__))  # .knowledge/scripts
-    root = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.dirname(here)
-    lint = Lint(root)
+    root = os.path.abspath(args[0]) if args else os.path.dirname(here)
+    lint = Lint(root, payload="--payload" in flags)
     if lint.check():
         print(f"doc-lint: OK ({root})")
         return 0

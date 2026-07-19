@@ -103,6 +103,9 @@ without the others — and a check you haven't watched fail is not proven.
   depth belongs in a guide, pulled on demand.
 - **Do** say what a doc is *not* for, and where that content goes instead. A guide that only says what to
   write leaves the agent to invent a home for everything else.
+- **Do** state the granularity whenever prose assigns authority — who decides, over *what unit*.
+  "The owner ratifies it" left agents to guess row or file, and most promoted a whole draft into the
+  source of truth on one approved row. Ambiguous authority is worse than an ambiguous rule.
 - **Do** state what the tooling actually does. **Don't** claim automation that doesn't exist — an agent
   that reads "regenerated automatically" stops maintaining the thing by hand.
 
@@ -145,7 +148,7 @@ Keep docs true in the same task that changes reality. Before creating or editing
 
 - Moved/restructured files -> update `.knowledge/CODEMAP.md`.
 - Hit friction -> add a line to `.knowledge/MEMORY.md`; delete it once solved.
-- Owner ratifies a proposal -> `git mv` its `prd-drafts/` draft into `prd/`; IDs carry over unchanged and
+- Owner ratifies a draft (**the whole file**, not one row) -> `git mv` it into `prd/`; IDs carry over and
   the conformance review then sets glyphs. **Approval moves a draft, not proof** — proof is the glyph
   column. Behavior and its requirement row change in the same commit.
 - Scratch -> `.knowledge/tmp/` (git-ignored).

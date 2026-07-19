@@ -188,6 +188,10 @@ Proposals live isolated in [`../prd-drafts/`](../prd-drafts/) until approved —
 
 - **A ratified PRD may never cite a draft.** Every ID a `prd/` file cites resolves inside `prd/`. The lint
   enforces it.
+- **Ratification is per file, not per row.** A draft graduates when the owner ratifies **the file's
+  claims — all of them**. Ratifying one new claim inside a draft adds a row *to the draft*; it does not
+  move the file. Graduating carries every other row into the source of truth on the owner's authority, so
+  if you can't tell whether they meant the file or the row, **stop and ask.**
 - **The line between the two homes is approval, not proof.** A draft becomes a contract when the owner
   ratifies its claims — not when its tests go green. **Proof is the glyph column**, and a ratified contract
   is expected to carry ❌ rows: that is what `file:line — no test` exists to say. Waiting for an all-green
@@ -207,8 +211,8 @@ Proposals live isolated in [`../prd-drafts/`](../prd-drafts/) until approved —
 ### Stop and ask
 
 Do not proceed if the requirement doesn't fit one layer; needs a new namespace, file, or component; would
-move a requirement between files; would make this file cite one it never cited; would create a cycle; or
-contradicts an existing requirement.
+move a requirement between files; would make this file cite one it never cited; would create a cycle;
+would graduate a draft the owner ratified only one row of; or contradicts an existing requirement.
 
 ## Lint
 

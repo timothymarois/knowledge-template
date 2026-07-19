@@ -68,6 +68,43 @@ A widget, built on R-CORE-1.
 """
 
 
+# Minimal catalogs for the homes we clear — a real project's catalogs link to the files we just
+# deleted, so they must be reset too or the fixture fails on its own dangling links.
+STUB_CATALOGS = {
+    "prd-drafts/README.md": """# prd-drafts/ — proposals (catalog)
+
+Isolated until approved. To write one, follow [../guides/docs-prd.md](../guides/docs-prd.md).
+
+## Drafts
+
+| Draft | Proposes | Reserved namespace |
+|---|---|---|
+| _(none)_ | | |
+""",
+    "research/README.md": """# research/ — prior art (catalog)
+
+To write one, follow [../guides/docs-research.md](../guides/docs-research.md).
+
+## Notes
+
+| Last updated | Note | Question it answers |
+|---|---|---|
+| _(none)_ | | |
+""",
+    "references/README.md": """# references/ — visual targets (catalog)
+
+## Sets
+
+| Set | Competitor / platform | What we're comparing |
+|---|---|---|
+| _(none)_ | | |
+
+## How to add one
+
+- One folder per source.
+""",
+}
+
 AGENTS = """# AGENTS
 
 Always read first: `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, `.knowledge/MEMORY.md`.
@@ -98,6 +135,8 @@ def build_base(aidir):
                 continue
             path = os.path.join(d, name)
             shutil.rmtree(path) if os.path.isdir(path) else os.remove(path)
+    for rel, body in STUB_CATALOGS.items():  # ...and reset their catalogs, which linked to those files
+        w(aidir, rel, body)
     w(aidir, "prd/README.md", CATALOG)       # add two sample PRDs + a matching catalog
     w(aidir, "prd/base-core.md", BASE)
     w(aidir, "prd/entity-widget.md", WIDGET)
@@ -229,6 +268,13 @@ def main():
                     w(a, "research/README.md",
                       open(os.path.join(a, "research/README.md"), encoding="utf-8").read() + "\n[market](./market.md)\n")),
          False, "carries no link"),
+        ("an internal source needs no link",
+         lambda a: (w(a, "research/market.md",
+                      "# Research: market\n\n**Last updated:** 2026-07-16\n\n## What they do\n\nA claim [1].\n"
+                      "\n## Sources\n\n1. Our own auction walkthrough (internal)\n"),
+                    w(a, "research/README.md",
+                      open(os.path.join(a, "research/README.md"), encoding="utf-8").read() + "\n[market](./market.md)\n")),
+         True),
         ("a source that is never cited",
          lambda a: (w(a, "research/market.md",
                       "# Research: market\n\n**Last updated:** 2026-07-16\n\n## What they do\n\nA claim [1].\n"

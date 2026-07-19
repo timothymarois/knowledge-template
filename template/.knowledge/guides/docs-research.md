@@ -106,7 +106,8 @@ guide is one you hold yourself to.
 
 - The note carries a `**Last updated:**` date.
 - Every `[n]` resolves to a Sources entry, and every Sources entry is cited at least once.
-- **Every Sources entry carries a link** (`http…`). A source with no URL isn't checkable by anyone.
+- **Every Sources entry carries a link** (`http…`), or is marked `(internal)` when it isn't a public
+  page. A bare vendor name is not a source — nobody can check it, including you, later.
 - No `##` outside the schema.
 - The note has a row in [`../research/README.md`](../research/README.md). The catalog is **maintained by
   hand** — nothing regenerates it; add the row in the same task you add the note.

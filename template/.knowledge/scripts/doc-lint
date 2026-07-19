@@ -388,8 +388,9 @@ class Lint:
             for n in sorted(cites - set(sources), key=int):
                 self.err(path, f"citation [{n}] has no Sources entry")
             for n, line in sorted(sources.items(), key=lambda kv: int(kv[0])):
-                if "http" not in line:
-                    self.err(path, f"source [{n}] carries no link (cite the page you actually opened)")
+                if "http" not in line and "(internal)" not in line:
+                    self.err(path, f"source [{n}] carries no link — give the URL you opened, "
+                                   "or mark it `(internal)` if it isn't a public page")
                 if n not in cites:
                     self.err(path, f"source [{n}] is never cited (every source earns its place)")
 

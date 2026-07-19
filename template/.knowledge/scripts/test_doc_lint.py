@@ -208,8 +208,9 @@ def build_base(aidir):
     gr = os.path.join(aidir, "guides/README.md")            # ...and list it in the guides catalog
     with open(gr, encoding="utf-8") as fh:
         text = fh.read()
+    # append, don't replace a placeholder row — a real project's catalog already lists its own how-tos
     w(aidir, "guides/README.md",
-      text.replace("| _(none yet)_ | |", "| [do-the-thing.md](./do-the-thing.md) | do the recurring thing |"))
+      text.rstrip() + "\n| [do-the-thing.md](./do-the-thing.md) | do the recurring thing |\n")
     w(aidir, "prd/README.md", CATALOG)       # add two sample PRDs + a matching catalog
     w(aidir, "prd/base-core.md", BASE)
     w(aidir, "prd/entity-widget.md", WIDGET)

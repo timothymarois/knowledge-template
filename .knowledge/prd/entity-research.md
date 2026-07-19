@@ -21,3 +21,6 @@ behavior.
 |:--:|---|---|---|
 | ✅ | R-RESEARCH-1 | Every research note is dated | `research note missing its date` |
 | ✅ | R-RESEARCH-2 | Every research citation resolves to a source | `research citation without a source` |
+| ✅ | R-RESEARCH-3 | A research note uses only the closed schema headings | `research heading outside the schema` |
+| ✅ | R-RESEARCH-4 | Every source carries a link | `a source with no link` |
+| ✅ | R-RESEARCH-5 | Every source is cited at least once | `a source that is never cited` |

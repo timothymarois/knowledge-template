@@ -201,6 +201,41 @@ def main():
         ("heading outside the schema",
          lambda a: w(a, "prd/entity-widget.md", WIDGET + "\n## Notes\n\nextra prose.\n"),
          False, "not in the closed schema"),
+        ("a PRD hides in a subdirectory",
+         lambda a: w(a, "prd/legacy/entity-hidden.md",
+                     "---\nid: HIDDEN\nname: Hidden\n---\n\n## Requirements\n\n"
+                     "|  | ID | Requirement | Evidence |\n|:--:|---|---|---|\n"
+                     "| ❌ | R-HIDDEN-1 | A hidden thing exists | — |\n"),
+         False, "is a subdirectory"),
+        ("a citation cycle inside one layer",
+         lambda a: (w(a, "prd/entity-widget.md", WIDGET.replace("A widget, built on R-CORE-1.", "A widget. See R-OTHER-1.")),
+                    w(a, "prd/entity-other.md",
+                      "---\nid: OTHER\nname: Other\n---\n\n## What this is\n\nAn other. See R-WIDGET-1.\n\n"
+                      "## Requirements\n\n|  | ID | Requirement | Evidence |\n|:--:|---|---|---|\n"
+                      "| ❌ | R-OTHER-1 | An other thing exists | — |\n"),
+                    w(a, "prd/README.md", CATALOG + "  - [entity-other](./entity-other.md)\n")),
+         False, "citation cycle"),
+        ("research heading outside the schema",
+         lambda a: (w(a, "research/market.md",
+                      "# Research: market\n\n**Last updated:** 2026-07-16\n\n## What they do\n\nStuff.\n"
+                      "\n## Extra Thoughts\n\nMine.\n"),
+                    w(a, "research/README.md",
+                      open(os.path.join(a, "research/README.md"), encoding="utf-8").read() + "\n[market](./market.md)\n")),
+         False, "not in the closed schema"),
+        ("a source with no link",
+         lambda a: (w(a, "research/market.md",
+                      "# Research: market\n\n**Last updated:** 2026-07-16\n\n## What they do\n\nA claim [1].\n"
+                      "\n## Sources\n\n1. Some vendor's documentation\n"),
+                    w(a, "research/README.md",
+                      open(os.path.join(a, "research/README.md"), encoding="utf-8").read() + "\n[market](./market.md)\n")),
+         False, "carries no link"),
+        ("a source that is never cited",
+         lambda a: (w(a, "research/market.md",
+                      "# Research: market\n\n**Last updated:** 2026-07-16\n\n## What they do\n\nA claim [1].\n"
+                      "\n## Sources\n\n1. First — https://example.com/a\n2. Unused — https://example.com/b\n"),
+                    w(a, "research/README.md",
+                      open(os.path.join(a, "research/README.md"), encoding="utf-8").read() + "\n[market](./market.md)\n")),
+         False, "is never cited"),
         ("research note missing its date",
          lambda a: w(a, "research/competitor.md",
                      "# Research: competitor\n\n**Question it answers:** what\n\n## What they do\n\nStuff.\n"),

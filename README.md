@@ -57,7 +57,7 @@ Two rules hold it together: **one fact, one home** · **a PRD is a tested contra
 
 ### 🛡️ What the linter enforces
 
-**24 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
+**29 rules, every one teeth-tested** — a valid project passes; break any rule and the build fails.
 
 The rules are themselves written as contracts under this repo's own `.knowledge/` — because this repo
 adopts the system it ships. Each row names the test case that proves it:
@@ -66,10 +66,10 @@ adopts the system it ships. Each row names the test case that proves it:
 |---|---|
 | [`base-payload`](./.knowledge/prd/base-payload.md) | The shipped tree — every home and file present, nothing else at the root |
 | [`entity-orientation`](./.knowledge/prd/entity-orientation.md) | The trio keeps its standard pointer, and `AGENTS.md` still loads it |
-| [`entity-prd`](./.knowledge/prd/entity-prd.md) | Namespaces, word cap, tunables, evidence, schema |
-| [`entity-research`](./.knowledge/prd/entity-research.md) | Notes are dated and sourced |
+| [`entity-prd`](./.knowledge/prd/entity-prd.md) | Namespaces, word cap, tunables, evidence, closed schema, flat homes |
+| [`entity-research`](./.knowledge/prd/entity-research.md) | Notes are dated, schema-closed, and every source is linked and cited |
 | [`entity-catalog`](./.knowledge/prd/entity-catalog.md) | Every home's README lists what's in it and links its guide |
-| [`flow-citations`](./.knowledge/prd/flow-citations.md) | IDs are unique, resolve, go up the stack, never cite a draft |
+| [`flow-citations`](./.knowledge/prd/flow-citations.md) | IDs are unique, resolve, go up the stack, never cite a draft, form a DAG |
 
 ### 🔌 Wire it into your build
 

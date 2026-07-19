@@ -24,3 +24,4 @@ two places without being written twice.
 | ✅ | R-CITE-2 | Every cited requirement ID resolves | `citation resolves nowhere` |
 | ✅ | R-CITE-3 | A contract never cites an unapproved draft | `contract cites a draft` |
 | ✅ | R-CITE-4 | Citations only go up the layer stack | `citation into a later layer` |
+| ✅ | R-CITE-5 | The citation graph holds no cycles | `a citation cycle inside one layer` |

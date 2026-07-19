@@ -101,8 +101,16 @@ Never `research → requirement`. Screenshots, competitor captures, and UI targe
 
 ## Lint
 
+Mechanical, in CI (`doc-lint`). **This list is exactly what the linter checks** — every other rule in this
+guide is one you hold yourself to.
+
 - The note carries a `**Last updated:**` date.
-- Every `[n]` resolves to a Sources entry; every Sources entry is cited at least once.
+- Every `[n]` resolves to a Sources entry, and every Sources entry is cited at least once.
+- **Every Sources entry carries a link** (`http…`). A source with no URL isn't checkable by anyone.
 - No `##` outside the schema.
 - The note has a row in [`../research/README.md`](../research/README.md). The catalog is **maintained by
   hand** — nothing regenerates it; add the row in the same task you add the note.
+
+What it can't check, and you own: that the link goes where you say, that you actually opened it, and that
+nothing of ours crept into `What they do`. A URL that resolves is not the same as a source that supports
+the claim — the lint buys you a shape, not honesty.

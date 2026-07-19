@@ -145,9 +145,11 @@ sentence and nothing else.
 
 ### Splitting
 
-**Split where it would be built and tested separately.** *"Valid token required; missing → 401; wrong scope
-→ 403"* is three rows. Inverse: **one assertion proven by several tests is still one requirement** — empty
-list, all-invalid, filtered-to-zero are situations, not claims.
+**Split where it would be built and tested separately.** *"A valid token is required; a missing token is
+rejected as unauthorized; an out-of-scope token is refused as forbidden"* is three rows. (Note the status
+*names*, not codes — a numeric literal in requirement text fails the lint.) Inverse: **one assertion proven
+by several tests is still one requirement** — empty list, all-invalid, filtered-to-zero are situations, not
+claims.
 
 ### Form
 
@@ -161,6 +163,10 @@ list, all-invalid, filtered-to-zero are situations, not claims.
 
 **Evidence is the one place technical detail is allowed** — test names, `file:line`, paths. It answers
 *where was this proven*. The row above it stays the owner's.
+
+**Cite the ID from the code, too.** The function or module that implements a requirement names its
+`R-<NS>-<n>` in a comment or doc-block. Evidence points from the contract to the test; that comment points
+from the code back to the contract — so a reader who lands anywhere in the loop can walk the other two.
 
 ## Tests and status
 
@@ -201,16 +207,34 @@ contradicts an existing requirement.
 
 ## Lint
 
-Mechanical, in CI (`doc-lint`). A red lint is a broken PRD, not a style note.
+Mechanical, in CI (`doc-lint`). A red lint is a broken PRD, not a style note. **This list is exactly what
+the linter checks** — every other rule in this guide is one you hold yourself to.
 
-- Every filename matches a component prefix listed in `../prd/README.md`. No subdirectories.
-- One namespace per file; one file per namespace. Every ID matches its file's declared namespace.
-- No compound ID headings. Every cited ID resolves; no ID is defined in two files.
+- Every filename matches a component prefix listed in `../prd/README.md`. `prd/` and `prd-drafts/` are
+  **flat** — a subdirectory is rejected, because files inside one would escape every check here.
+- One namespace per file; one file per namespace. Every ID matches its file's declared namespace, and the
+  namespace in `id:` is a single token.
+- Every cited ID resolves; no ID is defined in two files.
 - **No `prd/` file cites a `prd-drafts/` id.**
-- Every ✅ names at least one test; Evidence is empty only where nothing exists.
+- Every ✅ has something in Evidence.
 - `last_verified` present iff the file has at least one ✅ row.
-- **Citations only go up the stack**; the citation graph is a DAG (no cycles).
+- **Citations only go up the stack**, and the citation graph is a DAG — a cycle *within* one layer fails too.
 - No `##` outside the schema. No requirement over 25 words. No numeric literal in requirement text.
 - **The catalog is well-formed** — `../prd/README.md` has a Components list (`prefix — gloss`) and a
   Contents list naming every PRD. Catalogs are **maintained by hand**; nothing regenerates them. Add the
   row in the same task you add the file, or the build goes red.
+
+### What the lint cannot check — so you must
+
+The shipped linter is stack-neutral: it has no idea what your test runner is. So **a ✅ is only ever checked
+for *having* Evidence — never for that test existing.** A plausible-looking name that matches nothing in the
+suite passes forever, and the one claim this whole format rests on quietly becomes untrue.
+
+If ✅ is going to mean anything here, close that gap yourself: pull the backticked Evidence names out of
+`../prd/*.md`, list your suite's test names, and fail on any Evidence name the suite doesn't contain. Wire it
+into the same gate as `doc-lint` — it is a handful of lines, and it is the difference between a contract and
+a claim.
+
+Two more the linter can't see, and therefore owns nothing of: that Evidence is empty **only** where nothing
+exists (a `—` on code that does exist is a lie the lint will never catch), and that a requirement is the
+owner's claim rather than one you generalized.

@@ -6,6 +6,7 @@ Zero dependencies: standard library only.
 
     python3 .knowledge/scripts/doc-lint [PATH_TO_.knowledge]   # lint (defaults to the parent .knowledge/)
     python3 .knowledge/scripts/doc-lint --payload <path>       # an unadopted payload: skip the AGENTS.md check
+    python3 .knowledge/scripts/doc-lint --toc                   # print the product map: every contract, proven vs not
 
 Its teeth-test lives beside it: python3 .knowledge/scripts/test_doc_lint.py
 Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
@@ -421,15 +422,58 @@ class Lint:
                     self.err(path, f"source [{n}] is never cited (every source earns its place)")
 
 
+    def toc(self):
+        """Print the product map: components in order, each contract, and how much of it a test proves.
+
+        Never written to a file — the counts move with every test run, and a stale map is worse than none.
+        The durable half (what exists, what each one is) lives in prd/README.md; this is the live half.
+        """
+        prefixes = self.components()
+        docs = []
+        for home in ("prd", "prd-drafts"):
+            for path, (fm, body) in sorted(self.collect_prd(home).items()):
+                rows = list(self.table_rows(body))
+                docs.append((home, os.path.basename(path)[:-3], fm.get("name", "?"),
+                             sum(1 for r in rows if r[0] == "✅"), sum(1 for r in rows if r[0] == "❌")))
+        if not docs:
+            print("no contracts yet — see prd/README.md")
+            return 0
+        width = max(len(d[1]) + (9 if d[0] == "prd-drafts" else 0) for d in docs) + 2
+        print(f"\n  {'':{width}} {'proven':>7} {'unproven':>9}")
+        groups = prefixes or sorted({d[1].split("-")[0] + "-" for d in docs})
+        seen = set()
+        for pref in groups:
+            members = [d for d in docs if d[1].startswith(pref)]
+            seen.update(id(m) for m in members)
+            if not members:
+                continue
+            print(f"\n  {pref.rstrip('-').upper():{width}} {sum(m[3] for m in members):>7} "
+                  f"{sum(m[4] for m in members):>9}")
+            for home, stem, name, ok, no in members:
+                label = stem + ("  (draft)" if home == "prd-drafts" else "")
+                print(f"    {label:{width - 2}} {ok:>7} {no:>9}   {name}")
+        rest = [d for d in docs if id(d) not in seen]
+        if rest:
+            print(f"\n  {'(unlisted component)':{width}}")
+            for home, stem, name, ok, no in rest:
+                print(f"    {stem:{width - 2}} {ok:>7} {no:>9}   {name}")
+        T, N = sum(d[3] for d in docs), sum(d[4] for d in docs)
+        pct = f" ({round(100 * T / (T + N))}%)" if T + N else ""
+        print(f"\n  {'TOTAL':{width}} {T:>7} {N:>9}   -> {T}/{T + N} requirements proven by a test{pct}\n")
+        return 0
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = [a for a in sys.argv[1:] if a.startswith("--")]
-    if [f for f in flags if f != "--payload"] or len(args) > 1:
-        print("usage: doc-lint [--payload] [PATH_TO_.knowledge]")
+    if [f for f in flags if f not in ("--payload", "--toc")] or len(args) > 1:
+        print("usage: doc-lint [--payload] [--toc] [PATH_TO_.knowledge]")
         return 2
     here = os.path.dirname(os.path.abspath(__file__))  # .knowledge/scripts
     root = os.path.abspath(args[0]) if args else os.path.dirname(here)
     lint = Lint(root, payload="--payload" in flags)
+    if "--toc" in flags:
+        return lint.toc()
     if lint.check():
         print(f"doc-lint: OK ({root})")
         return 0

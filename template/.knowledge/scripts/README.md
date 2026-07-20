@@ -15,7 +15,8 @@ by version bump. Everything else you drop in here is yours.
 ## Usage
 
 ```
-python3 .knowledge/scripts/doc-lint .knowledge     # lint this project's docs
+python3 .knowledge/scripts/doc-lint .knowledge       # lint this project's docs
+python3 .knowledge/scripts/doc-lint --toc .knowledge # the product map: every contract, proven vs not
 python3 .knowledge/scripts/test_doc_lint.py        # prove the linter still works
 ```
 

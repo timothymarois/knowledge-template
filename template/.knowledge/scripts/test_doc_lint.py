@@ -219,17 +219,17 @@ def build_base(aidir):
     w_repo(aidir, "AGENTS.md", AGENTS)       # the repo root the payload is adopted into
 
 
-def run(aidir):
-    p = subprocess.run([sys.executable, DOC_LINT, aidir], capture_output=True, text=True)
+def run(aidir, *flags):
+    p = subprocess.run([sys.executable, DOC_LINT, *flags, aidir], capture_output=True, text=True)
     return p.returncode, p.stdout
 
 
-def case(name, mutate, expect_ok, sub=None):
+def case(name, mutate, expect_ok, sub=None, flags=()):
     with tempfile.TemporaryDirectory() as d:
         aidir = os.path.join(d, ".knowledge")
         build_base(aidir)
         mutate(aidir)
-        code, out = run(aidir)
+        code, out = run(aidir, *flags)
     ok = (code == 0)
     passed = (ok == expect_ok) and (sub is None or sub in out)
     detail = "" if passed else f"  (exit={code}, wanted_ok={expect_ok}, sub={sub!r})\n{out}"
@@ -402,6 +402,8 @@ def main():
          lambda a: w_repo(a, "AGENTS.md", "# AGENTS\n\nBuild well. Nothing about the knowledge base.\n"),
          False, "must load the orientation trio"),
     ]
+    cases.append(("--toc reports every contract and the totals", lambda a: None, True,
+                  "1/3 requirements proven by a test", ("--toc",)))
     results = [case(*c) for c in cases]
     print(f"\n{sum(results)}/{len(results)} checks passed")
     return 0 if all(results) else 1

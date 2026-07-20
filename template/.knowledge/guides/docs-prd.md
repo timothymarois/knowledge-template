@@ -14,7 +14,12 @@ proves it.
 A PRD answers for one system. **[`../prd/README.md`](../prd/README.md) answers for the product**: the
 components in order, then every contract under its component with **a one-line gloss**. Someone new — human
 or agent — reads that page top to bottom and knows what the product is made of before opening a single
-file. Give every Contents row its gloss; a bare filename list makes the source of truth read worse than the
+file.
+
+**For the live picture, run `python3 ../scripts/doc-lint --toc ..`** — it prints the same map with each
+contract's proven / unproven counts and a total. That half is deliberately **never written to a file**: the
+numbers move with every test run, and a stale map is worse than none. The catalog holds what is durable
+(what exists, what each one is); the report holds what changes. Give every Contents row its gloss; a bare filename list makes the source of truth read worse than the
 proposals beside it.
 
 ## A PRD asserts, it never explains

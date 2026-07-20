@@ -103,6 +103,10 @@ without the others — and a check you haven't watched fail is not proven.
   depth belongs in a guide, pulled on demand.
 - **Do** say what a doc is *not* for, and where that content goes instead. A guide that only says what to
   write leaves the agent to invent a home for everything else.
+- **Do** test a guide before trusting it. A guide is a prompt: reading it proves nothing. **Change what a
+  guide *means* → give a real agent a real task, read the diff, and log the run in `AGENT-TESTS.md`** —
+  including the runs that find nothing. Use two agents; every defect found so far came from two agents
+  disagreeing.
 - **Do** state the granularity whenever prose assigns authority — who decides, over *what unit*.
   "The owner ratifies it" left agents to guess row or file, and most promoted a whole draft into the
   source of truth on one approved row. Ambiguous authority is worse than an ambiguous rule.
@@ -126,6 +130,7 @@ without the others — and a check you haven't watched fail is not proven.
 │   └── scripts/{doc-lint,test_doc_lint.py}                # enforcement + its teeth
 ├── .knowledge/                     # this repo's adopted copy (guides/ + scripts/ are verbatim)
 ├── .changes/                       # one dated migration per release
+├── AGENT-TESTS.md                  # log of real agent runs against the guides
 ├── README.md  ADOPT.md  AGENTS.md  CLAUDE.md  VERSION  CHANGELOG.md
 └── .github/workflows/doc-lint.yml
 ```

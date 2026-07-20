@@ -167,14 +167,36 @@ CODEMAP = """# Codemap — Sample Project
 *Editing this file? Follow the standard first: [`guides/docs-codemap.md`](./guides/docs-codemap.md).*
 """
 
+FRAMING = """*This describes the platform as designed. What is proven today is recorded row by row in the
+contracts — [`prd/`](./prd/) for the ratified ones, [`prd-drafts/`](./prd-drafts/) for those in proposal.*
+"""
+WHAT_THIS_IS = """## What this is
+
+A sample project for sample customers, sold by the seat.
+"""
 OVERVIEW = """# Overview — Sample Project
 
+""" + FRAMING + """
+""" + WHAT_THIS_IS + """
 ## The platform
 
 ```mermaid
 flowchart LR
   a["Core"] --> b["Widget"]
 ```
+
+## How it works
+
+- **Core** — the substrate everything stands on. [contract](./prd/base-core.md)
+- **Widget** — a placed thing, reports its state. [contract](./prd/entity-widget.md)
+
+## What you use
+
+- **An operator** — one workspace, where widgets are placed and watched.
+
+## What governs it
+
+- **What a widget may report** — the owner sets it. See [`prd/entity-widget.md`](./prd/entity-widget.md).
 
 ---
 *Editing this file? Follow the standard first: [`guides/docs-overview.md`](./guides/docs-overview.md).*
@@ -267,6 +289,35 @@ def main():
         ("the linter script was renamed away",
          lambda a: os.remove(os.path.join(a, "scripts/doc-lint")),
          False, "required file `scripts/doc-lint` is missing"),
+        # --- payload integrity: `.version` is only a claim until the checksums agree with it ---
+        ("a versioned guide was edited after adoption",
+         lambda a: w(a, "guides/docs-prd.md",
+                     open(os.path.join(a, "guides/docs-prd.md"), encoding="utf-8").read()
+                     + "\nOur project decided otherwise about all of the above.\n"),
+         False, "no longer match the checksums recorded"),
+        ("the manifest no longer covers a versioned file",
+         lambda a: w(a, ".payload-manifest", "".join(
+             line + "\n"
+             for line in open(os.path.join(a, ".payload-manifest"), encoding="utf-8").read().splitlines()
+             if not line.endswith("scripts/doc-lint"))),
+         False, "does not cover `scripts/doc-lint`"),
+        ("the payload manifest is missing",
+         lambda a: os.remove(os.path.join(a, ".payload-manifest")),
+         False, "integrity manifest is missing"),
+        # --- the stakeholder-facing overview is schema-closed, same as a contract ---
+        ("an overview heading outside the schema",
+         lambda a: w(a, "OVERVIEW.md", OVERVIEW + "\n## Why it is different\n\nInvented prose.\n"),
+         False, "`## Why it is different` is not in the closed schema"),
+        ("an overview missing a required section",
+         lambda a: w(a, "OVERVIEW.md", OVERVIEW.replace(WHAT_THIS_IS, "")),
+         False, "missing required section `## What this is`"),
+        ("overview sections out of order",
+         lambda a: w(a, "OVERVIEW.md", OVERVIEW.replace("## What you use", "## PLACE")
+                     .replace("## What governs it", "## What you use").replace("## PLACE", "## What governs it")),
+         False, "sections are out of order"),
+        ("an overview without its framing line",
+         lambda a: w(a, "OVERVIEW.md", OVERVIEW.replace(FRAMING, "")),
+         False, "framing line under the title is gone"),
         ("a trio file lost its standard pointer",
          lambda a: w(a, "BRIEF.md", "# Brief\n\nJust a project, no pointer at the bottom.\n"),
          False, "must end with its standard pointer"),

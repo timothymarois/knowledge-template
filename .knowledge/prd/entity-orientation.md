@@ -26,3 +26,7 @@ always-loaded.
 | ✅ | R-ORIENT-3 | The rulebook names every file in the orientation trio | `AGENTS.md no longer loads the trio` |
 | ✅ | R-ORIENT-4 | No shipped placeholder survives adoption | `an unfilled orientation doc` |
 | ✅ | R-ORIENT-5 | The rulebook points at its own writing standard | `AGENTS.md no longer points at its own standard` |
+| ✅ | R-ORIENT-6 | The overview carries every section of its closed schema | `an overview missing a required section` |
+| ✅ | R-ORIENT-7 | The overview carries no section outside its closed schema | `an overview heading outside the schema` |
+| ✅ | R-ORIENT-8 | The overview keeps its sections in the order the schema sets | `overview sections out of order` |
+| ✅ | R-ORIENT-9 | The overview names both contract homes under its title | `an overview without its framing line` |

@@ -18,6 +18,10 @@ a long MEMORY means something was solved and never pruned.** This codebase only.
   Copy one named file to one named path. **This has now happened three times to the same file** — the
   rule keeps being restated and keeps being broken, because a bulk `cp` is the convenient thing to reach
   for. Before any sync, list exactly which files are shipped; `guides/README.md` is not one of them.
+- **Any edit to a `docs-*.md` or to either script invalidates `.payload-manifest`.** Re-run
+  `python3 template/.knowledge/scripts/doc-lint --write-manifest template/.knowledge` and copy the file
+  down to `.knowledge/.payload-manifest`, or every command goes red on a checksum mismatch that reads like
+  the file was tampered with. Regenerate **last**, after the payload edits are final.
 - **The teeth-test copies the live payload**, so a payload edit changes the test's valid base. After any
   change under `template/.knowledge/`, run `test_doc_lint.py` before `doc-lint` — a structural break shows
   up there first, as every case failing at once rather than one.

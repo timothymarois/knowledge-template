@@ -26,3 +26,7 @@ Work flows `research/` + `references/` → `prd-drafts/` → `prd/`.
 
 Versioned by [knowledge-template](https://github.com/timothymarois/knowledge-template); the adopted version
 is stamped in `.version`. To update, follow the upgrade steps in that repo.
+
+`.payload-manifest` holds a checksum for every file that version owns — the `guides/docs-*.md` standards and
+the two shipped scripts. `doc-lint` verifies them on every run, so the stamp is proven rather than trusted.
+Never edit those files or the manifest here; a change belongs upstream and arrives as a version bump.

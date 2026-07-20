@@ -17,13 +17,14 @@ project may be named anywhere inside it.
 | `BRIEF.md` · `CODEMAP.md` · `MEMORY.md` | The always-loaded orientation trio, as fill-in templates; each ends with an edit-gated pointer to its guide |
 | `README.md` | The map of the homes |
 | `.version` | The adopted version stamp |
+| `.payload-manifest` | A `sha256` per versioned file (the `docs-*.md` and the two scripts), so an adopter can prove it runs the version it claims. Rewritten only by `doc-lint --write-manifest` |
 | `prd/` · `prd-drafts/` | Tested contracts; isolated proposals. Each a catalog `README.md` |
 | `research/` · `references/` | Prior-art notes; visual targets. Each a catalog `README.md` |
 | `guides/` | The writing standards + project how-tos (see below) |
 | `scripts/` | The linter and its teeth-test (see below) |
 | `tmp/` | Git-ignored scratch (`.gitignore` + `README.md`) |
 
-## The standards (`template/.knowledge/guides/` — 6 shipped + a catalog)
+## The standards (`template/.knowledge/guides/` — 7 shipped + a catalog)
 
 One `docs-*.md` per kind of doc; each **is** the rule and carries its template inline. Versioned — a
 downstream repo never edits them.
@@ -33,6 +34,7 @@ downstream repo never edits them.
 - `docs-research.md` — dated research notes: reporting vs. verdict, sourcing at the point of claim.
 - `docs-brief.md` · `docs-codemap.md` · `docs-memory.md` — the orientation trio; each names the trio file
   itself as its template.
+- `docs-overview.md` — the one stakeholder-facing doc: the diagram, the framing line, the closed section set.
 - `docs-agents.md` — the root `AGENTS.md`: which sections ship as written, which are researched per stack.
 - `README.md` — the catalog, split into shipped standards and project how-tos.
 
@@ -40,9 +42,12 @@ downstream repo never edits them.
 
 - `doc-lint` — the enforcement. Python 3 standard library only; takes the `.knowledge/` path and an
   optional `--payload` (skips the root-`AGENTS.md` check, for a payload not inside an adopting repo). One
-  `Lint` class; `check()` drives the structural checks (manifest, trio pointer, closed root, catalog guide
-  links, `AGENTS.md`) then walks `prd/` + `prd-drafts/` for namespace ownership, ID, glyph, word-count, and
-  citation rules, then catalog completeness, catalog links, and research. Exits non-zero on any error.
+  `Lint` class; `check()` drives the structural checks (manifest, payload integrity, the overview's closed
+  schema, trio pointer, closed root, catalog guide links, `AGENTS.md`) then walks `prd/` + `prd-drafts/` for
+  namespace ownership, ID, glyph, word-count, and citation rules, then catalog completeness, catalog links,
+  and research. Exits non-zero on any error. `--write-manifest <path>` is the one writer: it re-records
+  `.payload-manifest` from `VERSIONED_FILES`, and a release that changes the payload must re-run it — a
+  stale manifest fails the teeth-test on its very first case.
 - `test_doc_lint.py` — the teeth-test. Builds a valid base by copying **the real payload** into a temp
   dir and adding two sample PRDs, then applies one mutation per rule and asserts the matching failure.
   Every enforced rule has a case here.

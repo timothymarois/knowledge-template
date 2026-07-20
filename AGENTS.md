@@ -6,10 +6,9 @@ habits, this file wins.
 This is **knowledge-template**, a versioned documentation system for repos worked on by AI coding agents
 (plain Markdown + one standard-library Python linter, no build step): a copy-me `.knowledge/` payload that
 gives every kind of knowledge one home, one writing standard, and a linter that fails the build when a doc
-drifts. **This repo is the upstream** — what you edit here is duplicated into many codebases and enforced
-there, so a sloppy edit degrades every repo that adopts it. It is also its own first adopter. The *what &
-why* lives in `.knowledge/BRIEF.md`; the knowledge map is `.knowledge/README.md`. This file defines how you
-build here.
+drifts. **This repo is the upstream** — what you edit here is duplicated into many codebases, so a sloppy
+edit degrades every repo that adopts it. It is also its own first adopter. The *what & why* lives in
+`.knowledge/BRIEF.md`; the knowledge map is `.knowledge/README.md`. This file defines how you build here.
 
 ## Before you work
 
@@ -31,7 +30,7 @@ Load light; pull depth only when the task needs it.
 
 - **The model.** Do not add, remove, rename, or re-scope a home, a `guides/docs-*.md`, or the closed PRD
   schema. The shape is load-bearing — every downstream repo inherits it.
-- **Breaking changes.** A lint rule that fails previously-valid docs is a MAJOR release; confirm before writing it.
+- **Breaking changes.** A lint rule that fails previously-valid docs is a MAJOR release; confirm first.
 - **Deletions.** Do not delete files outside the task's immediate scope without approval.
 - **Commits.** Do not commit or push unless told to.
 - **This file.** Never modify `AGENTS.md` without approval; when approved, follow
@@ -43,8 +42,8 @@ Load light; pull depth only when the task needs it.
 - Never leave debug output or commented-out code in completed work.
 - **Never name a language, framework, or project inside `template/`** — it is stack-neutral for every
   adopter. Use `<placeholders>` and generic examples; concrete ones belong in a downstream repo.
-- **Never add a dependency to the linter.** Python standard library only, no build step, no doc-site
-  generator — a human or an agent runs it with nothing installed.
+- **Never add a dependency to the linter.** Python standard library only, no build step — a human or an
+  agent runs it with nothing installed.
 - **Never edit `.knowledge/guides/` or `.knowledge/scripts/` directly** — they are copies. Edit
   `template/.knowledge/`, then re-copy; CI diffs them.
 - **Never write a rule in prose alone.** Unenforced prose is teaching, not law.
@@ -70,16 +69,9 @@ which one you're making before you edit.
 | Root (`README`, `ADOPT`, `AGENTS`, `VERSION`, `.changes/`) | This repo: the pitch, the install, the law, the releases | The payload | Get copied downstream |
 | `.knowledge/` | This repo's adopted copy — we run what we ship | `template/` (as a verbatim copy) | Be hand-edited |
 
-- **One fact, one home.** Every doc answers one question; no fact is written twice.
-- **Catalog vs. rules.** A home's `README.md` is a **catalog** (what's inside). The rules for writing live
-  in `guides/docs-*.md`, with the template built in — there are no separate `TEMPLATE.md` files.
-- **The homes:** `research/` + `references/` (input) → `prd-drafts/` (isolated proposals) → `prd/` (tested
-  contracts). `guides/` holds the standards plus project how-tos; `scripts/` the tooling; `tmp/` is
-  git-ignored scratch; friction lives in `MEMORY.md`.
-- **A PRD is a tested contract.** Glyph-table requirements carry IDs mapped to tests; a `prd/` contract
-  never cites a `prd-drafts/` proposal; graduation is a `git mv`, not a rewrite.
-- **The trio ends with an edit-gated standard pointer** — orientation stays terse, and the full standard is
-  pulled into context only by an agent about to edit.
+- **One fact, one home.** Every doc answers one question; no fact is written twice — including here.
+- **Catalog vs. rules.** A home's `README.md` is a catalog (what's inside); the rules for writing live in
+  `guides/docs-*.md` with the template built in. There are no separate `TEMPLATE.md` files.
 
 ## Best practices — do / don't
 
@@ -98,36 +90,27 @@ without the others — and a check you haven't watched fail is not proven.
 
 ### Writing the payload
 
-- **Do** write rules an agent can follow or a reviewer can check. **Don't** write aspiration.
-- **Do** show a `✅`/`❌` example instead of a paragraph explaining the same thing.
-- **Do** keep the always-loaded trio terse — it is paid for on every task. **Don't** move depth into it;
-  depth belongs in a guide, pulled on demand.
-- **Do** say what a doc is *not* for, and where that content goes instead. A guide that only says what to
-  write leaves the agent to invent a home for everything else.
-- **Do** test a guide before trusting it. A guide is a prompt: reading it proves nothing. **Change what a
+- **Do** write rules an agent can follow or a reviewer can check, and show a `✅`/`❌` pair instead of a
+  paragraph explaining the same thing. **Don't** write aspiration.
+- **Do** keep the always-loaded trio terse — it is paid for on every task. Depth belongs in a guide, pulled
+  on demand.
+- **Do** say what a doc is *not* for, and where that content goes instead.
+- **Do** state the granularity whenever prose assigns authority — who decides, over *what unit*. Ambiguous
+  authority is worse than an ambiguous rule.
+- **Do** state what the tooling actually does. **Don't** claim automation that doesn't exist.
+- **Do** test a guide before trusting it. A guide is a prompt, so reading it proves nothing: **change what a
   guide *means* → give a real agent a real task, read the diff, and log the run in `AGENT-TESTS.md`** —
-  including the runs that find nothing. Use two agents; every defect found so far came from two agents
-  disagreeing.
-- **Do** state the granularity whenever prose assigns authority — who decides, over *what unit*.
-  "The owner ratifies it" left agents to guess row or file, and most promoted a whole draft into the
-  source of truth on one approved row. Ambiguous authority is worse than an ambiguous rule.
-- **Do** state what the tooling actually does. **Don't** claim automation that doesn't exist — an agent
-  that reads "regenerated automatically" stops maintaining the thing by hand.
-
-### Keeping it in sync
-
-- **Do** update `template/.knowledge/README.md`, the relevant `guides/docs-*.md`, this repo's `README.md`,
-  and the `.knowledge/` copy in the same commit. **Don't** leave a cross-reference that doesn't resolve.
-- **Do** re-run the teeth-test after any payload edit — it copies the live payload as its fixture, so a
-  structural break shows up there first.
+  including the runs that find nothing. Use two agents; every defect so far came from two agents disagreeing.
+- **Do** update the `guides/`, `template/.knowledge/README.md`, this repo's `README.md`, and the `.knowledge/`
+  copy in the same commit. **Don't** leave a cross-reference that doesn't resolve.
 
 ## Directory structure
 
 ```
 ├── template/.knowledge/            # the copy-me payload — the ONLY thing adopters take
-│   ├── BRIEF.md  CODEMAP.md  MEMORY.md  README.md  .version
+│   ├── BRIEF.md  CODEMAP.md  MEMORY.md  OVERVIEW.md  README.md  .version
 │   ├── prd/  prd-drafts/  research/  references/  tmp/    # homes, each with a catalog README
-│   ├── guides/docs-{prd,research,brief,codemap,memory,agents}.md   # the standards
+│   ├── guides/docs-{prd,research,brief,codemap,memory,overview,agents}.md   # the standards
 │   └── scripts/{doc-lint,test_doc_lint.py}                # enforcement + its teeth
 ├── .knowledge/                     # this repo's adopted copy (guides/ + scripts/ are verbatim)
 ├── .changes/                       # one dated migration per release
@@ -139,9 +122,9 @@ without the others — and a check you haven't watched fail is not proven.
 ## Build, test & run
 
 ```bash
-python3 template/.knowledge/scripts/test_doc_lint.py                    # the gate: the linter has teeth
+python3 template/.knowledge/scripts/test_doc_lint.py                        # the gate: the linter has teeth
 python3 template/.knowledge/scripts/doc-lint --payload template/.knowledge  # the shipped payload is clean
-python3 .knowledge/scripts/doc-lint .knowledge                          # our own docs are valid
+python3 .knowledge/scripts/doc-lint .knowledge                              # our own docs are valid
 diff -r template/.knowledge/guides .knowledge/guides && diff -r template/.knowledge/scripts .knowledge/scripts
 ```
 
@@ -165,27 +148,21 @@ Keep docs true in the same task that changes reality. Before creating or editing
 
 ## Cutting a new version
 
-The version is how downstream repos stay in sync without drift. To release a change to the model:
-
-1. **Decide the bump (SemVer).** MAJOR = breaking (a home added/removed/renamed, or a lint rule that fails
-   previously-valid docs) · MINOR = additive (a new optional section or non-breaking check) · PATCH = wording
-   or a fix that changes no rule.
-2. **Make the change** in `template/`, and if it's a rule, in `scripts/doc-lint` + `scripts/test_doc_lint.py`
-   + `.knowledge/prd/`.
-3. **Write the migration.** Add `.changes/<YYYY-MM-DD>-v<version>.md` with the exact ordered steps an agent
-   runs to move a project onto this version, and a **Verify** section. Add a row to `CHANGELOG.md`.
-4. **Bump `VERSION`** and both `.version` stamps (`template/.knowledge/` and `.knowledge/`) to match.
-5. **Tag** `v<version>` after review.
+**SemVer:** MAJOR = a home added/removed/renamed, or a lint rule that fails previously-valid docs ·
+MINOR = additive · PATCH = wording. Release in one commit: make the change in `template/` (a rule also needs
+`scripts/` + `.knowledge/prd/`), add `.changes/<YYYY-MM-DD>-v<version>.md` with the ordered upgrade steps and
+a **Verify** section, add a `CHANGELOG.md` row, bump `VERSION` and both `.version` stamps. **Regenerate the
+integrity manifest last**, once the payload is final — `doc-lint --write-manifest template/.knowledge`, then
+copy it down — or the shipped checksums describe a payload that no longer exists. Tag after review.
 
 ## Definition of done
 
 1. All four commands under *Build, test & run* pass, and the `diff` is clean (we run what we ship).
 2. Every rule here held — nothing stack-specific in `template/`, all placeholders intact, no unenforced prose.
-3. New guaranteed behavior is proven by a `.knowledge/prd/` requirement and its teeth-test case, and you
-   have watched that case fail with the check removed.
+3. New guaranteed behavior is proven by a `.knowledge/prd/` row and its teeth-test case, and you have
+   watched that case fail with the check removed.
 4. `README.md`, `ADOPT.md`, `template/.knowledge/README.md`, and the `guides/` still describe the actual
-   tree; every cross-reference resolves.
-5. If the model changed: `VERSION`, both `.version` stamps, `CHANGELOG.md`, and a `.changes/` migration are
-   updated together.
-6. **Friction you hit is in `.knowledge/MEMORY.md`, not only in your reply.** Hit none? Say that in your
-   reply — never write "no friction" into the file.
+   tree; every cross-reference resolves. If the model changed, the release files moved together.
+5. **Friction you hit is in `.knowledge/MEMORY.md`, not only in your reply** — the next agent reads the
+   file, not this conversation. Hit none? Say that in your reply. **Never write "no friction" into the
+   file** — `MEMORY.md` records traps, never their absence.

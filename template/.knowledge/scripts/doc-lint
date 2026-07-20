@@ -6,10 +6,12 @@ Zero dependencies: standard library only.
 
     python3 .knowledge/scripts/doc-lint [PATH_TO_.knowledge]   # lint (defaults to the parent .knowledge/)
     python3 .knowledge/scripts/doc-lint --payload <path>       # an unadopted payload: skip the AGENTS.md check
+    python3 .knowledge/scripts/doc-lint --write-manifest <path> # re-record the payload integrity manifest
 
 Its teeth-test lives beside it: python3 .knowledge/scripts/test_doc_lint.py
 Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
 """
+import hashlib
 import os
 import re
 import sys
@@ -23,13 +25,36 @@ NUMERIC = re.compile(r"(?<![A-Za-z0-9_-])\d+(?![A-Za-z0-9_-])")
 # The shipped payload. Every entry must exist in a project's .knowledge/ — a removal or rename is drift.
 REQUIRED_DIRS = ["prd", "prd-drafts", "research", "references", "guides", "scripts", "tmp"]
 REQUIRED_FILES = [
-    "README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md", "OVERVIEW.md",
+    "README.md", ".version", ".payload-manifest",
+    "BRIEF.md", "CODEMAP.md", "MEMORY.md", "OVERVIEW.md",
     "prd/README.md", "prd-drafts/README.md", "research/README.md", "references/README.md",
     "guides/README.md", "scripts/README.md", "tmp/README.md",
     "guides/docs-prd.md", "guides/docs-research.md", "guides/docs-brief.md",
     "guides/docs-codemap.md", "guides/docs-memory.md", "guides/docs-agents.md", "guides/docs-overview.md",
     "scripts/doc-lint", "scripts/test_doc_lint.py",
 ]
+# Payload integrity. These files are versioned by knowledge-template and an adopter never edits them,
+# so their content is fixed by the version stamped in `.version`. An adopter has no copy of the upstream
+# to diff against, so the checksums travel with the payload: without them a repo can run a superseded
+# linter for months while `.version` still claims the release it no longer matches, and nothing goes red.
+# Deliberately not covered: the catalogs (`guides/README.md`, `scripts/README.md`) and the orientation
+# docs, which an adopting project is meant to extend.
+MANIFEST = ".payload-manifest"
+VERSIONED_FILES = [
+    "guides/docs-agents.md", "guides/docs-brief.md", "guides/docs-codemap.md", "guides/docs-memory.md",
+    "guides/docs-overview.md", "guides/docs-prd.md", "guides/docs-research.md",
+    "scripts/doc-lint", "scripts/test_doc_lint.py",
+]
+MANIFEST_HEADER = (
+    "# payload integrity — sha256 of every file knowledge-template versions.\n"
+    "# The adopted version is stamped in `.version`; these lines prove the files match it.\n"
+    "# Never edit by hand. Regenerate: python3 .knowledge/scripts/doc-lint --write-manifest .knowledge\n"
+)
+# OVERVIEW.md is the one stakeholder-facing doc, and its schema is closed in order, same as a PRD's.
+OVERVIEW_HEADINGS = ["What this is", "The platform", "How it works", "What you use", "What governs it"]
+# The framing line under the title says the file describes the design, and names the two homes the reader
+# can check it against. Adopters reword it, so match its substance: both homes, plus a design/proof word.
+OVERVIEW_FRAMING_WORDS = ("design", "proven", "intend", "plan")
 # Always-loaded trio: each must end with its edit-gated standard pointer (so it can't be dropped).
 TRIO = {"BRIEF.md": "docs-brief.md", "CODEMAP.md": "docs-codemap.md", "MEMORY.md": "docs-memory.md",
         "OVERVIEW.md": "docs-overview.md"}
@@ -55,8 +80,8 @@ RESEARCH_HEADINGS = {
     "What they do", "What we can borrow", "What to avoid", "Verdict for us", "Open questions", "Sources",
 }
 # Only these may sit at the .knowledge/ root — anything else added there is drift.
-ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md",
-                                     "OVERVIEW.md"}
+ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", MANIFEST, "BRIEF.md", "CODEMAP.md",
+                                     "MEMORY.md", "OVERVIEW.md"}
 # Every shipped README keeps these sections (matched by prefix) — a gutted catalog is drift.
 REQUIRED_SECTIONS = {
     "README.md": ["## The homes"],
@@ -95,6 +120,33 @@ def find_cycle(edges):
             if found:
                 return found
     return None
+
+
+def sha256_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_manifest(root):
+    """Re-record the checksums. A release step runs this after the payload changes, never an adopter.
+
+    The manifest can never hold its own checksum — writing one would change the file that was hashed —
+    so it lists only the files it guards, and is itself guarded by the version control it ships in."""
+    lines = []
+    for rel in sorted(VERSIONED_FILES):
+        path = os.path.join(root, rel)
+        if not os.path.isfile(path):
+            print(f"doc-lint: cannot write the manifest: `{rel}` is missing from {root}")
+            return 1
+        lines.append(f"{sha256_file(path)}  {rel}")
+    out = os.path.join(root, MANIFEST)
+    with open(out, "w", encoding="utf-8") as fh:
+        fh.write(MANIFEST_HEADER + "\n".join(lines) + "\n")
+    print(f"doc-lint: wrote {out} ({len(lines)} versioned files)")
+    return 0
 
 
 class Lint:
@@ -179,6 +231,78 @@ class Lint:
             if not os.path.isfile(os.path.join(self.root, fp)):
                 self.err("manifest", f"required file `{fp}` is missing (removed or renamed?)")
 
+    def stamped_version(self):
+        path = os.path.join(self.root, ".version")
+        return self.read(path).strip() if os.path.isfile(path) else "unknown"
+
+    def check_integrity(self):
+        """Every versioned file still hashes to what the shipped manifest records.
+
+        This is the only check an adopting repo can run without a copy of the upstream to diff against:
+        the checksums travel inside the payload, so a project can prove it runs the version it claims."""
+        path = os.path.join(self.root, MANIFEST)
+        version = self.stamped_version()
+        if not os.path.isfile(path):
+            self.err(MANIFEST, f"the payload integrity manifest is missing, so nothing can prove this "
+                               f"`.knowledge/` is the version `.version` claims ({version}) — restore it "
+                               f"from that release, or regenerate it with `--write-manifest`")
+            return
+        recorded = {}
+        for n, raw in enumerate(self.read(path).splitlines(), 1):
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split(None, 1)
+            if len(parts) != 2 or len(parts[0]) != 64:
+                self.err(MANIFEST, f"line {n} is not `<sha256>  <path>`: {line}")
+                continue
+            recorded[parts[1].strip()] = parts[0]
+        drifted = []
+        for rel in sorted(recorded):
+            target = os.path.join(self.root, rel)
+            if not os.path.isfile(target):
+                self.err(MANIFEST, f"records `{rel}`, which is not in this `.knowledge/` "
+                                   "(a versioned file was deleted or renamed)")
+            elif sha256_file(target) != recorded[rel]:
+                drifted.append(rel)
+        for rel in VERSIONED_FILES:
+            if rel not in recorded:
+                self.err(MANIFEST, f"does not cover `{rel}` — a versioned file with no recorded checksum "
+                                   "is unguarded (regenerate the manifest with `--write-manifest`)")
+        if drifted:
+            self.err(MANIFEST, "these versioned files no longer match the checksums recorded for version "
+                               f"{version}: " + ", ".join(f"`{r}`" for r in drifted) +
+                               " — the docs tooling has drifted from the version `.version` claims. They "
+                               "are owned by knowledge-template and are never edited in place: restore "
+                               "them from that release, or upgrade the whole `.knowledge/` and re-stamp "
+                               "`.version`.")
+
+    def check_overview(self):
+        """OVERVIEW.md is schema-closed, same as a PRD: a fixed set of headings, in a fixed order, under
+        the framing line that says the file describes the design rather than what is built today."""
+        path = os.path.join(self.root, "OVERVIEW.md")
+        if not os.path.isfile(path):
+            return  # manifest already flags a missing OVERVIEW.md
+        text = self.read(path)
+        preamble = text.split("\n## ", 1)[0]
+        lower = preamble.lower()
+        if not ("prd/" in preamble and "prd-drafts/" in preamble
+                and any(w in lower for w in OVERVIEW_FRAMING_WORDS)):
+            self.err("OVERVIEW.md", "the framing line under the title is gone — say once that this "
+                                    "describes the platform as designed, and name both `prd/` and "
+                                    "`prd-drafts/` so a reader can see where the line falls")
+        found = self.headings(text)
+        for h in found:
+            if h not in OVERVIEW_HEADINGS:
+                self.err("OVERVIEW.md", f"`## {h}` is not in the closed schema")
+        for h in OVERVIEW_HEADINGS:
+            if h not in found:
+                self.err("OVERVIEW.md", f"missing required section `## {h}`")
+        kept = [h for h in found if h in OVERVIEW_HEADINGS]
+        if sorted(kept) == sorted(OVERVIEW_HEADINGS) and kept != OVERVIEW_HEADINGS:
+            self.err("OVERVIEW.md", "sections are out of order — the schema reads " +
+                     " -> ".join(OVERVIEW_HEADINGS))
+
     def check_trio(self):
         """BRIEF/CODEMAP/MEMORY must end with their edit-gated standard pointer."""
         for fname, guide in TRIO.items():
@@ -254,6 +378,8 @@ class Lint:
 
     def check(self):
         self.check_manifest()
+        self.check_integrity()
+        self.check_overview()
         self.check_trio()
         self.check_root()
         self.check_flat()
@@ -443,11 +569,13 @@ class Lint:
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = [a for a in sys.argv[1:] if a.startswith("--")]
-    if [f for f in flags if f != "--payload"] or len(args) > 1:
-        print("usage: doc-lint [--payload] [PATH_TO_.knowledge]")
+    if [f for f in flags if f not in ("--payload", "--write-manifest")] or len(args) > 1:
+        print("usage: doc-lint [--payload | --write-manifest] [PATH_TO_.knowledge]")
         return 2
     here = os.path.dirname(os.path.abspath(__file__))  # .knowledge/scripts
     root = os.path.abspath(args[0]) if args else os.path.dirname(here)
+    if "--write-manifest" in flags:
+        return write_manifest(root)
     lint = Lint(root, payload="--payload" in flags)
     if lint.check():
         print(f"doc-lint: OK ({root})")

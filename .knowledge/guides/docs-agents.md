@@ -23,11 +23,32 @@ agent builds correctly here. Its sections are of two kinds:
    and layering (what each layer may depend on), naming/style with the actual format + lint command, the test
    setup, and the one command that gates a change. Delegate the survey to subagents if your harness supports them.
 2. **Keep the ship-as-written sections verbatim** — they're what make every repo behave the same.
-3. **Encode best practices as enforceable rules** — specific and checkable. **Every area whose rule is about
+3. **A rule that routes an obligation through a mechanism must say what happens without it.** This is the
+   defect that testing finds most often, and it fails silently: the obligation doesn't get flagged, it
+   simply disappears, because an agent hitting the uncovered case copies whatever the codebase already
+   does — and the codebase is usually where the hole came from.
+
+   ```
+   ❌ Authorize in the Policy via the Form Request.
+      → an action with no input has no Form Request, so it ships with no authorization at all
+   ✅ Every state-changing route is authorized — no exceptions. With input, authorize in the Form
+      Request via a Policy; without input, call the Policy directly from the controller.
+   ```
+
+   Write the critical ones — authorization, money, data loss, privacy — as **"no exceptions" first and
+   *how* second.** A rule phrased as a mechanism is only as complete as the mechanism.
+
+4. **If a rule is mechanically checkable, put it in the gate.** A checkable rule left as prose is the
+   first one skipped: in testing, the one styling rule stated only in prose was missed by every agent,
+   while the rules the gate enforced were followed without exception. Either wire it into the check
+   command, or show it inside a `✅`/`❌` example where an agent is already looking — a rule that lives
+   only in a bullet list is decoration.
+
+5. **Encode best practices as enforceable rules** — specific and checkable. **Every area whose rule is about
    the shape of code carries a `✅`/`❌` pair**, not just prose: the wrong version beside the right one is the
    single most-followed thing in this file. Vague conventions get ignored.
-4. **Set the Definition of done** to the real gate command.
-5. **Then list what research could not tell you, and ask.** Reading a codebase surfaces the rules it
+6. **Set the Definition of done** to the real gate command.
+7. **Then list what research could not tell you, and ask.** Reading a codebase surfaces the rules it
    *shows*; three kinds never appear in it, and a file missing them looks finished while omitting the rules
    the owner cares most about:
    - **Rules the code already obeys perfectly.** A ban nobody has ever broken leaves zero trace — search
@@ -37,7 +58,7 @@ agent builds correctly here. Its sections are of two kinds:
    - **Workflow and taste.** Who runs the app, who signs off on UI, what the project refuses on principle.
      These live only with the owner.
    End by naming what you inferred versus what you guessed, and ask about the gaps. **Ask, don't invent.**
-6. Keep it lean — rules an agent follows, not prose. Roughly a screen per section; past ~150 lines you are
+8. Keep it lean — rules an agent follows, not prose. Roughly a screen per section; past ~150 lines you are
    explaining rather than ruling, and the file stops being reread.
 
 ## The template

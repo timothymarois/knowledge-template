@@ -43,6 +43,8 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-overview` (audit) | Second agent audits it adversarially against the models | Claude Code | **FAIL** — proved `Agreement` keys off `Participant`, never `Source`/`BuyerProfile`; unbuilt work shown as shipped | Two guide gaps |
 | 2026-07-19 | `docs-overview` (after fixes) | Rewrite with evidence-per-arrow, non-technical vocabulary, build states | Claude Code | Arrows corrected; plain-language groups; `·planned` marked | Binary build state |
 | 2026-07-19 | `docs-overview` (2nd audit) | Re-audit | Claude Code | Arrows **PASS**, language **PASS**, no duplication **PASS**; **FAIL** on marking | **Binary Built/Not-built lies** |
+| 2026-07-19 | `AGENTS.md` rules (coding) | Build a full-stack admin feature end to end — the first non-documentation task | Claude Code, Codex | **Zero violations** of the *Never* rules; doc duties fired mid-code; **1/2 shipped an unauthorized state-changing route** | **Authorization had no home** |
+| 2026-07-19 | `AGENTS.md` rules (after fixes) | Same full-stack task, corrected rules | Claude Code | **Pass** — Policy created and `$this->authorize()` called on both actions; `cursor-pointer` present; input-less action uses `router.patch(route(…))` | — |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -174,6 +176,25 @@ Audience was the third correction, and it came from the owner rather than a test
 written in protocol vocabulary — `FORM_POST`, `TTL`, `clamp` — which is useless to the product and
 marketing readers this doc exists for. The guide now bans implementation vocabulary outright and gives the
 test: could a marketer read it aloud on a customer call without stopping. The re-audit passed on language.
+
+**The first coding test, and the *Never* rules held completely** — no inline validation, no inline
+`abort(403)`, no `env()` outside config, no stray `console.log`, no hardcoded URLs, from either agent. Both
+also wrote `declare(strict_types=1)`, injected dependencies, kept controllers thin, and cited the
+requirement ID in a doc-block. The documentation duties fired *during code*: both updated `CODEMAP.md` and
+the relevant draft unprompted, one wrote to `MEMORY.md`.
+
+The failure was in a *Do* rule, and it was phrasing. **"Authorize in the Policy via the Form Request"**
+covers only actions that take input. Pause/resume takes none, so there is no Form Request — and one agent
+shipped two state-changing admin endpoints with **no authorization at all**, faithfully copying a codebase
+whose existing admin controllers also authorize nowhere. The other agent independently wrote a Policy and
+authorized properly. Same rules, opposite outcomes, because the rule was a mechanism rather than an
+obligation.
+
+**Generalised into the guide, because it is not a Laravel problem:** a rule that routes an obligation
+through a mechanism must say what happens when the mechanism is absent, and critical obligations get
+"no exceptions" first, *how* second. Also logged: the one styling rule stated only in prose was missed by
+**both** agents, while every gate-enforced rule was followed — so a checkable rule belongs in the gate or
+inside a `✅`/`❌` example, never in a bullet list alone.
 
 ## Coverage
 

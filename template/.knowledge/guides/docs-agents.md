@@ -75,7 +75,8 @@ Load light; pull depth only when the task needs it.
 - **Dependencies.** Do not add, remove, or major-version-bump a package without approval.
 - **Deletions.** Do not delete files outside the task's immediate scope without approval.
 - **Commits.** Do not commit or push unless told to.
-- **This file.** Never modify `AGENTS.md` without approval.
+- **This file.** Never modify `AGENTS.md` without approval; when approved, follow
+  `.knowledge/guides/docs-agents.md`.
 
 ## Never
 
@@ -134,9 +135,6 @@ Keep docs true in the same task that changes reality. Before creating or editing
 4. **Friction you hit is in `.knowledge/MEMORY.md`, not only in your reply** — the next agent reads the
    file, not this conversation. Hit none? Say that in your reply. **Never write "no friction" into the
    file** — `MEMORY.md` records traps, never their absence.
-
----
-*Revising this file? Follow the standard first: [`.knowledge/guides/docs-agents.md`](./.knowledge/guides/docs-agents.md) — and it needs the owner's approval.*
 ```
 
 ## The repo already has an `AGENTS.md`
@@ -193,9 +191,9 @@ losing it silently unloads every doc below it. Three checks, deliberately shallo
 - The repo root has an `AGENTS.md`.
 - Somewhere in it, all three of `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, and `.knowledge/MEMORY.md`
   are named.
-- It points at **this guide**, so the next agent asked to revise it is routed to the standard first — the
-  same edit gate the orientation trio carries. Without it, `AGENTS.md` is the one doc in the system that
-  gets rewritten without ever opening its own rules.
+- It names **this guide**, so an agent asked to revise it is routed to the standard first. That lives on
+  the existing *Hard gates* line — one clause, not a second block: `AGENTS.md` is read on every task and
+  edited almost never, so its own edit rule earns no more room than that.
 
 **Nothing else is inspected** — not sections, not wording, not order. How a project writes its rules is its
 own business; the lint only guarantees the orientation trio still gets loaded. (Linting a payload not yet

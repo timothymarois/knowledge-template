@@ -171,7 +171,7 @@ AGENTS = """# AGENTS
 
 Always read first: `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, `.knowledge/MEMORY.md`.
 
-*Revising this file? Follow `.knowledge/guides/docs-agents.md` first.*
+Never modify this file without approval; when approved, follow `.knowledge/guides/docs-agents.md`.
 """
 
 

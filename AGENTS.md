@@ -34,7 +34,8 @@ Load light; pull depth only when the task needs it.
 - **Breaking changes.** A lint rule that fails previously-valid docs is a MAJOR release; confirm before writing it.
 - **Deletions.** Do not delete files outside the task's immediate scope without approval.
 - **Commits.** Do not commit or push unless told to.
-- **This file.** Never modify `AGENTS.md` without approval.
+- **This file.** Never modify `AGENTS.md` without approval; when approved, follow
+  `.knowledge/guides/docs-agents.md`.
 
 ## Never
 
@@ -188,6 +189,3 @@ The version is how downstream repos stay in sync without drift. To release a cha
    updated together.
 6. **Friction you hit is in `.knowledge/MEMORY.md`, not only in your reply.** Hit none? Say that in your
    reply — never write "no friction" into the file.
-
----
-*Revising this file? Follow the standard first: [`.knowledge/guides/docs-agents.md`](./.knowledge/guides/docs-agents.md) — and it needs the owner's approval.*

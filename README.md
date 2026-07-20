@@ -11,6 +11,8 @@ docs rot. knowledge-template makes the standard **executable**:
 - **One home per kind of doc** — nothing is written twice
 - **Rules ship as guides** — every agent produces the same shape
 - **A linter enforces it in CI** — a broken doc fails like broken code
+- **One page for stakeholders** — `OVERVIEW.md`: the platform in plain language, with a diagram
+- **Tested on real agents** — every guide, with the failures written down in [AGENT-TESTS.md](./AGENT-TESTS.md)
 - **Versioned** — upgrade any repo with a dated migration
 
 ### 🚀 Adopt it
@@ -22,9 +24,9 @@ Adopt the knowledge-template documentation system into this repo:
 https://github.com/timothymarois/knowledge-template
 
 Read ADOPT.md in that repo and follow it end to end: copy template/.knowledge into our repo root,
-embed its rules into our AGENTS.md as the first rules (load order + how work flows through the docs —
-PRDs, drafts, doc duties), fill BRIEF.md + CODEMAP.md, declare our components in prd/README.md, and
-wire python3 .knowledge/scripts/doc-lint .knowledge into CI.
+fold in any docs system we already have, write our AGENTS.md from guides/docs-agents.md, fill BRIEF.md,
+CODEMAP.md and OVERVIEW.md, propose our components in prd/README.md for sign-off, and wire
+python3 .knowledge/scripts/doc-lint .knowledge into CI. Ask me about anything you had to infer.
 ```
 
 Full install guide: **[ADOPT.md](./ADOPT.md)**.
@@ -37,6 +39,7 @@ template/                      the copy-me payload — the only thing a repo tak
     BRIEF.md                   what & why
     CODEMAP.md                 where things are
     MEMORY.md                  current friction
+    OVERVIEW.md                the platform, for a stakeholder
     README.md                  the map
     .version                   the adopted version
     prd/                       tested contracts — the source of truth
@@ -48,6 +51,7 @@ template/                      the copy-me payload — the only thing a repo tak
     tmp/                       git-ignored scratch
 
 .knowledge/                    this repo's own adopted copy — we run what we ship
+AGENT-TESTS.md                 what real agents did with these guides, and what broke
 VERSION                        the current version
 CHANGELOG.md                   version history
 .changes/                      dated migrations (how to upgrade)

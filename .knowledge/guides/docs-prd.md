@@ -16,9 +16,13 @@ components in order, then every contract under its component with **a one-line g
 or agent — reads that page top to bottom and knows what the product is made of before opening a single
 file.
 
-**For the live picture, run `python3 ../scripts/doc-lint --map ..`** — it prints every contract *and
-draft* in its layer with proven / unproven counts, then a Mermaid diagram of the citation graph you can
-paste anywhere. Drafts are included and marked: a map that hides what is proposed is not the full picture. That half is deliberately **never written to a file**: the
+**The whole system on one page lives in [`../MAP.md`](../MAP.md)** — every contract *and draft* in its
+layer, what each is, how much of it a test proves, and a diagram of how they connect. Drafts are included
+and marked: a map that hides what is proposed is not the full picture.
+
+It is **generated**, not written: `python3 ../scripts/doc-lint --map --write ..` regenerates it, and the
+lint fails while it is out of date, so it can never quietly drift. The file is optional — a project that
+doesn't want it simply has no `MAP.md`, and nothing complains. That half is deliberately **never written to a file**: the
 numbers move with every test run, and a stale map is worse than none. The catalog holds what is durable
 (what exists, what each one is); the report holds what changes. Give every Contents row its gloss; a bare filename list makes the source of truth read worse than the
 proposals beside it.

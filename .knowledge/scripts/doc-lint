@@ -6,7 +6,8 @@ Zero dependencies: standard library only.
 
     python3 .knowledge/scripts/doc-lint [PATH_TO_.knowledge]   # lint (defaults to the parent .knowledge/)
     python3 .knowledge/scripts/doc-lint --payload <path>       # an unadopted payload: skip the AGENTS.md check
-    python3 .knowledge/scripts/doc-lint --map                   # the product map: contracts + drafts, status, and a diagram
+    python3 .knowledge/scripts/doc-lint --map                   # print the product map: contracts + drafts, status, diagram
+    python3 .knowledge/scripts/doc-lint --map --write           # write it to .knowledge/MAP.md (lint fails if stale)
 
 Its teeth-test lives beside it: python3 .knowledge/scripts/test_doc_lint.py
 Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
@@ -53,7 +54,8 @@ RESEARCH_HEADINGS = {
     "What they do", "What we can borrow", "What to avoid", "Verdict for us", "Open questions", "Sources",
 }
 # Only these may sit at the .knowledge/ root — anything else added there is drift.
-ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md"}
+ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md",
+                                     "MAP.md"}  # MAP.md is optional; if present it must be current
 # Every shipped README keeps these sections (matched by prefix) — a gutted catalog is drift.
 REQUIRED_SECTIONS = {
     "README.md": ["## The homes"],
@@ -342,6 +344,7 @@ class Lint:
         self.check_catalog_complete()
         self.check_catalog_links()
         self.check_research()
+        self.check_map()
         return not self.errors
 
     def check_sections(self):
@@ -422,12 +425,10 @@ class Lint:
                     self.err(path, f"source [{n}] is never cited (every source earns its place)")
 
 
-    def product_map(self):
-        """Print the product map: every contract and draft in its layer, with status and a diagram.
+    def render_map(self):
+        """Render the product map as Markdown: a table per layer, then a diagram.
 
-        Drafts are included and marked — a picture that omits what is proposed is not the full picture.
-        Never written to a file: status moves with every test run, and the citation edges move with every
-        edit. prd/README.md holds what is durable; this holds what changes.
+        Drafts are included and marked — a map that hides what is proposed is not the full picture.
         """
         prefixes = self.components()
         docs, ns2stem = [], {}
@@ -435,40 +436,44 @@ class Lint:
             for path, (fm, body) in sorted(self.collect_prd(home).items()):
                 stem = os.path.basename(path)[:-3]
                 rows = list(self.table_rows(body))
-                docs.append({"home": home, "stem": stem, "name": fm.get("name", "?"), "body": body,
+                docs.append({"home": home, "stem": stem, "name": fm.get("name", stem), "body": body,
                              "ok": sum(1 for r in rows if r[0] == "✅"),
                              "no": sum(1 for r in rows if r[0] == "❌")})
                 if fm.get("id"):
                     ns2stem[fm["id"]] = stem
         if not docs:
-            print("no contracts yet — see prd/README.md")
-            return 0
+            return "_No contracts yet — see [`prd/README.md`](./prd/README.md)._\n"
 
-        def draft(d):
-            return d["home"] == "prd-drafts"
+        out = []
+        T = sum(d["ok"] for d in docs); N = sum(d["no"] for d in docs)
+        nd = sum(1 for d in docs if d["home"] == "prd-drafts")
+        pct = f" ({round(100 * T / (T + N))}%)" if T + N else ""
+        out.append(f"**{len(docs)} systems** — {len(docs) - nd} ratified, {nd} proposed. "
+                   f"**{T + N} requirements**, {T} proven by a test{pct}.")
 
-        width = max(len(d["stem"]) + (9 if draft(d) else 0) for d in docs) + 2
         groups = prefixes or sorted({d["stem"].split("-")[0] + "-" for d in docs})
         placed = set()
-        print(f"\n  {'':{width}} {'proven':>7} {'unproven':>9}")
         for pref in groups:
             members = [d for d in docs if d["stem"].startswith(pref)]
             placed.update(d["stem"] for d in members)
             if not members:
                 continue
-            print(f"\n  {pref.rstrip('-').upper():{width}} {sum(m['ok'] for m in members):>7} "
-                  f"{sum(m['no'] for m in members):>9}")
+            out.append(f"\n## {pref.rstrip('-').title()}\n")
+            out.append("| System | | Proven | Unproven |")
+            out.append("|---|---|--:|--:|")
             for d in members:
-                label = d["stem"] + ("  (draft)" if draft(d) else "")
-                print(f"    {label:{width - 2}} {d['ok']:>7} {d['no']:>9}   {d['name']}")
+                home = "prd-drafts" if d["home"] == "prd-drafts" else "prd"
+                tag = " _(draft)_" if d["home"] == "prd-drafts" else ""
+                out.append(f"| [{d['name']}](./{home}/{d['stem']}.md){tag} | `{d['stem']}` "
+                           f"| {d['ok']} | {d['no'] or ''} |")
         rest = [d for d in docs if d["stem"] not in placed]
-        for d in rest:
-            print(f"    {d['stem']:{width - 2}} {d['ok']:>7} {d['no']:>9}   {d['name']} (unlisted component)")
-        T = sum(d["ok"] for d in docs); N = sum(d["no"] for d in docs)
-        pct = f" ({round(100 * T / (T + N))}%)" if T + N else ""
-        print(f"\n  {'TOTAL':{width}} {T:>7} {N:>9}   -> {T}/{T + N} requirements proven by a test{pct}")
+        if rest:
+            out.append("\n## Unlisted component\n")
+            out.append("| System | | Proven | Unproven |")
+            out.append("|---|---|--:|--:|")
+            for d in rest:
+                out.append(f"| {d['name']} | `{d['stem']}` | {d['ok']} | {d['no'] or ''} |")
 
-        # a diagram to paste anywhere Mermaid renders
         def nid(s):
             return re.sub(r"[^A-Za-z0-9]", "_", s)
         edges = set()
@@ -477,39 +482,63 @@ class Lint:
             for cited in sorted(set(R_ID_NS.findall(d["body"]))):
                 if cited != own and cited in ns2stem:
                     edges.add((d["stem"], ns2stem[cited]))
-        print("\n```mermaid\nflowchart LR")
+        out.append("\n## How it connects\n")
+        if not edges:
+            out.append("_No contract cites another yet, so there is nothing to draw between them._\n")
+        out.append("```mermaid")
+        out.append("flowchart LR")
         for pref in groups:
             members = [d for d in docs if d["stem"].startswith(pref)]
             if not members:
                 continue
-            print(f'  subgraph {nid(pref)}["{pref.rstrip("-").upper()}"]')
+            out.append(f'  subgraph {nid(pref)}["{pref.rstrip("-").title()}"]')
             for d in members:
-                mark = " ·draft" if draft(d) else ""
-                print(f'    {nid(d["stem"])}["{d["name"]}{mark}"]')
-            print("  end")
+                mark = " ·draft" if d["home"] == "prd-drafts" else ""
+                out.append(f'    {nid(d["stem"])}["{d["name"]}{mark}"]')
+            out.append("  end")
         for a, b in sorted(edges):
-            print(f"  {nid(a)} --> {nid(b)}")
-        drafts = [d for d in docs if draft(d)]
+            out.append(f"  {nid(a)} --> {nid(b)}")
+        drafts = [d for d in docs if d["home"] == "prd-drafts"]
         if drafts:
-            print("  classDef draft stroke-dasharray: 4 3;")
-            print("  class " + ",".join(nid(d["stem"]) for d in drafts) + " draft;")
-        if not edges:
-            print("  %% no citation edges yet — contracts cite no other contract's IDs")
-        print("```\n")
-        return 0
+            out.append("  classDef draft stroke-dasharray: 4 3;")
+            out.append("  class " + ",".join(nid(d["stem"]) for d in drafts) + " draft;")
+        out.append("```\n")
+        return "\n".join(out) + "\n"
+
+    def map_header(self):
+        return ("<!-- generated: python3 .knowledge/scripts/doc-lint --map --write .knowledge -->\n"
+                "# Product map\n\n"
+                "Every contract and proposal, in layer order, with how much of each a test proves.\n"
+                "**Generated — do not edit.** `doc-lint` fails the build when this file falls out of date.\n\n")
+
+    def check_map(self):
+        """MAP.md is optional — but a stale generated file is worse than no file at all."""
+        path = os.path.join(self.root, "MAP.md")
+        if not os.path.isfile(path):
+            return
+        if self.read(path) != self.map_header() + self.render_map():
+            self.err("MAP.md", "is out of date — regenerate with "
+                               "`python3 .knowledge/scripts/doc-lint --map --write .knowledge`")
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = [a for a in sys.argv[1:] if a.startswith("--")]
-    if [f for f in flags if f not in ("--payload", "--map")] or len(args) > 1:
-        print("usage: doc-lint [--payload] [--map] [PATH_TO_.knowledge]")
+    if [f for f in flags if f not in ("--payload", "--map", "--write")] or len(args) > 1:
+        print("usage: doc-lint [--payload] [--map [--write]] [PATH_TO_.knowledge]")
         return 2
     here = os.path.dirname(os.path.abspath(__file__))  # .knowledge/scripts
     root = os.path.abspath(args[0]) if args else os.path.dirname(here)
     lint = Lint(root, payload="--payload" in flags)
     if "--map" in flags:
-        return lint.product_map()
+        body = lint.render_map()
+        if "--write" in flags:
+            with open(os.path.join(root, "MAP.md"), "w", encoding="utf-8") as fh:
+                fh.write(lint.map_header() + body)
+            print(f"wrote {os.path.join(root, 'MAP.md')}")
+        else:
+            print(body, end="")
+        return 0
     if lint.check():
         print(f"doc-lint: OK ({root})")
         return 0

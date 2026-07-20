@@ -201,6 +201,9 @@ def build_base(aidir):
             shutil.rmtree(path) if os.path.isdir(path) else os.remove(path)
     for rel, body in STUB_CATALOGS.items():  # ...and reset their catalogs, which linked to those files
         w(aidir, rel, body)
+    mp = os.path.join(aidir, "MAP.md")       # generated from content we just replaced — stale by construction
+    if os.path.exists(mp):
+        os.remove(mp)
     w(aidir, "prd-drafts/entity-future.md", DRAFT)      # a populated project, not an empty one
     w(aidir, "research/how-others-do-it.md", NOTE)
     w(aidir, "references/acme/NOTES.md", "What inspires: the layout. Provenance: public marketing page.\n")
@@ -403,7 +406,7 @@ def main():
          False, "must load the orientation trio"),
     ]
     cases.append(("--map reports contracts, drafts and a diagram", lambda a: None, True,
-                  "1/3 requirements proven by a test", ("--map",)))
+                  "**3 requirements**, 1 proven by a test", ("--map",)))
     cases.append(("--map marks drafts and emits mermaid", lambda a: None, True,
                   "entity_future[\"Future thing ·draft\"]", ("--map",)))
     results = [case(*c) for c in cases]

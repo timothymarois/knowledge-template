@@ -35,6 +35,7 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-memory` (after 3rd fix) | Same task, plus "write it the moment you find the workaround, not at the end" | Claude Code | **Still 0/1** | **Prose alone does not fix this** |
 | 2026-07-19 | `docs-agents` | Audit the two cold-adopted `AGENTS.md` against the boundos yardstick | — | **Ship-as-written survived 1/2**; **0/2 wrote a ✅/❌ pair**; **1/2 silently dropped existing rules**, including a credential-permission rule | Three `docs-agents` defects |
 | 2026-07-19 | `docs-agents` (after fix) | Cold adoption again | Claude Code | **✅/❌ pairs 0 → 2** (yardstick: 2); Hard gates verbatim with a separate project section; original rules preserved | — |
+| 2026-07-19 | `docs-agents` (head-to-head) | Delete a refined real-world `AGENTS.md`, have an agent rewrite it from the guide, diff against the original | Claude Code | **Sections 10/10 identical.** **10/15 rules independently reproduced** — and all 5 misses were rules not derivable from code | **Research can't surface owner rules** |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -106,6 +107,21 @@ scratch and silently lost real rules, including the one setting credential file 
 *The repo already has an `AGENTS.md`* section makes reconciliation the rule and forbids dropping anything
 silently. A *Changing it later* section closes the last gap: `docs-memory.md` graduates hardened traps into
 `AGENTS.md`, and nothing on this side ever said so.
+
+**The head-to-head is the strongest evidence in this log, and its misses are the interesting part.** Given
+the same repo with its `AGENTS.md` deleted, an agent rebuilt the section structure exactly — all ten, same
+order — and independently found ten of fifteen real rules: the tenancy split, both migration homes, the
+`ui/app/site` tiers, `useForm`, `route()`, `strict_types`, the gate command, the static-analysis level.
+
+The five it missed were **not failures of research**. `env()` outside `config/` appears **zero times** in
+that codebase, so the ban leaves no trace to find. `app/Policies/` holds **zero classes**, so the
+authorization rule describes an intended pattern with nothing to discover. The rest — who runs the UI, no
+legacy fallbacks, no backend/frontend drift — are workflow and taste, which are not in code at all.
+
+**A codebase cannot tell you the rules it already obeys, the rules it has not implemented yet, or the
+rules that are about people.** The guide now ends its procedure by requiring the agent to name those gaps
+and ask, instead of shipping a file that looks complete. It also gained a length signal: the rewrite ran
+248 lines against the original's 155, and long rulebooks stop being reread.
 
 ## Coverage
 

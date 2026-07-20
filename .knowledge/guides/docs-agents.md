@@ -27,7 +27,18 @@ agent builds correctly here. Its sections are of two kinds:
    the shape of code carries a `✅`/`❌` pair**, not just prose: the wrong version beside the right one is the
    single most-followed thing in this file. Vague conventions get ignored.
 4. **Set the Definition of done** to the real gate command.
-5. Keep it lean — rules an agent follows, not prose.
+5. **Then list what research could not tell you, and ask.** Reading a codebase surfaces the rules it
+   *shows*; three kinds never appear in it, and a file missing them looks finished while omitting the rules
+   the owner cares most about:
+   - **Rules the code already obeys perfectly.** A ban nobody has ever broken leaves zero trace — search
+     for the violation, find nothing, and the rule is invisible.
+   - **Rules describing an intended pattern not built yet.** The directory is empty because the convention
+     is aspirational, not because it doesn't exist.
+   - **Workflow and taste.** Who runs the app, who signs off on UI, what the project refuses on principle.
+     These live only with the owner.
+   End by naming what you inferred versus what you guessed, and ask about the gaps. **Ask, don't invent.**
+6. Keep it lean — rules an agent follows, not prose. Roughly a screen per section; past ~150 lines you are
+   explaining rather than ruling, and the file stops being reread.
 
 ## The template
 

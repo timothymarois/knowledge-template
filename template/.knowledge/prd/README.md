@@ -14,7 +14,9 @@ The project's ontology, in order (`prefix — gloss`). The owner's call; an agen
 
 ## Contents — maintained by hand
 
-Add a row when you add a PRD; `doc-lint` fails the build if one is missing. Component, then file.
+Add a row when you add a PRD; `doc-lint` fails the build if one is missing. Component, then file, each row
+a link to the contract followed by a one-line gloss of what it is. Read top to bottom, this list is the
+product's high-level map.
 
 - **Base**
   - _(no PRDs yet)_

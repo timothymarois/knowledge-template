@@ -9,6 +9,14 @@ requirement carrying an ID and a status — ✅ where a test proves it, ❌ wher
 asserts *what must be true, why, and whether it is* — not how it's built. If a claim there has a ✅, a test
 proves it.
 
+## The catalog is the product map
+
+A PRD answers for one system. **[`../prd/README.md`](../prd/README.md) answers for the product**: the
+components in order, then every contract under its component with **a one-line gloss**. Someone new — human
+or agent — reads that page top to bottom and knows what the product is made of before opening a single
+file. Give every Contents row its gloss; a bare filename list makes the source of truth read worse than the
+proposals beside it.
+
 ## A PRD asserts, it never explains
 
 If the file grows while the row count doesn't, you're writing prose instead of requirements. Every fact
@@ -156,7 +164,8 @@ claims.
 
 - **No implementation symbols** — not a type, function, class, or file.
 - **Tunables by name, never by value** — and only where the name is already the owner's word.
-- **One assertion.** "and", "also", "except", or a joining semicolon? Suspect two.
+- **One assertion.** "and", "also", or "except"? Suspect two. **A joining semicolon is rejected by the
+  lint** — it is the clearest sign a row is two requirements compressed to fit the word cap. Split it.
 - **Under 25 words.** If it won't fit, it isn't atomic.
 - **No numeric literal in the text** — name the tunable instead.
 - Present tense, declarative, observable.
@@ -229,6 +238,7 @@ the linter checks** — every other rule in this guide is one you hold yourself 
 - `last_verified` present iff the file has at least one ✅ row.
 - **Citations only go up the stack**, and the citation graph is a DAG — a cycle *within* one layer fails too.
 - No `##` outside the schema. No requirement over 25 words. No numeric literal in requirement text.
+- **No semicolon in requirement text** — that's two requirements in one row.
 - **The catalog is well-formed** — `../prd/README.md` has a Components list (`prefix — gloss`) and a
   Contents list naming every PRD. Catalogs are **maintained by hand**; nothing regenerates them. Add the
   row in the same task you add the file, or the build goes red.

@@ -293,6 +293,8 @@ class Lint:
                         self.err(path, f"{rid} requirement is {len(words)} words (max 25)")
                     if NUMERIC.search(req):
                         self.err(path, f"{rid} requirement has a numeric literal (name the tunable instead)")
+                    if ";" in req:
+                        self.err(path, f"{rid} requirement joins two assertions with a semicolon (split it)")
 
                 allowed = {"What this is", "Why it exists", "Requirements", "Open questions"}
                 for h in self.headings(body):

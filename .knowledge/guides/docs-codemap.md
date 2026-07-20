@@ -40,6 +40,10 @@ Scripts · Integrations/Jobs · Docs). Rename, split, drop, and add sections so 
 
 The only invariant: **one section per layer, each listing what exists.**
 
+**A monorepo still maps by layer, not by app.** Sections span the workspaces — *Entry points (3 — one per
+app)*, *Frontend (4 across two homes)* — with the workspace named in each entry. One section per app
+duplicates every layer N times and buries the thing a reader wants, which is where a *kind* of thing lives.
+
 ## Entry format
 
 - **Group by folder**, with the count in the heading: `## Services (app/Services/ — 18)`.

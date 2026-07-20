@@ -84,6 +84,13 @@ cannot ship it.
 
 **Treat `MEMORY.md` as best-effort.** An empty `MEMORY.md` is not evidence that a codebase has no traps.
 
+**A postscript worth keeping.** The fix itself shipped a bug: the completion criterion read *"friction is
+in the file — or you say plainly you hit none"*, immediately followed by *"telling the human doesn't
+count"*, which leaves "none" nowhere to go but the file. It would have turned `MEMORY.md` into a
+changelog of non-events. No agent did it, and no lint could have caught it — the owner caught it reading
+the line. **That is the third authority-shaped ambiguity in this log** (ratification granularity, the
+component ontology, this). When a rule says *do X or else Y*, name where Y goes.
+
 ## Coverage
 
 | Guide | Exercised by an agent | Notes |

@@ -49,6 +49,8 @@ dropped.
 | 07-20 | ditto | **2/2 copied `*(Proposed — not built)*` from neighbouring files** — a pattern the guide bans |
 | 07-20 | `docs-prd` erase & renumber | **Void — harness error.** Both agents were handed the superseded struck-row rule; re-run |
 | 07-20 | ditto, re-run | **2/2 erased, renumbered, and swept every citation** across code, tests and roadmap; both found pre-existing mis-citations |
+| 07-20 | `docs-overview` **cross-vendor** | Same task on codex, grok and a separate claude CLI: **3/3 wrote the framing line, the `prd/` split and `What you use`** |
+| 07-20 | ditto | **Judgment rules degraded:** codex dropped the audience that touches nothing, and invented a `## Why it is different` section |
 
 Targets: a private Laravel marketplace, a public stdlib-Python CLI, a synthetic legacy repo, a synthetic
 monorepo. Deliberately different stacks — "stack-neutral" was an untested claim.
@@ -106,6 +108,20 @@ were *already* pointing at the wrong requirement before they started, which a na
 buried. Both stopped at the code default rather than guessing what replaced it. The rule that did the work
 was making the sweep the same change rather than a follow-up: **an obligation phrased as "then also update"
 is one an agent finishes without.**
+
+**The overview guide survives another vendor — its structure does, anyway.** Run cold on codex, grok and a
+separate claude process, all three produced the framing line *with* the `prd/`-versus-drafts split, a
+`What you use` section, no build status and no banned vocabulary, and all three linted clean. The split had
+been written hours earlier and no file in the repo demonstrated it, so all three took it from the guide
+text alone. Grok independently described recovery correctly as a re-clear — a point the repo's own
+hand-written prose had wrong at the time.
+
+**What did not survive was the judgement.** Codex omitted the audience that touches nothing, which the
+guide asks for in a sentence, and added a `## Why it is different` positioning section, which the guide
+never sanctions. Neither is lintable today, and neither is a misreading — they are the two places the guide
+asks for taste rather than structure. **The rules that held were the ones with a shape a reader can copy;
+the rules that slipped were the ones phrased as advice.** `prd/` closes its schema and the linter enforces
+it; `OVERVIEW.md` does neither, and a section a model invented is what that costs.
 
 **Agents copy the neighbours, not the guide.** Both agents writing a new contract opened with
 `*(Proposed — not built.)*` in `What this is` — prose the guide explicitly routes away ("Say it isn't

@@ -19,7 +19,9 @@ Survey the repo systematically, not from memory:
 1. **Identify the stack and its layers** from the framework and top-level folders — they become your sections.
 2. **Survey each layer** folder by folder: list every artifact — name, one-line purpose, key relationships.
    Split a large repo across parallel passes, one per layer.
-3. **Count what you inventory** ("28 models", "66 controllers") — counts show completeness and make drift obvious.
+3. **Count what you inventory** ("28 models", "66 controllers") — counts show completeness and make drift
+   obvious. **Count artifacts, not lines.** "5 modules", "77 commands", "201 tests" survive a refactor;
+   "client.py — 1,205 lines" is stale on the next commit and tells a reader nothing they can use.
 4. **Compress** to names + terse notes. Aim for **under ~200 lines** — density over prose.
 
 ## Sections are per-layer maps — adapt them to the stack

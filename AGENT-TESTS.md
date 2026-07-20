@@ -33,6 +33,8 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-memory` (after fix) | Same task, concrete trigger in the always-loaded duty | Claude Code, Codex | **1/2 recorded it.** Codex's entry is textbook; Claude recognised the friction as "worth knowing" but put it in its reply, not the file | **Recognition fired, destination didn't** |
 | 2026-07-19 | `docs-memory` (after 2nd fix) | Same task, plus a *Definition of done* criterion: friction is in the file or you say you hit none | Claude Code | **Still 0/1.** Made the explicit "no friction" claim once, wrote nothing | Routing still fails |
 | 2026-07-19 | `docs-memory` (after 3rd fix) | Same task, plus "write it the moment you find the workaround, not at the end" | Claude Code | **Still 0/1** | **Prose alone does not fix this** |
+| 2026-07-19 | `docs-agents` | Audit the two cold-adopted `AGENTS.md` against the boundos yardstick | — | **Ship-as-written survived 1/2**; **0/2 wrote a ✅/❌ pair**; **1/2 silently dropped existing rules**, including a credential-permission rule | Three `docs-agents` defects |
+| 2026-07-19 | `docs-agents` (after fix) | Cold adoption again | Claude Code | **✅/❌ pairs 0 → 2** (yardstick: 2); Hard gates verbatim with a separate project section; original rules preserved | — |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -90,6 +92,20 @@ count"*, which leaves "none" nowhere to go but the file. It would have turned `M
 changelog of non-events. No agent did it, and no lint could have caught it — the owner caught it reading
 the line. **That is the third authority-shaped ambiguity in this log** (ratification granularity, the
 component ontology, this). When a rule says *do X or else Y*, name where Y goes.
+
+**`docs-agents` only described the greenfield case.** The guide said "Copy this. Fill every
+`<placeholder>`" and stopped — so three things went untested and two went wrong. (1) *Ship-as-written* was
+enforced by intent, not by definition: one agent kept the blocks byte-identical, the other enriched the
+bullets in place with project detail, destroying the cross-repo comparability the rule exists to protect.
+The rule now states the test — every shipped line present, unmodified, in order — and explicitly permits
+appending project lines below them. (2) The `✅`/`❌` example was hedged as "where it helps"; neither agent
+produced one, on a repo whose *existing* file already had a good one. Now every code-shape area carries a
+pair, with a fenced slot in the template. (3) **The guide never covered adopting into a repo that already
+has an `AGENTS.md`** — the commonest case. One agent reconciled and extended; the other rewrote from
+scratch and silently lost real rules, including the one setting credential file permissions. A new
+*The repo already has an `AGENTS.md`* section makes reconciliation the rule and forbids dropping anything
+silently. A *Changing it later* section closes the last gap: `docs-memory.md` graduates hardened traps into
+`AGENTS.md`, and nothing on this side ever said so.
 
 ## Coverage
 

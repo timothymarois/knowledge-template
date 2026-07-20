@@ -8,7 +8,12 @@ the repo root and routes agents into it.
 agent builds correctly here. Its sections are of two kinds:
 
 - **Ship as written** (identical in every repo): *Before you work*, *Hard gates*, *Documentation duties*, and
-  the top of *Never*. Don't reword them per project.
+  the top of *Never*. **Byte-identical — do not reword a line, and do not extend a bullet with project
+  detail.** Their whole value is that you can compare them across repos and see they match; an enriched
+  bullet reads better in place and quietly destroys that.
+  **You may append project-specific lines below the shipped ones in the same section**, or add a section of
+  your own (`## Project-specific hard gates`). What you may never do is edit, reword, reorder or interleave
+  a shipped line. The test: every shipped line still present, unmodified, in order.
 - **Fill in for this project** (by researching the codebase): *Tech stack*, *Architecture*, *Best practices*,
   *Directory structure*, *Build / test / run*, *Definition of done*.
 
@@ -18,8 +23,9 @@ agent builds correctly here. Its sections are of two kinds:
    and layering (what each layer may depend on), naming/style with the actual format + lint command, the test
    setup, and the one command that gates a change. Delegate the survey to subagents if your harness supports them.
 2. **Keep the ship-as-written sections verbatim** — they're what make every repo behave the same.
-3. **Encode best practices as enforceable rules** — specific and checkable, with a `✅`/`❌` example where it
-   helps. Vague conventions get ignored.
+3. **Encode best practices as enforceable rules** — specific and checkable. **Every area whose rule is about
+   the shape of code carries a `✅`/`❌` pair**, not just prose: the wrong version beside the right one is the
+   single most-followed thing in this file. Vague conventions get ignored.
 4. **Set the Definition of done** to the real gate command.
 5. Keep it lean — rules an agent follows, not prose.
 
@@ -77,7 +83,13 @@ Load light; pull depth only when the task needs it.
 
 ## Best practices — do / don't
 
-<Enforceable rules grouped by area, each a Do/Don't, with a right/wrong example where it helps.>
+<Enforceable rules grouped by area, each a Do/Don't. Each area that governs code shape shows a fenced
+✅/❌ pair — the wrong way directly above or below the right way, in this project's language.>
+
+```<lang>
+✅ <the right way, as it would actually be written here>
+❌ <the wrong way this rule exists to stop>
+```
 
 ## Directory structure
 
@@ -112,6 +124,38 @@ Keep docs true in the same task that changes reality. Before creating or editing
    file, not this conversation. Hit none? Say that in your reply. **Never write "no friction" into the
    file** — `MEMORY.md` records traps, never their absence.
 ```
+
+## The repo already has an `AGENTS.md`
+
+The common case, and the one that loses work if you get it wrong. **Reconcile it — never replace it.**
+
+That file is the accumulated judgement of everyone who worked here: a rule in it usually exists because
+something once went wrong. Adopting the standard changes the *shape*, not the content.
+
+1. **Read the existing file first and inventory every rule it makes** — before writing a line of the new one.
+2. **Re-home each one** under the section of this standard where it belongs. A stack rule goes to *Best
+   practices*, a "never do X" to *Never*, an approval requirement to *Hard gates*, a command to
+   *Build, test & run*.
+3. **Add the ship-as-written sections** it was missing, verbatim.
+4. **Nothing is dropped silently.** If a rule looks obsolete, wrong, or contradicted by the standard, **say
+   so and ask** — do not quietly leave it out. A rule that disappears in a reformat is indistinguishable
+   from one that was never there.
+5. **Keep its examples.** An existing `✅`/`❌` pair written against this codebase is worth more than
+   anything you would write from scratch.
+
+Finish by diffing old against new and confirming every rule from the old file is somewhere in the new one.
+
+## Changing it later
+
+`AGENTS.md` is under its own hard gate: **never modify it without approval.** That applies to you as much
+as to anyone — propose the change and say why.
+
+- **A `MEMORY.md` trap that hardened into a permanent rule graduates here.** When friction stops being
+  "work around it" and becomes "never do it", it moves into *Never* and is deleted from `MEMORY.md`. It
+  lives in exactly one of the two files.
+- **A convention that changed changes here in the same task**, not in a comment or a commit message.
+- **Ship-as-written sections are never edited** — not even to improve them. Raise it upstream instead;
+  they are what keep every repo behaving the same.
 
 ## CLAUDE.md — a router, not a copy
 

@@ -23,6 +23,14 @@ a decision is unclear, agents come back here to resolve it. (The rules for *how*
 - **Active areas:** <the product areas, features, or surfaces this project spans>
 - **Out of scope:** <the tempting scope it deliberately refuses, so the focus stays sharp>
 
+## How it fits together
+
+<The main path through the product, in order — one line per step, each naming the area or contract that
+owns it. The shape of the system, not its rules.>
+
+- **<Thing>** — <what happens at this step, in one line>.
+- **<Next thing>** — <what happens next>.
+
 ## External Systems
 
 - `<system>` — <what the project relies on it for>

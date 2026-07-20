@@ -36,12 +36,21 @@ sections confirmed before the adoption is done (`ADOPT.md` step 4).
 - **Users / ICP** — who uses it, what they're trying to accomplish, and the qualities that matter most to
   them. For an internal project, name the internal role and its job.
 - **Scope** — the product areas, features, or surfaces the project spans, and what's explicitly out of scope.
+- **How it fits together** — the **main path** through the product in order, one line per step, each naming
+  the area or contract that owns it. This is the piece a newcomer cannot reconstruct from anything else:
+  `BRIEF` says what the product is, each contract says what one part guarantees, and **nothing else records
+  the sequence.** Keep it to the happy path — branches, failures and exceptions live in the contracts.
 - **External Systems** — the databases, services, and third-party systems it relies on, each with what it's
   used for.
 
 ## Quality bar
 
 - **Skimmable** — short bullets, one idea per line, about one screen.
+- **`How it fits together` stays under about ten steps.** This file is loaded on *every task*: it buys the
+  shape of the system, not an inventory of it. Wanting more detail means you want
+  `python3 ../scripts/doc-lint --map ..`, which prints every contract and draft with status and a diagram
+  and costs nothing until someone asks for it. **Never put the full tree, per-contract detail, or a diagram
+  here.**
 - **No placeholders left** — replace every `<...>` and `_(none)_`; delete a section rather than writing "none".
 - **Public and PII-free** — people by role; no private data, secrets, or machine paths.
 - **Shape is universal** — the same sections fit any project; adjust the words, not the shape.

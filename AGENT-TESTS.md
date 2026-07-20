@@ -31,7 +31,8 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `ADOPT.md` (after fix) | Same cold adoption | Codex | **Correct** — migrated and deleted the old docs home, stopped to ask before declaring the ontology | — |
 | 2026-07-19 | `docs-memory` | Add a small feature to a repo whose test suite refuses to start without an undocumented env var. Docs never mentioned | Claude Code, Codex | **0/2 recorded it** — both hit the guard, both worked around it, both left `MEMORY.md` empty | **The friction duty never fires** |
 | 2026-07-19 | `docs-memory` (after fix) | Same task, concrete trigger in the always-loaded duty | Claude Code, Codex | **1/2 recorded it.** Codex's entry is textbook; Claude recognised the friction as "worth knowing" but put it in its reply, not the file | **Recognition fired, destination didn't** |
-| 2026-07-19 | `docs-memory` (after 2nd fix) | Same task, with the completion criterion added | Claude Code | See below | — |
+| 2026-07-19 | `docs-memory` (after 2nd fix) | Same task, plus a *Definition of done* criterion: friction is in the file or you say you hit none | Claude Code | **Still 0/1.** Made the explicit "no friction" claim once, wrote nothing | Routing still fails |
+| 2026-07-19 | `docs-memory` (after 3rd fix) | Same task, plus "write it the moment you find the workaround, not at the end" | Claude Code | **Still 0/1** | **Prose alone does not fix this** |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -67,9 +68,21 @@ attempt: an env var you had to discover, a guard you had to satisfy…"), and `d
 plainly: *did it cost you an attempt?*
 
 That fixed recognition but not routing: one agent named the friction as "worth knowing" **in its reply** and
-still left the file untouched. So *Definition of done* gained a fourth criterion — friction is in
-`MEMORY.md` **or you say plainly you hit none**, with "telling the human doesn't count" said out loud.
-Turning an omission into a claim the agent has to make is the difference between a duty and a hope.
+still left the file untouched. Two further rounds followed — a *Definition of done* criterion ("friction is
+in the file, or say plainly you hit none; telling the human doesn't count"), then a timing instruction
+("write it the moment you find the workaround, not at the end"). **Neither worked.** Across four runs one
+agent complies reliably and the other never wrote an entry, on a task where it demonstrably hit the guard,
+worked around it, and reported the workaround in prose.
+
+**Conclusion, recorded as a negative result: this duty cannot be carried by prose alone.** Every other rule
+in this system is either lintable or a judgment made *while writing a doc* — this one asks an agent to
+notice something mid-task and act on it later, and that is the one thing the always-loaded file cannot
+reliably buy. The improved wording is kept because it moved one agent from silence to a textbook entry and
+costs nothing, but a project that genuinely needs friction captured should drive it from its **harness**
+(an end-of-task hook that asks the question), not from `AGENTS.md`. That is per-harness, so the payload
+cannot ship it.
+
+**Treat `MEMORY.md` as best-effort.** An empty `MEMORY.md` is not evidence that a codebase has no traps.
 
 ## Coverage
 
@@ -79,7 +92,7 @@ Turning an omission into a claim the agent has to make is the difference between
 | `docs-agents.md` | Yes — written from scratch, twice | Ship-as-written sections survived verbatim both times |
 | `docs-codemap.md` | Yes — written from scratch, twice | Both produced real layers with counts, not the shipped skeleton |
 | `docs-brief.md` | Yes — written from scratch, twice | |
-| `docs-memory.md` | Yes — 4 runs against planted friction | The only guide that failed its first test outright |
+| `docs-memory.md` | Yes — 6 runs against planted friction | **The only guide that still fails.** Reliable for one agent, never fired for the other |
 | `docs-research.md` | Yes — one note written and its sources verified | |
 
 ## Known limits of this evidence

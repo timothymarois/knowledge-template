@@ -154,7 +154,9 @@ Keep docs true in the same task that changes reality. Before creating or editing
 - Moved/restructured files -> update `.knowledge/CODEMAP.md`.
 - Hit friction — **anything that cost you a failed attempt**: an env var or flag you had to discover,
   a guard you had to satisfy, a command that only worked the second way you tried it, an error whose
-  message didn't say what to do -> add a line to `.knowledge/MEMORY.md`; delete it once solved.
+  message didn't say what to do -> **write the line into `.knowledge/MEMORY.md` the moment you find
+  the workaround, before you carry on** — by the end of the task it will feel too small to mention,
+  which is exactly how the next agent loses the same hour. Delete it once solved.
 - Owner ratifies a draft (**the whole file**, not one row) -> `git mv` it into `prd/`; IDs carry over and
   the conformance review then sets glyphs. **Approval moves a draft, not proof** — proof is the glyph
   column. Behavior and its requirement row change in the same commit.

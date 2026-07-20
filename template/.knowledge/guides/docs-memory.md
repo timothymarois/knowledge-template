@@ -6,6 +6,8 @@ versioned by `knowledge-template`. **The template is `../MEMORY.md` itself** —
 `MEMORY.md` holds **the friction we've hit in this codebase and the workaround for each** — traps, gotchas,
 non-obvious constraints an agent would pay to have known up front.
 
+**Write it at the moment of pain, not at the end of the task.** A workaround stays obvious for about five minutes; after that it stops feeling worth writing down, and you finish the task genuinely believing you hit nothing. Every entry that never got written was lost exactly that way.
+
 **The test for "is this friction?" is simple: did it cost you an attempt?** If you ran a command and it
 failed, and the fix was knowledge rather than a code change — an env var, a flag, an ordering, a guard to
 satisfy, a second run — that is friction, and the next agent will lose the same attempt unless you write it

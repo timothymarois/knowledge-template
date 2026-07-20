@@ -176,7 +176,30 @@ something once went wrong. Adopting the standard changes the *shape*, not the co
 5. **Keep its examples.** An existing `✅`/`❌` pair written against this codebase is worth more than
    anything you would write from scratch.
 
-Finish by diffing old against new and confirming every rule from the old file is somewhere in the new one.
+6. **A rule with no natural home keeps its own section.** The sections in this standard are the ones every
+   project needs, not the only ones allowed. If the old file had a *Testing* section stating what each
+   suite owns, and nothing here fits it, **add that section back** — dropping a real obligation because the
+   template had no slot for it is the worst possible trade.
+
+### Show your work — this is a step, not a courtesy
+
+**Before you finish, write out the inventory and hand it over:** every rule you found in the old file, and
+for each one, the section it now lives in — or that you are proposing to drop it, and why.
+
+```
+48 rules found · 44 re-homed · 4 proposed for removal (listed below, with reasons) — approve?
+```
+
+Without that list, nothing is visibly missing: a lost rule leaves no trace, the new file reads as complete,
+and the reviewer has no way to notice that an obligation quietly evaporated. **Tested without it, an agent
+kept 32 of 48 rules and reported success** — the losses included an entire testing section binding new
+commands to specific suites. Counting them out loud is what makes the omission impossible to miss.
+
+**Then have someone else check it — you are the worst auditor of your own omissions.** With the inventory
+step in place the same test kept 43 of 49 rules, a real improvement, and the agent still reported that
+nothing had been dropped while four rules were in fact gone and two more had been softened into vagueness.
+A rule you never noticed you left out is one you cannot report. Hand the old file and the new one to a
+fresh reviewer — another agent will do — and ask for a rule-by-rule verdict before calling it done.
 
 ## Changing it later
 

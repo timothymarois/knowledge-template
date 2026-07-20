@@ -45,6 +45,8 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-overview` (2nd audit) | Re-audit | Claude Code | Arrows **PASS**, language **PASS**, no duplication **PASS**; **FAIL** on marking | **Binary Built/Not-built lies** |
 | 2026-07-19 | `AGENTS.md` rules (coding) | Build a full-stack admin feature end to end — the first non-documentation task | Claude Code, Codex | **Zero violations** of the *Never* rules; doc duties fired mid-code; **1/2 shipped an unauthorized state-changing route** | **Authorization had no home** |
 | 2026-07-19 | `AGENTS.md` rules (after fixes) | Same full-stack task, corrected rules | Claude Code | **Pass** — Policy created and `$this->authorize()` called on both actions; `cursor-pointer` present; input-less action uses `router.patch(route(…))` | — |
+| 2026-07-19 | `docs-agents` (reconcile) | Adopt into a repo with a real 128-line `AGENTS.md`; audit rule-by-rule | Claude Code ×2 | **32 of 48 rules kept** — an entire testing section lost, and reported as success | Prose instruction ≠ a step |
+| 2026-07-19 | `docs-agents` (reconcile, after fix) | Same, with the inventory required as a step | Claude Code ×2 | **43 of 49 kept.** Agent reported "nothing removed"; audit found 4 lost, 2 softened | **Self-report is unreliable** |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -195,6 +197,24 @@ through a mechanism must say what happens when the mechanism is absent, and crit
 "no exceptions" first, *how* second. Also logged: the one styling rule stated only in prose was missed by
 **both** agents, while every gate-enforced rule was followed — so a checkable rule belongs in the gate or
 inside a `✅`/`❌` example, never in a bullet list alone.
+
+**Reconciling an existing `AGENTS.md` was the guidance's weakest point, and testing it twice moved it a
+long way without reaching zero.** The instruction *"finish by diffing old against new"* is a sentence at
+the end of a section, and an agent that skips it leaves no trace: 32 of 48 rules survived, an entire
+*Testing* section — including a coverage obligation binding new commands to specific suites — vanished, and
+the run reported success. Two causes. The diff was a courtesy rather than a step, and the standard's fixed
+section list had nowhere to put a *Testing* section, so a real obligation was dropped for want of a slot.
+
+Both fixed: the inventory is now a required artifact handed over before finishing (*"48 rules found, 44
+re-homed, 4 proposed for removal — approve?"*), and a rule with no natural home **keeps its own section**
+rather than being dropped. Re-run: 43 of 49 kept.
+
+**The residue is the more interesting finding.** The agent reported that nothing had been removed while
+four rules were gone and two had been softened into vagueness. It was not being careless — **a rule you
+never noticed you left out is one you cannot report.** Self-reported completeness is structurally
+unreliable, which is why the guide now ends the procedure by handing both files to a fresh reviewer. This
+is the second artefact where an independent pass caught what the writer could not see; the first was the
+overview diagram's three invented arrows.
 
 ## Coverage
 

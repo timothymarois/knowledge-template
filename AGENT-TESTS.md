@@ -37,6 +37,8 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-agents` (after fix) | Cold adoption again | Claude Code | **✅/❌ pairs 0 → 2** (yardstick: 2); Hard gates verbatim with a separate project section; original rules preserved | — |
 | 2026-07-19 | `docs-agents` (head-to-head) | Delete a refined real-world `AGENTS.md`, have an agent rewrite it from the guide, diff against the original | Claude Code | **Sections 10/10 identical.** **10/15 rules independently reproduced** — and all 5 misses were rules not derivable from code | **Research can't surface owner rules** |
 | 2026-07-19 | `docs-agents` (revision path) | "Revise AGENTS.md: every new Vue component ships with a Vitest test" — on a repo with the new edit gate | Claude Code | **Conformed** — landed in *Best practices*, added a ✅/❌ pair (2 → 3), ship-as-written untouched, +7 lines | none |
+| 2026-07-19 | `docs-brief`, `docs-codemap` | Cold-adopt a repo whose README was cut to 3 lines — the case where nothing is written down | Claude Code | CODEMAP **pass** (99 lines, real layers, artifact counts). BRIEF content good but **it never said what it inferred** | Disclosure wasn't a gate |
+| 2026-07-19 | `docs-brief` (after fix) | Same thin-README adoption | Claude Code | **Pass** — split sourced vs inferred unprompted, flagged Users/ICP and the refusals as owner knowledge, quoted its inferred *Why it exists* for checking | — |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -134,6 +136,24 @@ row for it, and `doc-lint` checks it — the third of the three deliberately sha
 Verified on the revision path rather than assumed: asked to add a new rule, an agent put it in *Best
 practices*, wrote it as a Do/Don't **with a ✅/❌ pair** in the project's own paths, left every
 ship-as-written section byte-identical, and grew the file by seven lines.
+
+**`docs-brief.md` had no discovery method at all** — no mention of read, research, find, README, ask or
+owner — while being the doc whose content is *least* present in code. Story, users and refusals are not in
+a repo. The earlier adoptions produced good briefs only because that repo had a rich README; cut it to
+three lines and an agent is left to infer a market from a schema, which is the worst failure available
+here: a brief that reads as confident, is quietly wrong, and is loaded on every task afterwards while
+nobody re-checks it. The guide now ranks where the answers actually live and says the code is evidence of
+what was built, never of who it is for.
+
+The disclosure step then taught the lesson twice. Written as *"state plainly what you inferred"* it did
+**not** fire — the same agent that dutifully stopped for sign-off on the component ontology reported the
+brief as "verified against the code". The ontology ask worked because `ADOPT.md` makes it a **step with
+explicit sign-off**; the brief's was a soft sentence in a guide. Moved into `ADOPT.md` step 4 as a required
+step, it fired immediately and correctly. **A statement is not a gate — if it must happen, it is a step.**
+
+`docs-codemap.md`'s method was sound but began at "the framework and top-level folders". It now names the
+five highest-signal artifacts to read first — manifest, entry points, routing/wiring config, test layout,
+build scripts — because a folder tree misleads on any repo that departs from its framework's defaults.
 
 ## Coverage
 

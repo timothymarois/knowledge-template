@@ -11,6 +11,23 @@ code is built (that's `CODEMAP.md`), not how to work in it (that's `AGENTS.md`).
 phone, or address; no secrets or machine paths. Refer to people by role; the product by its public brand or
 repo name.
 
+## Where the answers are
+
+**Most of a brief is not in the code.** Scope and external systems are; story, users, and what the project
+refuses are not. Work down this list, and notice where it stops:
+
+1. **`README.md`, product docs, a landing page** — the story and the pitch, usually already written.
+2. **An existing `AGENTS.md`, or any prior docs** — often carries the *why* and the refusals.
+3. **Issues, milestones, a roadmap** — what's in scope now versus later.
+4. **The code** — confirms *scope* and *external systems*: what it integrates with, what surfaces exist.
+   It is evidence of what was built, never of who it is for or why.
+
+**Then ask.** Users / ICP and the *Out of scope* refusals are owner knowledge; a repo cannot tell you who
+someone sells to or what they have decided not to build. **Never infer a market from a schema** — a
+plausible invented ICP is worse than a blank one, because it is loaded on every future task and nobody
+re-checks it. **Adopting? This is a step, not a courtesy** — list sourced versus inferred and get the inferred
+sections confirmed before the adoption is done (`ADOPT.md` step 4).
+
 ## Section guidance
 
 - **Story** — *what is this and why does it exist?* One short paragraph a stranger understands: the project

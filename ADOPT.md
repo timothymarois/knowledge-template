@@ -46,6 +46,12 @@ doc has a guide that defines its format:
   layer by layer and write it following `.knowledge/guides/docs-codemap.md`.
 - **`.knowledge/MEMORY.md`** — starts empty; friction accrues as you work.
 
+**Before moving on, separate what you sourced from what you guessed.** Scope and external systems come out
+of the code; **the story, the users, and what the project refuses do not.** List which `BRIEF.md` sections
+you sourced (and from where) and which you inferred, and **get the inferred ones confirmed** — the same
+sign-off the components need in step 5. A brief that reads as confident and is quietly wrong is loaded on
+every task afterwards and nobody re-checks it.
+
 **Leave no placeholder.** `doc-lint` fails while `BRIEF.md` or `CODEMAP.md` still carries a shipped
 `<project>` title or a `_(none)_` marker — a green lint is supposed to mean the project really is set up.
 

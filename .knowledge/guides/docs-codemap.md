@@ -16,7 +16,11 @@ truth rather than listing real values.
 
 Survey the repo systematically, not from memory:
 
-1. **Identify the stack and its layers** from the framework and top-level folders — they become your sections.
+1. **Identify the stack and its layers** — highest-signal first, before opening any source file: the
+   dependency manifest (`package.json`, `composer.json`, `pyproject.toml`, `go.mod`…), the entry points,
+   the routing / wiring / DI config, the test directory layout, and the build or task scripts. Those five
+   name the layers in minutes; the folder tree alone will mislead you on a repo that doesn't follow its
+   framework's defaults.
 2. **Survey each layer** folder by folder: list every artifact — name, one-line purpose, key relationships.
    Split a large repo across parallel passes, one per layer.
 3. **Count what you inventory** ("28 models", "66 controllers") — counts show completeness and make drift

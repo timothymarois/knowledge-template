@@ -51,6 +51,8 @@ dropped.
 | 07-20 | ditto, re-run | **2/2 erased, renumbered, and swept every citation** across code, tests and roadmap; both found pre-existing mis-citations |
 | 07-20 | `docs-overview` **cross-vendor** | Same task on codex, grok and a separate claude CLI: **3/3 wrote the framing line, the `prd/` split and `What you use`** |
 | 07-20 | ditto | **Judgment rules degraded:** codex dropped the audience that touches nothing, and invented a `## Why it is different` section |
+| 07-20 | template **new-project prompt** ×2 (claude + codex) | **2/2 green** — renamed identity, stripped `.template/`, kept the manifest, made `.knowledge/` theirs; surfaced a docs-vs-code ambiguity |
+| 07-20 | template **upgrade prompt** | Built the right path, skipped 5.4, migrated clean — and **resisted a false "tenancy was removed" premise by checking the code**, the harness's own setup error |
 
 Targets: a private Laravel marketplace, a public stdlib-Python CLI, a synthetic legacy repo, a synthetic
 monorepo. Deliberately different stacks — "stack-neutral" was an untested claim.
@@ -122,6 +124,15 @@ never sanctions. Neither is lintable today, and neither is a misreading — they
 asks for taste rather than structure. **The rules that held were the ones with a shape a reader can copy;
 the rules that slipped were the ones phrased as advice.** `prd/` closes its schema and the linter enforces
 it; `OVERVIEW.md` does neither, and a section a model invented is what that costs.
+
+**The docs must describe the code that exists — "cut the feature" is not "the feature is gone."** The
+template ships tenancy installed-but-inert. Told to adopt for a single-tenant product, one agent deleted
+tenancy from CODEMAP while the tenancy code still shipped — docs that lie about the repo. Told (falsely, by a
+harness setup error) that a fork had *removed* tenancy, another agent checked the code, found it present, and
+refused to drop it — the correct call from the wrong prompt. Same rule resolves both: docs track the code,
+so an unused-but-present stack is marked inert, never deleted; removing the code is a separate hard-gated
+task, and only then do the docs drop it. The adoption prompt now says this in both directions, and the win
+was structural — the prompt's "verify against the code" clause beat an authoritative false instruction.
 
 **Agents copy the neighbours, not the guide.** Both agents writing a new contract opened with
 `*(Proposed — not built.)*` in `What this is` — prose the guide explicitly routes away ("Say it isn't

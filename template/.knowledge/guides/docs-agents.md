@@ -93,7 +93,9 @@ Keep docs true in the same task that changes reality. Before creating or editing
 `README.md` and follow its `guides/docs-*.md`.
 
 - Moved/restructured files -> update `.knowledge/CODEMAP.md`.
-- Hit friction -> add a line to `.knowledge/MEMORY.md`; delete it once solved.
+- Hit friction — **anything that cost you a failed attempt**: an env var or flag you had to discover,
+  a guard you had to satisfy, a command that only worked the second way you tried it, an error whose
+  message didn't say what to do -> add a line to `.knowledge/MEMORY.md`; delete it once solved.
 - Owner ratifies a draft (**the whole file**, not one row) -> `git mv` it into `prd/`; IDs carry over and
   the conformance review then sets glyphs. **Approval moves a draft, not proof** — proof is the glyph
   column. Behavior and its requirement row change in the same commit.
@@ -104,6 +106,8 @@ Keep docs true in the same task that changes reality. Before creating or editing
 1. <the project's gate command> passes.
 2. Every rule here held.
 3. New guaranteed behavior is proven by a `prd/` requirement and its test.
+4. **Friction you hit is written into `.knowledge/MEMORY.md` — or you say plainly that you hit none.**
+   Telling the human in your reply does not count: the next agent reads the file, not this conversation.
 ```
 
 ## CLAUDE.md — a router, not a copy

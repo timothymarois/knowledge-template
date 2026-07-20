@@ -29,6 +29,9 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-prd` (after fix) | Same task, corrected wording | Codex, Grok | **2/2 correct** — both left it a draft and said why | — |
 | 2026-07-19 | `ADOPT.md`, `docs-agents`, `docs-brief`, `docs-codemap`, `docs-memory` | Cold-adopt the system into a repo that had never seen it | Claude Code, Codex | **2/2 green lint**, real layer maps with counts, ship-as-written intact | **Two `ADOPT.md` defects** |
 | 2026-07-19 | `ADOPT.md` (after fix) | Same cold adoption | Codex | **Correct** — migrated and deleted the old docs home, stopped to ask before declaring the ontology | — |
+| 2026-07-19 | `docs-memory` | Add a small feature to a repo whose test suite refuses to start without an undocumented env var. Docs never mentioned | Claude Code, Codex | **0/2 recorded it** — both hit the guard, both worked around it, both left `MEMORY.md` empty | **The friction duty never fires** |
+| 2026-07-19 | `docs-memory` (after fix) | Same task, concrete trigger in the always-loaded duty | Claude Code, Codex | **1/2 recorded it.** Codex's entry is textbook; Claude recognised the friction as "worth knowing" but put it in its reply, not the file | **Recognition fired, destination didn't** |
+| 2026-07-19 | `docs-memory` (after 2nd fix) | Same task, with the completion criterion added | Claude Code | See below | — |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -55,6 +58,19 @@ the owner's call and "an agent stops and asks", while `ADOPT.md` told the agent 
 picked one without asking — and picked *differently*. Since IDs are permanent, a guessed ontology is the
 hardest thing in the system to undo. `ADOPT.md` now requires proposing them and getting sign-off.
 
+**The `MEMORY.md` duty did not fire at all.** Two agents hit a real guard, discovered the workaround, used
+it, finished the task — and wrote nothing down. The cause was a chicken-and-egg: the always-loaded rule said
+only *"Hit friction -> add a line"*, while the definition of what **counts** as friction lived in
+`docs-memory.md`, which is edit-gated and therefore only read *after* an agent has already decided something
+is friction. The trigger is now concrete in the always-loaded line ("anything that cost you a failed
+attempt: an env var you had to discover, a guard you had to satisfy…"), and `docs-memory.md` states the test
+plainly: *did it cost you an attempt?*
+
+That fixed recognition but not routing: one agent named the friction as "worth knowing" **in its reply** and
+still left the file untouched. So *Definition of done* gained a fourth criterion — friction is in
+`MEMORY.md` **or you say plainly you hit none**, with "telling the human doesn't count" said out loud.
+Turning an omission into a claim the agent has to make is the difference between a duty and a hope.
+
 ## Coverage
 
 | Guide | Exercised by an agent | Notes |
@@ -63,7 +79,7 @@ hardest thing in the system to undo. `ADOPT.md` now requires proposing them and 
 | `docs-agents.md` | Yes — written from scratch, twice | Ship-as-written sections survived verbatim both times |
 | `docs-codemap.md` | Yes — written from scratch, twice | Both produced real layers with counts, not the shipped skeleton |
 | `docs-brief.md` | Yes — written from scratch, twice | |
-| `docs-memory.md` | Partially | Created during adoption; no run has yet *accrued* friction into it |
+| `docs-memory.md` | Yes — 4 runs against planted friction | The only guide that failed its first test outright |
 | `docs-research.md` | Yes — one note written and its sources verified | |
 
 ## Known limits of this evidence
@@ -72,4 +88,5 @@ hardest thing in the system to undo. `ADOPT.md` now requires proposing them and 
   these conventions at hour three of writing application code, which is when conventions actually break.
 - The adoption runs used a repo the agent could read in full. A large codebase may defeat `CODEMAP.md`'s
   "survey it layer by layer" instruction in a way a small one cannot.
-- `MEMORY.md` has never been tested in its real mode: an agent hitting friction mid-task and recording it.
+- The friction used was *planted*. It was real and non-obvious, but an agent meeting a trap it half-expects
+  is not the same as one meeting a surprise at hour three.

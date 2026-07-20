@@ -6,6 +6,12 @@ versioned by `knowledge-template`. **The template is `../MEMORY.md` itself** —
 `MEMORY.md` holds **the friction we've hit in this codebase and the workaround for each** — traps, gotchas,
 non-obvious constraints an agent would pay to have known up front.
 
+**The test for "is this friction?" is simple: did it cost you an attempt?** If you ran a command and it
+failed, and the fix was knowledge rather than a code change — an env var, a flag, an ordering, a guard to
+satisfy, a second run — that is friction, and the next agent will lose the same attempt unless you write it
+down. Do not wait for something dramatic: the ordinary case is a one-line workaround you found in ninety
+seconds and would otherwise forget by the end of the task.
+
 **Top rule — never include PII.** MEMORY is committed and world-readable: no real names, emails, secrets,
 tokens, or machine paths in a trap — describe the failing thing generically, and refer to people by role.
 

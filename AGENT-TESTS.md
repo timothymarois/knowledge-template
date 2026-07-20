@@ -19,30 +19,30 @@ dropped.
 
 ## Runs
 
-| Date | Under test | Result | Defect |
-|---|---|---|---|
-| 07-19 | `docs-prd` | Describe the workflow: **3/3 correct** | none |
-| 07-19 | `docs-prd` | Record a ratified claim: **1/3** — two graduated a whole draft on one row | Ratification granularity |
-| 07-19 | `docs-prd` after fix | **2/2** left it a draft and said why | — |
-| 07-19 | `ADOPT` + 4 guides | Cold adoption: **2/2 green**, real layer maps | 2 `ADOPT` defects |
-| 07-19 | `ADOPT` after fix | Migrated and deleted the old docs home; asked before declaring the ontology | — |
-| 07-19 | `docs-memory` | Planted friction: **0/2 recorded it** | Duty never fires |
-| 07-19 | `docs-memory` ×3 fixes | Best reached **1/2**; one agent never wrote an entry | Prose can't carry it |
-| 07-19 | `docs-research` | Note written: **14/15 URLs live**, none fabricated | none |
-| 07-19 | `docs-brief`/`codemap` | Thin-README adoption: CODEMAP pass; BRIEF never said what it inferred | Disclosure wasn't a step |
-| 07-19 | `docs-brief` after fix | Split sourced vs inferred unprompted, flagged ICP as owner knowledge | — |
-| 07-19 | `docs-agents` | Audit vs a refined real rulebook: ship-as-written survived 1/2; **0/2 wrote a ✅/❌ pair** | 3 defects |
-| 07-19 | `docs-agents` head-to-head | Rebuilt a real `AGENTS.md`: **10/10 sections, 10/15 rules** — all 5 misses underivable from code | Research can't surface owner rules |
-| 07-19 | `docs-agents` reconcile | Existing 128-line rulebook: **32/48 rules kept**, a whole Testing section lost, reported as success | Instruction wasn't a step |
-| 07-19 | `docs-agents` reconcile, fixed | **43/49 kept.** Agent reported "nothing removed"; audit found 4 lost, 2 softened | Self-report unreliable |
-| 07-19 | `docs-overview` ×4 + 2 audits | Diagram drew **3 arrows that don't exist**; binary build status showed unbuilt work as shipped | 2 defects |
-| 07-19 | `AGENTS.md` rules, coding | Full-stack feature: **zero Never violations**, doc duties fired mid-code; **1/2 shipped an unauthorized route** | Authorization had no home |
-| 07-19 | ditto, after fix | Policy created, `authorize()` on both actions, `cursor-pointer` present | — |
-| 07-20 | `docs-overview` cold read | Reader given only the file: got the mechanics, **couldn't say how it earns or which industry** | It didn't stand alone |
-| 07-20 | ditto, after fix | Answered all three; rated it scannable; found 2 terms named but never shown | Name nothing you can't show |
-| 07-20 | **Adoption from GitHub** | Real README prompt, public repo: payload fetched, adoption **completed green**, CI wired | README prompt was stale |
-| 07-20 | **Upgrade path** | First run of the 1.0.0 migration on a legacy repo: completed, IDs carried, version stamped | 2 migration defects |
-| 07-20 | **Monorepo** | 3 apps + 3 packages: green; CODEMAP mapped **by layer across workspaces**, not per app | none |
+| Date | Under test | Result |
+|---|---|---|
+| 07-19 | `docs-prd` | Describe the workflow: **3/3 correct** |
+| 07-19 | `docs-prd` | Record a ratified claim: **1/3** — two graduated a whole draft on one row |
+| 07-19 | `docs-prd` after fix | **2/2** left it a draft and said why |
+| 07-19 | `ADOPT` + 4 guides | Cold adoption: **2/2 green**, real layer maps — but two `ADOPT` gaps found |
+| 07-19 | `ADOPT` after fix | Migrated and deleted the old docs home; asked before declaring the ontology |
+| 07-19 | `docs-memory` | Planted friction: **0/2 recorded it** |
+| 07-19 | `docs-memory` ×3 fixes | Best reached **1/2**; one agent never wrote an entry |
+| 07-19 | `docs-research` | Note written: **14/15 URLs live**, none fabricated |
+| 07-19 | `docs-brief`/`codemap` | Thin-README adoption: CODEMAP pass; BRIEF never said what it inferred |
+| 07-19 | `docs-brief` after fix | Split sourced vs inferred unprompted, flagged ICP as owner knowledge |
+| 07-19 | `docs-agents` | Audit vs a refined real rulebook: ship-as-written survived 1/2; **0/2 wrote a ✅/❌ pair** |
+| 07-19 | `docs-agents` head-to-head | Rebuilt a real `AGENTS.md`: **10/10 sections, 10/15 rules** — all 5 misses underivable from code |
+| 07-19 | `docs-agents` reconcile | Existing 128-line rulebook: **32/48 rules kept**, a whole Testing section lost, reported as success |
+| 07-19 | `docs-agents` reconcile, fixed | **43/49 kept.** Agent reported "nothing removed"; audit found 4 lost, 2 softened |
+| 07-19 | `docs-overview` ×4 + 2 audits | Diagram drew **3 arrows that don't exist**; binary build status showed unbuilt work as shipped |
+| 07-19 | `AGENTS.md` rules, coding | Full-stack feature: **zero Never violations**, doc duties fired mid-code; **1/2 shipped an unauthorized route** |
+| 07-19 | ditto, after fix | Policy created, `authorize()` on both actions, `cursor-pointer` present |
+| 07-20 | `docs-overview` cold read | Reader given only the file: got the mechanics, **couldn't say how it earns or which industry** |
+| 07-20 | ditto, after fix | Answered all three; rated it scannable; found 2 terms named but never shown |
+| 07-20 | **Adoption from GitHub** | Real README prompt, public repo: payload fetched, adoption **completed green**, CI wired — the README prompt was stale |
+| 07-20 | **Upgrade path** | First run of the 1.0.0 migration on a legacy repo: completed, IDs carried, version stamped — two migration defects |
+| 07-20 | **Monorepo** | 3 apps + 3 packages: green; CODEMAP mapped **by layer across workspaces**, not per app |
 
 Targets: a private Laravel marketplace, a public stdlib-Python CLI, a synthetic legacy repo, a synthetic
 monorepo. Deliberately different stacks — "stack-neutral" was an untested claim.

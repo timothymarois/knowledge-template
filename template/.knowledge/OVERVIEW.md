@@ -13,20 +13,16 @@ flowchart LR
   subgraph Group["<a layer, named as the business names it>"]
     A["<a part>"] --> B["<the next part>"]
   end
-  B --> C["<something not built yet>"]
-  classDef planned stroke-dasharray: 4 3;
-  class C planned;
-  %% use ·partial and a second classDef for components that half-exist
+  B --> C["<where it ends up>"]
 ```
 
 ## How it works
 
 <Every component on the diagram, in the order things flow through them. **One short line each** — what it
 is and what it hands on. A reader should scan the whole list in under a minute and understand the flow.
-Link each to its contract; anything living in `prd-drafts/` is planned rather than live.>
+Link each to its contract.>
 
 - **<Component>** — <what it is, in a dozen words>. [contract](./prd/<file>.md)
-- **<Component>** — <what it is>. *Planned.* [contract](./prd-drafts/<file>.md)
 
 ## What governs it
 

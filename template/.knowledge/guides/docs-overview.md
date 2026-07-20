@@ -7,8 +7,8 @@ This guide **is the standard** for `../OVERVIEW.md`. Shipped and versioned by `k
 agent: `BRIEF.md` orients, `CODEMAP.md` locates, `prd/` contracts. None of them ever shows the platform.
 
 **Write it as if a product owner is reading it to understand the product they are about to sell.** It
-answers what the parts are, how work flows between them, what governs it, and what is live versus planned.
-Someone should finish it able to explain the product in a meeting without ever having opened the code.
+answers what the parts are, how work flows between them, and what governs it. Someone should finish it able
+to explain the product in a meeting without ever having opened the code.
 
 **Only what a customer could buy or touch.** No environments, no test strategy, no deployment, no internal
 tooling — none of that is the product. An admin surface counts if it is part of the offering people
@@ -69,9 +69,8 @@ Everything else supports it. Rules, in order of how often they're broken:
   that makes it true. **A plausible arrow is the most dangerous thing in this file:** a reader builds their
   mental model from the picture and will never re-check it, and unlike a wrong sentence nobody proofreads a
   wrong line. If two things merely *appear* related, leave the arrow out and ask.
-- **Mark planned components in the diagram itself** — a `·planned` suffix on a dashed node, styled inside
-  the mermaid block, never explained in prose three sections below. The diagram has to survive being
-  screenshotted on its own, and a solid box reads as shipped.
+- **No status in the diagram.** No suffixes, no dashed nodes, no styling for what does or doesn't exist
+  yet. The diagram answers one question — what the platform is and how work moves through it.
 - **Label in the product's words**, matching each contract's `name:`, so a reader can jump from a box to
   the contract that governs it.
 
@@ -83,8 +82,6 @@ flowchart LR
   subgraph Flow["Flows"]
     b --> c["What happens when they meet"]
   end
-  classDef planned stroke-dasharray: 4 3;
-  class c planned;
 ```
 
 ## Section guidance
@@ -104,10 +101,9 @@ flowchart LR
 
   The first is scannable. The second says more and communicates less, and drags in a sandbox, which is not
   the product. The third is written for the wrong reader entirely.
-- **Live or planned comes from where the contract lives** — `prd/` is live, `prd-drafts/` is planned. Mark
-  planned components in the diagram and with a short *Planned.* in the list. **Do not audit build status
-  per requirement:** that belongs on the contract's own rows, and any status summary written here is stale
-  the week after.
+- **No build status anywhere in this file.** Not in the diagram, not in the list, not as an aside. Whether
+  something exists yet is the contracts' job — their glyph rows carry it, and where a contract lives says
+  the rest. Status written here is stale the week after, and it is not what this document is for.
 - **`What governs it`** — the rules that constrain the journey, and **who sets each one**: the terms both
   sides agreed, the limits, the obligations that pause things when unmet. A stakeholder can watch a demo
   and learn the flow; they cannot see the governance, which is exactly why it is here.

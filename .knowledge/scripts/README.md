@@ -15,8 +15,7 @@ by version bump. Everything else you drop in here is yours.
 ## Usage
 
 ```
-python3 .knowledge/scripts/doc-lint .knowledge       # lint this project's docs
-python3 .knowledge/scripts/doc-lint --map --write .knowledge  # regenerate .knowledge/MAP.md
+python3 .knowledge/scripts/doc-lint .knowledge     # lint this project's docs
 python3 .knowledge/scripts/test_doc_lint.py        # prove the linter still works
 ```
 

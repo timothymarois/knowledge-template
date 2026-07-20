@@ -43,6 +43,12 @@ dropped.
 | 07-20 | **Adoption from GitHub** | Real README prompt, public repo: payload fetched, adoption **completed green**, CI wired — the README prompt was stale |
 | 07-20 | **Upgrade path** | First run of the 1.0.0 migration on a legacy repo: completed, IDs carried, version stamped — two migration defects |
 | 07-20 | **Monorepo** | 3 apps + 3 packages: green; CODEMAP mapped **by layer across workspaces**, not per app |
+| 07-20 | `docs-overview` framing + surfaces | Written cold ×2: **2/2 wrote both unprompted**; one invented the `prd/`-vs-drafts calibration itself |
+| 07-20 | `docs-overview` cold read ×2 | Both answered **"no, and the doc told me"** on what ships; both then asked for a status column |
+| 07-20 | `docs-prd` standalone + no-infra | New contract from owner's words ×2: **2/2 clean rows**, both caught a cross-file conflict unprompted |
+| 07-20 | ditto | **2/2 copied `*(Proposed — not built)*` from neighbouring files** — a pattern the guide bans |
+| 07-20 | `docs-prd` erase & renumber | **Void — harness error.** Both agents were handed the superseded struck-row rule; re-run |
+| 07-20 | ditto, re-run | **2/2 erased, renumbered, and swept every citation** across code, tests and roadmap; both found pre-existing mis-citations |
 
 Targets: a private Laravel marketplace, a public stdlib-Python CLI, a synthetic legacy repo, a synthetic
 monorepo. Deliberately different stacks — "stack-neutral" was an untested claim.
@@ -81,6 +87,32 @@ never showed**.
 **The migration manufactured green contracts.** Its step 7 said to copy each old `Tests`-table row to a ✅
 plus the test name. That table was never enforced, so the run produced verified rows naming tests that
 don't exist. Now: open the test first, or mark the row unproven.
+
+**A disclaimer with no scale is not disclosure.** The framing line worked — two cold readers, given only the
+overview, both said unprompted that the platform was not proven and that the document had told them so, and
+one said outright he would not have felt misled. Then both asked for the thing the guide forbids: a build
+status column. The line said *some of this may not exist* without saying *how much*, which covers five per
+cent and ninety-five equally. Both readers had already worked it out for themselves — from the link
+targets, every one of them pointing into `prd-drafts/`. The fix was to state what they inferred: name the
+two homes, `prd/` ratified and `prd-drafts/` proposed. It is where a file sits, not a build state, so
+nothing has to be maintained and nothing can go stale. A third agent, writing an overview from scratch with
+no knowledge of the cold reads, invented the same sentence unprompted.
+
+**Renumbering survived contact, because the guide made the sweep part of the change.** Erasing a
+requirement re-points every citation at or after it, and nothing catches it: the ID still resolves, the
+lint still passes, the reader gets a confident wrong answer. Two agents, given only the owner's sentence,
+both erased the row, renumbered, and swept `app/`, `tests/` and the roadmap — and both found citations that
+were *already* pointing at the wrong requirement before they started, which a naive shift would have
+buried. Both stopped at the code default rather than guessing what replaced it. The rule that did the work
+was making the sweep the same change rather than a follow-up: **an obligation phrased as "then also update"
+is one an agent finishes without.**
+
+**Agents copy the neighbours, not the guide.** Both agents writing a new contract opened with
+`*(Proposed — not built.)*` in `What this is` — prose the guide explicitly routes away ("Say it isn't
+built → the ❌ already says it"). Neither misread the rule; both had read eight sibling files that did it,
+and imitation beat instruction. **A rule the shipped examples violate is not a rule.** The lesson is not a
+stronger sentence in the guide — it is that conformance work on existing files is what makes the guide
+enforceable, because every file in a repo is a prompt.
 
 ## The pattern worth carrying
 

@@ -16,6 +16,7 @@ import sys
 
 R_ID = re.compile(r"R-[A-Z0-9]+-\d+")
 R_ID_NS = re.compile(r"R-([A-Z0-9]+)-\d+")
+R_ID_NUM = re.compile(r"R-[A-Z0-9]+-(\d+)")
 WORD = re.compile(r"\S+")
 NUMERIC = re.compile(r"(?<![A-Za-z0-9_-])\d+(?![A-Za-z0-9_-])")
 
@@ -241,6 +242,16 @@ class Lint:
             self.err("AGENTS.md", "must point at `.knowledge/guides/docs-agents.md` so a revision is "
                                   "routed to the standard first (same edit gate as the trio)")
 
+    def check_contiguous(self, path, numbers):
+        """A namespace's numbers run from 1 with no gaps. A gap means a row was deleted without
+        renumbering, or mis-numbered from the start — either way an ID that resolves nowhere."""
+        for ns, seen in sorted(numbers.items()):
+            missing = [n for n in range(1, max(seen) + 1) if n not in seen]
+            if missing:
+                gaps = ", ".join(f"R-{ns}-{n}" for n in missing)
+                self.err(path, f"namespace `{ns}` skips {gaps} (a namespace numbers as an unbroken run "
+                               "— erasing a requirement means renumbering to close the gap)")
+
     def check(self):
         self.check_manifest()
         self.check_trio()
@@ -274,6 +285,7 @@ class Lint:
                         ns_owner[fid] = path
                 rows = list(self.table_rows(body))
                 has_pass = False
+                numbers = {}  # namespace -> the requirement numbers this file assigns
 
                 base = os.path.basename(path)
                 if scope == "prd" and prefixes and not any(base.startswith(p) for p in prefixes):
@@ -289,6 +301,7 @@ class Lint:
                         defined[rid] = path
                     if scope == "prd-drafts":
                         draft_ids.add(rid)
+                    numbers.setdefault(ns, set()).add(int(R_ID_NUM.match(rid).group(1)))
                     if glyph == "✅":
                         has_pass = True
                         if not evid or evid == "—":
@@ -302,6 +315,8 @@ class Lint:
                         self.err(path, f"{rid} requirement has a numeric literal (name the tunable instead)")
                     if ";" in req:
                         self.err(path, f"{rid} requirement joins two assertions with a semicolon (split it)")
+
+                self.check_contiguous(path, numbers)
 
                 allowed = {"What this is", "Why it exists", "Requirements", "Open questions"}
                 for h in self.headings(body):

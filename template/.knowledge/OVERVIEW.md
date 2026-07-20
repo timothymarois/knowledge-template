@@ -3,6 +3,9 @@
 *The platform in plain language — written for product, marketing and anyone new, not for developers. What
 the parts are and how something moves through them. Follow a link to learn what a part guarantees.*
 
+*This describes the platform as designed. What is proven today is recorded row by row in the contracts —
+[`prd/`](./prd/) for the ratified ones, [`prd-drafts/`](./prd-drafts/) for those still in proposal.*
+
 ## What this is
 
 <Three sentences, no more. What the product is, who it is for, and how it makes money. A reader who has
@@ -30,6 +33,13 @@ is and what it hands on. A reader should scan the whole list in under a minute a
 Link each to its contract.>
 
 - **<Component>** — <what it is, in a dozen words>. [contract](./prd/<file>.md)
+
+## What you use
+
+<One line per audience: the surface they touch and what they do there. Someone who owns nothing else should
+finish this able to picture using the product. Name an audience that touches nothing, too.>
+
+- **<Audience>** — <the surface they use, and what they do there>.
 
 ## What governs it
 

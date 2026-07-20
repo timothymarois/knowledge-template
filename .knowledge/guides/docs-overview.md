@@ -18,6 +18,58 @@ actually use. If a line would not survive being read aloud to a prospect, cut it
 seller being held in a sandbox is engineering's word for it; what a prospect needs to know is that *new
 sellers cannot bill or deliver until they are approved*. Same rule, and only one of the two belongs here.
 
+## Say once that this is the design, not the inventory
+
+Every line below is written in the present tense — *a lead clears*, *an expired licence pauses the
+agreement* — because that is how you describe a product. But a young platform's overview describes parts
+that are built beside parts that are only agreed, and present tense flattens the two into one claim: **it
+all works today.** In the one document that gets forwarded to a customer, that is the most expensive
+sentence in the file, and nobody wrote it.
+
+The fix is not status on the parts — see below, it rots in a week and this is the file nobody re-reads.
+**It is one line under the title, and the template carries it:** this describes the platform as designed,
+and each contract's rows record what is proven today. Written once, it never goes stale, and it converts
+every present tense underneath from a claim into a design.
+
+**Say where the line falls, or the disclaimer says nothing.** "Some of this may not be built" covers a
+product that is five per cent done and one that is ninety-five per cent done equally, and a reader who
+cannot tell which has been warned rather than informed. You do not fix that with a status column — you fix
+it by naming **the two homes the links already point into**: ratified contracts in `prd/`, proposals in
+`prd-drafts/`. That is not a build state anyone has to maintain, it is where the file sits, so it cannot go
+stale; and a reader who notices every link going to one of them has learned the thing a percentage would
+have told them.
+
+Tested: a reader given an overview whose parts were two-thirds unbuilt came away believing the whole
+platform shipped. Nothing in the document was false. Nothing in it was honest either. Tested again after
+the framing line: two cold readers both answered "no, and the document told me so" — and both then asked
+for a status column, having worked the answer out for themselves from the link targets.
+
+## Name what the customer actually touches
+
+**A reader who finishes this should be able to picture using it.** The parts and the flow describe a
+machine; they do not say whether a buyer signs in to a dashboard, an operator works a queue, or a seller
+integrates once and never logs in again. That is the first thing a product owner needs and the last thing
+an engineer thinks to write, because to them it is obvious.
+
+So: **one line per audience, naming the surface they touch and what they do there.** No screenshots, no
+navigation, no feature list — the surface and its purpose. If an audience touches nothing (a party the
+platform acts *on* rather than *for*), say that too; it is just as clarifying.
+
+**Surfaces, not modes.** The ban on environments applies here hardest, because this section invites the
+leak: a sandbox, a staging tenant or a dry-run flag is a thing engineering built, not a thing a customer
+buys. If it has a customer-facing consequence, that consequence belongs in `What governs it` as a rule —
+never here as something you use.
+
+```
+✅ Buyers and sellers each get a workspace — set terms, watch what cleared, get paid.
+✅ Sellers send traffic in through one integration; most never open the workspace day to day.
+❌ The Vue SPA exposes participant and operator routes behind Inertia middleware.
+❌ Dashboard with real-time analytics, reporting suite, notification centre, and more.
+```
+
+The first two tell a stranger what owning this product feels like. The third is written for the wrong
+reader; the fourth is a brochure and says nothing.
+
 ## It has to stand alone
 
 **This is the one doc that leaves the building.** It gets forwarded to a new hire, a candidate, an
@@ -130,9 +182,14 @@ flowchart LR
 
   The first is scannable. The second says more and communicates less, and drags in a sandbox, which is not
   the product. The third is written for the wrong reader entirely.
+- **`What you use`** — the surfaces, one line per audience, straight after `How it works`. Who signs in to
+  what, and who integrates once and never signs in. It is the shortest section and the one a product owner
+  reaches for first.
 - **No build status anywhere in this file.** Not in the diagram, not in the list, not as an aside. Whether
   something exists yet is the contracts' job — their glyph rows carry it, and where a contract lives says
-  the rest. Status written here is stale the week after, and it is not what this document is for.
+  the rest. Status written here is stale the week after, and it is not what this document is for. **The
+  framing line under the title is what makes this safe** — it says once that the file describes the design,
+  so no part has to carry its own disclaimer. Drop that line and the ban starts overclaiming on your behalf.
 - **`What governs it`** — the rules that constrain the journey, and **who sets each one**: the terms both
   sides agreed, the limits, the obligations that pause things when unmet. A stakeholder can watch a demo
   and learn the flow; they cannot see the governance, which is exactly why it is here.

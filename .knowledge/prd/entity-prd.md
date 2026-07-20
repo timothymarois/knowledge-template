@@ -30,3 +30,4 @@ thing is built.
 | ✅ | R-PRD-8 | A namespace is owned by exactly one file | `two files claim one namespace` |
 | ✅ | R-PRD-9 | The contract homes hold no subdirectories | `a PRD hides in a subdirectory` |
 | ✅ | R-PRD-10 | A requirement joins no two assertions with a semicolon | `two assertions joined by a semicolon` |
+| ✅ | R-PRD-11 | A namespace numbers its requirements as an unbroken run | `a namespace skips an id` |

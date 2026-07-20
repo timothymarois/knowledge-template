@@ -3,6 +3,9 @@
 *Written for a person, not a linter: what the platform is made of and how a thing moves through it. Read
 this to understand the system; read `prd/` to learn what any one part guarantees.*
 
+*This describes the system as designed. What is proven today is recorded row by row in the contracts —
+[`prd/`](./prd/) for the ratified ones, [`prd-drafts/`](./prd-drafts/) for those still in proposal.*
+
 ## The platform
 
 ```mermaid

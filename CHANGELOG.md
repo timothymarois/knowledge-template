@@ -13,4 +13,4 @@ in between (oldest first), open its `.changes/` file, apply the steps, bump `.kn
 
 | Version | Date | Summary | Migration |
 |---|---|---|---|
-| 1.0.0 | 2026-07-16 | First versioned release. Flat `.knowledge/`, catalog READMEs + `guides/` rules, isolated `prd-drafts/`, glyph-table PRDs, `doc-lint`. | [`.changes/2026-07-16-v1.0.0.md`](./.changes/2026-07-16-v1.0.0.md) |
+| 1.0.0 | 2026-07-16 | First versioned release. Flat `.knowledge/`, catalog READMEs + `guides/` rules, isolated `prd-drafts/`, glyph-table PRDs, unbroken ID runs with struck removals, standalone rows, `doc-lint`. | [`.changes/2026-07-16-v1.0.0.md`](./.changes/2026-07-16-v1.0.0.md) |

@@ -16,17 +16,15 @@ components in order, then every contract under its component with **a one-line g
 or agent — reads that page top to bottom and knows what the product is made of before opening a single
 file.
 
-**The whole system on one page lives in [`../MAP.md`](../MAP.md)** — every contract *and draft* in its
-layer, what each one is in a line, and a diagram of how they connect. Drafts are included and marked: a map
-that hides what is proposed is not the full picture. It is a map of **what is being built** and counts
-nothing — status belongs on the rows of a contract, not in a summary of it.
+The drafts have their own catalog, [`../prd-drafts/README.md`](../prd-drafts/README.md), in the same shape.
+**Read together, the two catalogs are the whole system on one page** — what is ratified, and what is
+proposed — which is why both are maintained by hand and both are linted for completeness.
 
-It is **generated**, not written: `python3 ../scripts/doc-lint --map --write ..` regenerates it, and the
-lint fails while it is out of date, so it can never quietly drift. The file is optional — a project that
-doesn't want it simply has no `MAP.md`, and nothing complains. That half is deliberately **never written to a file**: the
-numbers move with every test run, and a stale map is worse than none. The catalog holds what is durable
-(what exists, what each one is); the report holds what changes. Give every Contents row its gloss; a bare filename list makes the source of truth read worse than the
-proposals beside it.
+**A catalog holds what is durable: what exists, and what each one is.** Never how many rows are green.
+That number moves with every test run, so it lives in the glyph column of the contract that owns it and
+nowhere else — a count in a summary is stale the day after it is written, and unlike a stale row nobody
+re-reads a summary to catch it. Give every Contents row its gloss; a bare filename list makes the source of
+truth read worse than the proposals beside it.
 
 ## A PRD asserts, it never explains
 
@@ -93,7 +91,16 @@ component's prefix or the lint fails. No subdirectories; the only non-PRD file i
 - Form: `R-<NS>-<n>`. `<NS>` is declared once, in the file's frontmatter `id:`.
 - **One namespace per file. One file per namespace.** A second namespace means a second file — as does a
   table past ~15 rows.
-- `<n>` is assigned once, monotonically, **permanent**. Never renumber, reuse, or close a gap.
+- `<n>` starts at one and runs unbroken. **A namespace's numbers never have a hole** — `doc-lint` fails on
+  a gap. A contract holds what is true now, so a withdrawn requirement is erased outright rather than kept
+  as struck history, and the rows below it renumber to close the gap.
+- **Renumbering rewrites meaning, so it is never done alone.** `R-THING-7` erased means the old
+  `R-THING-8` becomes `R-THING-7` — and every citation of either now points somewhere new. Nothing will
+  tell you: the ID still resolves, the lint still passes, and the reader gets a confident wrong answer.
+  **Erasing a row is one change that also updates every citation of every ID at or after it** — in the
+  other contracts, and in the code comments that name their `R-<NS>-<n>`. Grep the whole repo for the
+  namespace before you erase, and if a citation is somewhere you cannot edit in the same change, **stop and
+  ask.**
 - **Never compound.** `R-A-2 / R-B-2` is illegal — hoist it to a shared file, cited by both.
 
 ## The template
@@ -171,9 +178,72 @@ rejected as unauthorized; an out-of-scope token is refused as forbidden"* is thr
 by several tests is still one requirement** — empty list, all-invalid, filtered-to-zero are situations, not
 claims.
 
+### Every row stands alone
+
+**A requirement is read where it is cited, not where it sits.** Another contract cites `R-THING-4`; a
+comment in the code names it; a reviewer opens the file at one line. In none of those does the row above it
+come along. So a row that borrows its subject or its verb from its neighbour is unreadable exactly where it
+matters most.
+
+This is what the word cap breaks first. An author trims to fit, the trimmed words are the ones the row
+above already said, and the table still scans fine top-to-bottom — which is why nobody catches it.
+
+```
+✅ A seller-only participant cannot create a bid policy.
+❌ Seller-only participants cannot.
+❌ Illegal jumps are rejected.
+❌ After the window it is allowed.
+```
+
+**The cap never buys ambiguity.** If the standalone sentence doesn't fit in 25 words, that is the format
+telling you the row is two requirements — split it. Trimming the subject is not the way out. **But the cap
+is only one of the two signals, and the weaker one:** a row can stand alone, fit in fifteen words, and
+still assert three things joined by "and". That is the *one assertion* rule under [Form](#form), and it
+catches what the cap never will.
+
+**A term the file itself defines is not a borrowed subject.** If a row enumerates the values or names the
+thing, later rows may use that name bare — *"Exclusive enforces a single sale"* is complete, because
+`Exclusive` is a value this file established. What must never be borrowed is a **pronoun**, a **bare
+adjective standing in for its noun**, or an **elided verb**. Expanding every defined term back to its full
+phrase is how a table stops being scannable, and the rule is not asking for that.
+
+Read every row cold, on its own, before you ship the file. Any row that raises *"which one?"*, *"cannot
+what?"*, or *"what is allowed?"* is not finished.
+
+**Recovering a row that was already written this way.** The Evidence column is the anchor: open the test it
+names, and it tells you the true subject and verb. Where there is no test — a `❌` row with `—` — you may
+restore **only what an adjacent row states literally**, and nothing more. If the meaning needs a decision
+rather than a lookup, that is authoring: leave the row alone and raise it. Recovering from a neighbour is
+allowed here precisely because you are removing the dependency, not creating one.
+
 ### Form
 
 - **No implementation symbols** — not a type, function, class, or file.
+- **No infrastructure, and no vendor.** Not a database, connection, table, column, queue, cache, endpoint,
+  wire constant, or the name of a package you installed. These slip past the rule above because they are
+  none of those things, and they are how a contract quietly turns into a schema description.
+
+  ```
+  ✅ A trading organization has exactly one workspace.
+  ❌ Every participant is paired one-to-one with a Tenant sharing its UUID.
+  ❌ Marketplace tables stay on the central connection.
+  ```
+
+  **The test: would this row change if the storage, the framework, or the vendor were swapped out
+  tomorrow?** If yes, it is a design decision wearing a contract's clothes — the behavior it protects is the
+  requirement, and the mechanism belongs in the design doc. If the answer is that the row would become
+  *meaningless* rather than merely reworded, you have found a requirement with no product behind it: raise
+  it, don't write it.
+
+  **When the interface *is* the deliverable, its vocabulary is product vocabulary.** For a system whose
+  product is an integration, the thing a customer buys is the endpoint, the field, the error they must
+  handle — that is the domain, and stripping it leaves nothing. The swap test still sorts it: the endpoint
+  survives a change of framework, so it stays; the auth scheme, the serialization format and the status
+  code do not, so they go.
+
+- **This binds the file's `name:` and its catalog gloss too**, not only the rows. A contract whose every
+  requirement is clean but which is *titled* after a wire constant is still named for its mechanism, and
+  the title is what a reader meets first.
 - **Tunables by name, never by value** — and only where the name is already the owner's word.
 - **One assertion.** "and", "also", or "except"? Suspect two. **A joining semicolon is rejected by the
   lint** — it is the clearest sign a row is two requirements compressed to fit the word cap. Split it.
@@ -199,7 +269,10 @@ Every row answers **one** question: *does an automated test prove this?* ✅ or 
 - **Never write ✅ without naming the test that proves it.** Can't find one? The row is ❌.
 - **A compile is not a test.**
 - **Evidence names the test, never describes it** — a name a linter can assert exists.
-- A **removed** requirement keeps its ID forever: strike the text, `—` in the glyph column.
+- A **removed** requirement is deleted from the table, and the rows below it renumber to close the gap. A
+  contract states what must be true now; a withdrawn claim kept as struck history is stale information in
+  the one file that must be readable cold. The decision log is where a reversal is remembered — **erasing
+  the row is half the change, and updating every citation of it is the other half.**
 - Untestable presentation requirements carry `Evidence: signoff:<date>`.
 
 ## Drafts and graduation
@@ -224,15 +297,16 @@ Proposals live isolated in [`../prd-drafts/`](../prd-drafts/) until approved —
 - **Change only what the contract changed.** Edit a row when the owner's claim changed or the code drifted
   — never to reword, and never a row the change doesn't touch.
 - **The only writable surfaces are a table row, the three sentences, and the three bullets.** Never add prose.
-- New behavior → **new row, new ID, appended.** Changed → **edit in place.** Removed → **strike it; row and
-  ID stay.**
+- New behavior → **new row, new ID, appended.** Changed → **edit in place.** Removed → **erase the row,
+  renumber to close the gap, and update every citation in the same change.**
 - Never restate a requirement that has an ID elsewhere — cite it. Never add a `##` heading.
 
 ### Stop and ask
 
 Do not proceed if the requirement doesn't fit one layer; needs a new namespace, file, or component; would
 move a requirement between files; would make this file cite one it never cited; would create a cycle;
-would graduate a draft the owner ratified only one row of; or contradicts an existing requirement.
+would graduate a draft the owner ratified only one row of; would erase a requirement whose ID is cited
+somewhere you cannot update in the same change; or contradicts an existing requirement.
 
 ## Lint
 
@@ -244,6 +318,7 @@ the linter checks** — every other rule in this guide is one you hold yourself 
 - One namespace per file; one file per namespace. Every ID matches its file's declared namespace, and the
   namespace in `id:` is a single token.
 - Every cited ID resolves; no ID is defined in two files.
+- **A namespace's numbers run unbroken from one** — a gap means a row was erased without renumbering.
 - **No `prd/` file cites a `prd-drafts/` id.**
 - Every ✅ has something in Evidence.
 - `last_verified` present iff the file has at least one ✅ row.

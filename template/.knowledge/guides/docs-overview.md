@@ -18,6 +18,35 @@ actually use. If a line would not survive being read aloud to a prospect, cut it
 seller being held in a sandbox is engineering's word for it; what a prospect needs to know is that *new
 sellers cannot bill or deliver until they are approved*. Same rule, and only one of the two belongs here.
 
+## It has to stand alone
+
+**This is the one doc that leaves the building.** It gets forwarded to a new hire, a candidate, an
+investor, someone in sales — people with no access to `BRIEF.md` and no reason to want it. So it opens by
+saying **what the product is, who it is for, and how it makes money**, in three sentences, before anything
+else.
+
+Yes, that overlaps `BRIEF.md`. **Take the overlap.** "One fact, one home" protects facts that agents must
+not restate in two places and let drift; three sentences of orientation on a document that is read by
+strangers is the price of it being usable at all. Without them a reader can follow every step of the
+machine and still not know what business they are looking at.
+
+Tested: handed this document alone, a reader worked out the mechanics correctly and still could not say
+**how the product makes money, or which industry it serves.** Both were absent, and both are the first
+things anyone asks.
+
+**If the commercial model isn't settled, write that** — one line, plainly. Never invent one, and never
+leave the question unanswered by silence.
+
+**Every term you use in those three sentences must be findable below, or defined where you use it.** Name a
+company, a surface or a mechanism the reader then cannot locate in the diagram or the list, and you have
+manufactured a question instead of answering one. **This binds hardest on the revenue mechanism: if the
+product makes money through something, that something is on the diagram** — whatever the box budget says.
+A map that omits how the business earns is describing a machine, not a product.
+
+Tested: a reader given the opening alone asked what "the operating company" was and where "the open
+exchange" lived, because neither appeared anywhere else in the document. Both were real parts of the
+product; both had been left off the map.
+
 ## Who it is for
 
 **A product manager, a founder, a marketer, a new joiner on their first day — not a developer.** Assume the

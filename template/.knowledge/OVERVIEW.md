@@ -3,6 +3,13 @@
 *The platform in plain language — written for product, marketing and anyone new, not for developers. What
 the parts are and how something moves through them. Follow a link to learn what a part guarantees.*
 
+## What this is
+
+<Three sentences, no more. What the product is, who it is for, and how it makes money. A reader who has
+never heard of it should be able to repeat this back after one read — everything below assumes it.>
+
+<If the commercial model isn't settled, say so in a line rather than inventing one.>
+
 ## The platform
 
 <A diagram of the real shape of the system — the parts a person would name, and what flows between them.

@@ -402,8 +402,10 @@ def main():
          lambda a: w_repo(a, "AGENTS.md", "# AGENTS\n\nBuild well. Nothing about the knowledge base.\n"),
          False, "must load the orientation trio"),
     ]
-    cases.append(("--toc reports every contract and the totals", lambda a: None, True,
-                  "1/3 requirements proven by a test", ("--toc",)))
+    cases.append(("--map reports contracts, drafts and a diagram", lambda a: None, True,
+                  "1/3 requirements proven by a test", ("--map",)))
+    cases.append(("--map marks drafts and emits mermaid", lambda a: None, True,
+                  "entity_future[\"Future thing ·draft\"]", ("--map",)))
     results = [case(*c) for c in cases]
     print(f"\n{sum(results)}/{len(results)} checks passed")
     return 0 if all(results) else 1

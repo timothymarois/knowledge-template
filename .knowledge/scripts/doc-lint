@@ -6,7 +6,7 @@ Zero dependencies: standard library only.
 
     python3 .knowledge/scripts/doc-lint [PATH_TO_.knowledge]   # lint (defaults to the parent .knowledge/)
     python3 .knowledge/scripts/doc-lint --payload <path>       # an unadopted payload: skip the AGENTS.md check
-    python3 .knowledge/scripts/doc-lint --toc                   # print the product map: every contract, proven vs not
+    python3 .knowledge/scripts/doc-lint --map                   # the product map: contracts + drafts, status, and a diagram
 
 Its teeth-test lives beside it: python3 .knowledge/scripts/test_doc_lint.py
 Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
@@ -422,58 +422,94 @@ class Lint:
                     self.err(path, f"source [{n}] is never cited (every source earns its place)")
 
 
-    def toc(self):
-        """Print the product map: components in order, each contract, and how much of it a test proves.
+    def product_map(self):
+        """Print the product map: every contract and draft in its layer, with status and a diagram.
 
-        Never written to a file — the counts move with every test run, and a stale map is worse than none.
-        The durable half (what exists, what each one is) lives in prd/README.md; this is the live half.
+        Drafts are included and marked — a picture that omits what is proposed is not the full picture.
+        Never written to a file: status moves with every test run, and the citation edges move with every
+        edit. prd/README.md holds what is durable; this holds what changes.
         """
         prefixes = self.components()
-        docs = []
+        docs, ns2stem = [], {}
         for home in ("prd", "prd-drafts"):
             for path, (fm, body) in sorted(self.collect_prd(home).items()):
+                stem = os.path.basename(path)[:-3]
                 rows = list(self.table_rows(body))
-                docs.append((home, os.path.basename(path)[:-3], fm.get("name", "?"),
-                             sum(1 for r in rows if r[0] == "✅"), sum(1 for r in rows if r[0] == "❌")))
+                docs.append({"home": home, "stem": stem, "name": fm.get("name", "?"), "body": body,
+                             "ok": sum(1 for r in rows if r[0] == "✅"),
+                             "no": sum(1 for r in rows if r[0] == "❌")})
+                if fm.get("id"):
+                    ns2stem[fm["id"]] = stem
         if not docs:
             print("no contracts yet — see prd/README.md")
             return 0
-        width = max(len(d[1]) + (9 if d[0] == "prd-drafts" else 0) for d in docs) + 2
+
+        def draft(d):
+            return d["home"] == "prd-drafts"
+
+        width = max(len(d["stem"]) + (9 if draft(d) else 0) for d in docs) + 2
+        groups = prefixes or sorted({d["stem"].split("-")[0] + "-" for d in docs})
+        placed = set()
         print(f"\n  {'':{width}} {'proven':>7} {'unproven':>9}")
-        groups = prefixes or sorted({d[1].split("-")[0] + "-" for d in docs})
-        seen = set()
         for pref in groups:
-            members = [d for d in docs if d[1].startswith(pref)]
-            seen.update(id(m) for m in members)
+            members = [d for d in docs if d["stem"].startswith(pref)]
+            placed.update(d["stem"] for d in members)
             if not members:
                 continue
-            print(f"\n  {pref.rstrip('-').upper():{width}} {sum(m[3] for m in members):>7} "
-                  f"{sum(m[4] for m in members):>9}")
-            for home, stem, name, ok, no in members:
-                label = stem + ("  (draft)" if home == "prd-drafts" else "")
-                print(f"    {label:{width - 2}} {ok:>7} {no:>9}   {name}")
-        rest = [d for d in docs if id(d) not in seen]
-        if rest:
-            print(f"\n  {'(unlisted component)':{width}}")
-            for home, stem, name, ok, no in rest:
-                print(f"    {stem:{width - 2}} {ok:>7} {no:>9}   {name}")
-        T, N = sum(d[3] for d in docs), sum(d[4] for d in docs)
+            print(f"\n  {pref.rstrip('-').upper():{width}} {sum(m['ok'] for m in members):>7} "
+                  f"{sum(m['no'] for m in members):>9}")
+            for d in members:
+                label = d["stem"] + ("  (draft)" if draft(d) else "")
+                print(f"    {label:{width - 2}} {d['ok']:>7} {d['no']:>9}   {d['name']}")
+        rest = [d for d in docs if d["stem"] not in placed]
+        for d in rest:
+            print(f"    {d['stem']:{width - 2}} {d['ok']:>7} {d['no']:>9}   {d['name']} (unlisted component)")
+        T = sum(d["ok"] for d in docs); N = sum(d["no"] for d in docs)
         pct = f" ({round(100 * T / (T + N))}%)" if T + N else ""
-        print(f"\n  {'TOTAL':{width}} {T:>7} {N:>9}   -> {T}/{T + N} requirements proven by a test{pct}\n")
+        print(f"\n  {'TOTAL':{width}} {T:>7} {N:>9}   -> {T}/{T + N} requirements proven by a test{pct}")
+
+        # a diagram to paste anywhere Mermaid renders
+        def nid(s):
+            return re.sub(r"[^A-Za-z0-9]", "_", s)
+        edges = set()
+        for d in docs:
+            own = next((k for k, v in ns2stem.items() if v == d["stem"]), None)
+            for cited in sorted(set(R_ID_NS.findall(d["body"]))):
+                if cited != own and cited in ns2stem:
+                    edges.add((d["stem"], ns2stem[cited]))
+        print("\n```mermaid\nflowchart LR")
+        for pref in groups:
+            members = [d for d in docs if d["stem"].startswith(pref)]
+            if not members:
+                continue
+            print(f'  subgraph {nid(pref)}["{pref.rstrip("-").upper()}"]')
+            for d in members:
+                mark = " ·draft" if draft(d) else ""
+                print(f'    {nid(d["stem"])}["{d["name"]}{mark}"]')
+            print("  end")
+        for a, b in sorted(edges):
+            print(f"  {nid(a)} --> {nid(b)}")
+        drafts = [d for d in docs if draft(d)]
+        if drafts:
+            print("  classDef draft stroke-dasharray: 4 3;")
+            print("  class " + ",".join(nid(d["stem"]) for d in drafts) + " draft;")
+        if not edges:
+            print("  %% no citation edges yet — contracts cite no other contract's IDs")
+        print("```\n")
         return 0
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = [a for a in sys.argv[1:] if a.startswith("--")]
-    if [f for f in flags if f not in ("--payload", "--toc")] or len(args) > 1:
-        print("usage: doc-lint [--payload] [--toc] [PATH_TO_.knowledge]")
+    if [f for f in flags if f not in ("--payload", "--map")] or len(args) > 1:
+        print("usage: doc-lint [--payload] [--map] [PATH_TO_.knowledge]")
         return 2
     here = os.path.dirname(os.path.abspath(__file__))  # .knowledge/scripts
     root = os.path.abspath(args[0]) if args else os.path.dirname(here)
     lint = Lint(root, payload="--payload" in flags)
-    if "--toc" in flags:
-        return lint.toc()
+    if "--map" in flags:
+        return lint.product_map()
     if lint.check():
         print(f"doc-lint: OK ({root})")
         return 0

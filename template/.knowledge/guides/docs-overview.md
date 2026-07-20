@@ -6,10 +6,17 @@ This guide **is the standard** for `../OVERVIEW.md`. Shipped and versioned by `k
 `OVERVIEW.md` is **the one doc written for a stakeholder**. Everything else in `.knowledge/` serves an
 agent: `BRIEF.md` orients, `CODEMAP.md` locates, `prd/` contracts. None of them ever shows the platform.
 
-It answers three questions a product owner cannot answer from a demo or a codebase: **what are the
-components and how does work flow between them**, **what is actually built versus still proposed**, and
-**what governs what is allowed to happen**. Someone should finish it able to explain the product in a
-meeting, and to say where the gaps are, without ever having opened the code.
+**Write it as if a product owner is reading it to understand the product they are about to sell.** It
+answers what the parts are, how work flows between them, what governs it, and what is live versus planned.
+Someone should finish it able to explain the product in a meeting without ever having opened the code.
+
+**Only what a customer could buy or touch.** No environments, no test strategy, no deployment, no internal
+tooling — none of that is the product. An admin surface counts if it is part of the offering people
+actually use. If a line would not survive being read aloud to a prospect, cut it.
+
+**Where an internal-sounding mechanism has a customer-facing consequence, name the consequence.** A new
+seller being held in a sandbox is engineering's word for it; what a prospect needs to know is that *new
+sellers cannot bill or deliver until they are approved*. Same rule, and only one of the two belongs here.
 
 ## Who it is for
 
@@ -62,11 +69,9 @@ Everything else supports it. Rules, in order of how often they're broken:
   that makes it true. **A plausible arrow is the most dangerous thing in this file:** a reader builds their
   mental model from the picture and will never re-check it, and unlike a wrong sentence nobody proofreads a
   wrong line. If two things merely *appear* related, leave the arrow out and ask.
-- **Mark anything not fully built, in the diagram itself.** A `·planned` suffix for what doesn't exist and
-  `·partial` for what half-exists, styled inside the mermaid block — not explained in prose three sections below. The diagram has to survive being
+- **Mark planned components in the diagram itself** — a `·planned` suffix on a dashed node, styled inside
+  the mermaid block, never explained in prose three sections below. The diagram has to survive being
   screenshotted on its own, and a solid box reads as shipped.
-- **Mark what isn't built** — a dashed node or a `·planned` suffix. A picture that quietly includes
-  ambitions as though they ship is the most damaging thing this file can do.
 - **Label in the product's words**, matching each contract's `name:`, so a reader can jump from a box to
   the contract that governs it.
 
@@ -85,25 +90,24 @@ flowchart LR
 ## Section guidance
 
 - **`The platform`** — the diagram, and nothing else. No prose above it; it should survive being screenshotted.
-- **`How it works`** — every component, in the order things flow through them. For each: what it is, what
-  it does, what the next one receives, and **whether it is built**. The component is the unit — this is not
-  a user story and not a sequence of API calls, it is the business explaining its own moving parts.
+- **`How it works`** — every component in flow order, **one short line each — about fifteen words**: what
+  it is, and what it hands on. The whole list should be scannable in under a minute. Long paragraphs are the most common
+  failure here — a product owner skims this section, and a wall of prose gets skipped entirely. The
+  component is the unit: not a user story, not a sequence of API calls, the business naming its own parts.
 
   ```
-  ✅ Source — where leads come from. A seller registers one; it starts in a safe sandbox until it is
-     cleared for live traffic, and once live it feeds the lanes that price its leads. Built.
-  ❌ The Source entity is provisioned in sandbox mode and validated against the ping taxonomy on receipt.
+  ✅ Source — where a seller's leads come from; feeds the lanes that price them.
+  ❌ Source — where a seller's leads come from. A seller registers one; it starts in a safe sandbox
+     until it is cleared for live traffic, and once live it feeds the lanes that price its leads.
+  ❌ The Source entity is provisioned in sandbox mode and validated against the ping taxonomy.
   ```
 
-  Same fact, two audiences. The second tells a product owner nothing they can act on.
-- **Say what is built, every time — and "partly" is the common answer.** Three states, never two:
-  **Built** · **Partly built** · **Not built yet**. Binary marking is how a component whose core exists but
-  whose lifecycle doesn't gets presented as finished.
-  **"Partly built" is only honest if you say which part**: *"you can create one and revise it; changing its
-  status, pausing it, and the alternative pricing models are not built."* A product owner reading this is
-  deciding what to promise — the half that doesn't work is the half they need.
-  Check each component against its contract's rows before you label it: mostly ❌ is not "Built".
-  Partly-built components are marked in the **diagram** too, not only in prose.
+  The first is scannable. The second says more and communicates less, and drags in a sandbox, which is not
+  the product. The third is written for the wrong reader entirely.
+- **Live or planned comes from where the contract lives** — `prd/` is live, `prd-drafts/` is planned. Mark
+  planned components in the diagram and with a short *Planned.* in the list. **Do not audit build status
+  per requirement:** that belongs on the contract's own rows, and any status summary written here is stale
+  the week after.
 - **`What governs it`** — the rules that constrain the journey, and **who sets each one**: the terms both
   sides agreed, the limits, the obligations that pause things when unmet. A stakeholder can watch a demo
   and learn the flow; they cannot see the governance, which is exactly why it is here.

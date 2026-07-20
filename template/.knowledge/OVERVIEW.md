@@ -21,17 +21,12 @@ flowchart LR
 
 ## How it works
 
-<Every component on the diagram, in the order things flow through them. For each one: **what it is** in the
-business's words, **what it does**, **what it hands to the next**, and **whether it is built yet**. A
-product owner should finish this able to say what the product does and where the gaps are, without opening
-code. Link each to its contract for the detail.>
+<Every component on the diagram, in the order things flow through them. **One short line each** — what it
+is and what it hands on. A reader should scan the whole list in under a minute and understand the flow.
+Link each to its contract; anything living in `prd-drafts/` is planned rather than live.>
 
-- **<Component>** — <what it is, plainly>. <What it does, and what the next component receives.>
-  **Built.** See [`prd/<file>.md`](./prd/<file>.md).
-- **<Component>** — <what it is>. <What works today; then what does not yet.> **Partly built** — <the part
-  that works> works; <the part that doesn't> is not built. See [`prd/<file>.md`](./prd/<file>.md).
-- **<Component>** — <what it is>. <What it would do.> **Not built yet.** See
-  [`prd-drafts/<file>.md`](./prd-drafts/<file>.md).
+- **<Component>** — <what it is, in a dozen words>. [contract](./prd/<file>.md)
+- **<Component>** — <what it is>. *Planned.* [contract](./prd-drafts/<file>.md)
 
 ## What governs it
 

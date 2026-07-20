@@ -39,6 +39,10 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-agents` (revision path) | "Revise AGENTS.md: every new Vue component ships with a Vitest test" — on a repo with the new edit gate | Claude Code | **Conformed** — landed in *Best practices*, added a ✅/❌ pair (2 → 3), ship-as-written untouched, +7 lines | none |
 | 2026-07-19 | `docs-brief`, `docs-codemap` | Cold-adopt a repo whose README was cut to 3 lines — the case where nothing is written down | Claude Code | CODEMAP **pass** (99 lines, real layers, artifact counts). BRIEF content good but **it never said what it inferred** | Disclosure wasn't a gate |
 | 2026-07-19 | `docs-brief` (after fix) | Same thin-README adoption | Claude Code | **Pass** — split sourced vs inferred unprompted, flagged Users/ICP and the refusals as owner knowledge, quoted its inferred *Why it exists* for checking | — |
+| 2026-07-19 | `docs-overview` | Write the platform overview for a real product, from the guide alone | Claude Code | Diagram grouped by component, 15 nodes | **3 arrows that don't exist** |
+| 2026-07-19 | `docs-overview` (audit) | Second agent audits it adversarially against the models | Claude Code | **FAIL** — proved `Agreement` keys off `Participant`, never `Source`/`BuyerProfile`; unbuilt work shown as shipped | Two guide gaps |
+| 2026-07-19 | `docs-overview` (after fixes) | Rewrite with evidence-per-arrow, non-technical vocabulary, build states | Claude Code | Arrows corrected; plain-language groups; `·planned` marked | Binary build state |
+| 2026-07-19 | `docs-overview` (2nd audit) | Re-audit | Claude Code | Arrows **PASS**, language **PASS**, no duplication **PASS**; **FAIL** on marking | **Binary Built/Not-built lies** |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -155,6 +159,22 @@ step, it fired immediately and correctly. **A statement is not a gate — if it 
 five highest-signal artifacts to read first — manifest, entry points, routing/wiring config, test layout,
 build scripts — because a folder tree misleads on any repo that departs from its framework's defaults.
 
+**`docs-overview` is the guide most shaped by testing, because a written diagram can be *wrong*.** A
+generated map cannot claim a false relationship; a hand-drawn one can, and nobody proofreads a picture. The
+first draft drew three arrows that did not exist — an auditing agent disproved them against the models in
+minutes. The guide now requires naming the evidence for every arrow before drawing it.
+
+The second audit failed the file on something that was **my** defect, not the writer's: the guide offered
+only *Built* and *Not built yet*, so a component whose core exists but whose lifecycle does not was
+presented as shipped — eight of its eleven requirements unmet, drawn as a solid box. Three states now, and
+"partly built" is only honest when it names which part. Binary status marking is how a roadmap becomes a
+lie.
+
+Audience was the third correction, and it came from the owner rather than a test: the first drafts were
+written in protocol vocabulary — `FORM_POST`, `TTL`, `clamp` — which is useless to the product and
+marketing readers this doc exists for. The guide now bans implementation vocabulary outright and gives the
+test: could a marketer read it aloud on a customer call without stopping. The re-audit passed on language.
+
 ## Coverage
 
 | Guide | Exercised by an agent | Notes |
@@ -165,6 +185,7 @@ build scripts — because a folder tree misleads on any repo that departs from i
 | `docs-brief.md` | Yes — written from scratch, twice | |
 | `docs-memory.md` | Yes — 6 runs against planted friction | **The only guide that still fails.** Reliable for one agent, never fired for the other |
 | `docs-research.md` | Yes — one note written and its sources verified | |
+| `docs-overview.md` | Yes — 4 runs, two adversarial audits | Written, not generated, so it is the one guide where an audit is mandatory |
 
 ## Known limits of this evidence
 

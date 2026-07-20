@@ -8,7 +8,8 @@ last_verified: 2026-07-19
 
 The three always-loaded docs — brief, codemap, memory — that an agent reads at the start of every task.
 Each is terse on purpose and ends with a pointer to its own writing standard, so the full rules are pulled
-into context only by an agent about to edit it.
+into context only by an agent about to edit it. The overview carries the same gate without being
+always-loaded.
 
 ## Why it exists
 
@@ -20,7 +21,7 @@ into context only by an agent about to edit it.
 
 |  | ID | Requirement | Evidence |
 |:--:|---|---|---|
-| ✅ | R-ORIENT-1 | Brief, codemap, and memory end with their standard pointer | `a trio file lost its standard pointer` |
+| ✅ | R-ORIENT-1 | Every edit-gated doc ends with its standard pointer | `a trio file lost its standard pointer` |
 | ✅ | R-ORIENT-2 | The repo root has an agent rulebook | `the repo has no AGENTS.md` |
 | ✅ | R-ORIENT-3 | The rulebook names every file in the orientation trio | `AGENTS.md no longer loads the trio` |
 | ✅ | R-ORIENT-4 | No shipped placeholder survives adoption | `an unfilled orientation doc` |

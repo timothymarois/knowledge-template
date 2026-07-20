@@ -9,7 +9,15 @@ orientation docs written, the components declared, and the linter green.
 Copy the **contents of `template/`** into the target repo's root. You get a `.knowledge/` directory —
 include the hidden `.knowledge/.version` stamp. Nothing outside `template/` is copied.
 
-## 2. Write the project's `AGENTS.md`
+## 2. Fold in any docs system already here
+
+If the repo already keeps agent docs somewhere else — `.ai/`, `docs/agents/`, a `CONTEXT.md`, a loose
+`PRD/` folder — **migrate its content into the homes and delete the old location in this same task.**
+Leaving it produces two homes for the same fact, which is the one failure this system exists to prevent,
+and the linter cannot see a stale directory it was never told about. If something there has no home, or
+you don't have the standing to delete it, **stop and say so** rather than adopting alongside it.
+
+## 3. Write the project's `AGENTS.md`
 
 `AGENTS.md` sits at the repo root and is the first thing an agent reads — it routes into `.knowledge/` and
 encodes this stack's rules. **Write it following `.knowledge/guides/docs-agents.md`**, which carries the full
@@ -21,7 +29,7 @@ ship-as-written sections verbatim so this repo behaves like every other.
 doesn't name all three of `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, and `.knowledge/MEMORY.md`.
 Nothing else about the file is inspected; write the rest however this project wants.
 
-## 3. Produce the orientation docs
+## 4. Produce the orientation docs
 
 Write these for this project — leave no placeholders. This means **researching the codebase**, not guessing
 from memory. If your harness supports subagents, delegate that research: fan out parallel readers over the
@@ -37,13 +45,18 @@ doc has a guide that defines its format:
 **Leave no placeholder.** `doc-lint` fails while `BRIEF.md` or `CODEMAP.md` still carries a shipped
 `<project>` title or a `_(none)_` marker — a green lint is supposed to mean the project really is set up.
 
-## 4. Declare the components
+## 5. Declare the components
 
 Declare the project's ontology — its layers, in order — in `.knowledge/prd/README.md`, following
-`.knowledge/guides/docs-prd.md` (the owner's call). This is what the linter checks every PRD filename
-against.
+`.knowledge/guides/docs-prd.md`. This is what the linter checks every PRD filename against, and every
+requirement the project ever writes gets filed against it.
 
-## 5. Wire the linter into the build
+**It is the owner's call, not yours.** Propose a set with a one-line gloss each — the shipped
+`base-`/`entity-`/`flow-` default, or names that fit this domain better — and **get the owner's explicit
+sign-off before writing it in.** Do not adopt a silent default: an ontology guessed at adoption is the
+hardest thing in the system to change later, because IDs are permanent.
+
+## 6. Wire the linter into the build
 
 Add both commands to the project's check gate so docs fail the build alongside code:
 

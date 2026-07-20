@@ -15,6 +15,7 @@ Add a row when you add a guide; `doc-lint` fails the build if one is missing.
 | [docs-brief.md](./docs-brief.md) | `../BRIEF.md` |
 | [docs-codemap.md](./docs-codemap.md) | `../CODEMAP.md` |
 | [docs-memory.md](./docs-memory.md) | `../MEMORY.md` |
+| [docs-overview.md](./docs-overview.md) | `../OVERVIEW.md` |
 | [docs-agents.md](./docs-agents.md) | `AGENTS.md` |
 
 ### Project how-tos

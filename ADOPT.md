@@ -45,6 +45,9 @@ doc has a guide that defines its format:
 - **`.knowledge/CODEMAP.md`** — the structural map: where each layer and kind of thing lives. Survey the repo
   layer by layer and write it following `.knowledge/guides/docs-codemap.md`.
 - **`.knowledge/MEMORY.md`** — starts empty; friction accrues as you work.
+- **`.knowledge/OVERVIEW.md`** — the platform for a person: a diagram of the systems and the walk
+  through it. Write it following `.knowledge/guides/docs-overview.md`. It is the one doc a stakeholder
+  reads, so **draw the shape and ask about any ordering you had to guess.**
 
 **Before moving on, separate what you sourced from what you guessed.** Scope and external systems come out
 of the code; **the story, the users, and what the project refuses do not.** List which `BRIEF.md` sections

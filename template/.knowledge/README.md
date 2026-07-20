@@ -10,6 +10,7 @@ each lives in its `guides/*.md`.
 | `BRIEF.md` | Orientation — what & why (always-loaded) | `guides/docs-brief.md` |
 | `CODEMAP.md` | Orientation — where things are (always-loaded) | `guides/docs-codemap.md` |
 | `MEMORY.md` | Orientation — current friction (always-loaded) | `guides/docs-memory.md` |
+| `OVERVIEW.md` | **The platform, for a person** — a diagram and the walk through it | `guides/docs-overview.md` |
 | `prd/` | **Tested contracts — the source of truth** | `guides/docs-prd.md` |
 | `prd-drafts/` | Proposals, not yet approved | `guides/docs-prd.md` |
 | `research/` | Prior art — dated notes on how others solved a problem | `guides/docs-research.md` |

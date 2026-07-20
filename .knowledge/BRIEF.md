@@ -37,25 +37,6 @@ on demand instead of forking its own rules.
   any linter dependency beyond the Python standard library; stack-, framework-, or project-specific
   content inside the payload; the content a downstream repo writes into its own docs.
 
-## How it fits together
-
-- **Payload** — a repo copies `template/.knowledge/` in; that tree is the substrate every other rule
-  assumes (`prd/base-payload.md`).
-- **Rulebook** — its root `AGENTS.md` routes agents into the orientation trio, and the trio route back to
-  their standards when edited (`prd/entity-orientation.md`).
-- **Research** — dated notes record how the world outside solved a problem, sourced at the point of claim
-  (`prd/entity-research.md`).
-- **Proposal** — an idea enters as a draft in `prd-drafts/`, isolated until the owner ratifies it
-  (`prd/entity-prd.md`).
-- **Contract** — approval moves the file into `prd/`; the glyph column, not the move, records what a test
-  proves (`prd/entity-prd.md`).
-- **Citation** — contracts reference each other's IDs rather than restating them, forming a one-way graph
-  (`prd/flow-citations.md`).
-- **Catalog** — each home's `README.md` lists what it holds and links the standard for writing it
-  (`prd/entity-catalog.md`).
-- **Enforcement** — `doc-lint` checks all of the above in CI, and its teeth-test proves each rule still
-  bites (`scripts/`).
-
 ## External Systems
 
 - `GitHub Actions` — runs the teeth-test and the lints on every push and pull request.

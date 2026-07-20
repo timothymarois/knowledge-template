@@ -167,6 +167,19 @@ CODEMAP = """# Codemap — Sample Project
 *Editing this file? Follow the standard first: [`guides/docs-codemap.md`](./guides/docs-codemap.md).*
 """
 
+OVERVIEW = """# Overview — Sample Project
+
+## The platform
+
+```mermaid
+flowchart LR
+  a["Core"] --> b["Widget"]
+```
+
+---
+*Editing this file? Follow the standard first: [`guides/docs-overview.md`](./guides/docs-overview.md).*
+"""
+
 AGENTS = """# AGENTS
 
 Always read first: `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, `.knowledge/MEMORY.md`.
@@ -210,6 +223,7 @@ def build_base(aidir):
     w(aidir, "guides/do-the-thing.md", HOWTO)
     w(aidir, "BRIEF.md", BRIEF)                             # an adopted project has these filled in
     w(aidir, "CODEMAP.md", CODEMAP)
+    w(aidir, "OVERVIEW.md", OVERVIEW)
     gr = os.path.join(aidir, "guides/README.md")            # ...and list it in the guides catalog
     with open(gr, encoding="utf-8") as fh:
         text = fh.read()
@@ -405,10 +419,6 @@ def main():
          lambda a: w_repo(a, "AGENTS.md", "# AGENTS\n\nBuild well. Nothing about the knowledge base.\n"),
          False, "must load the orientation trio"),
     ]
-    cases.append(("--map reports contracts, drafts and a diagram", lambda a: None, True,
-                  "**3 systems** — 2 ratified, 1 proposed", ("--map",)))
-    cases.append(("--map marks drafts and emits mermaid", lambda a: None, True,
-                  "entity_future[\"Future thing ·draft\"]", ("--map",)))
     results = [case(*c) for c in cases]
     print(f"\n{sum(results)}/{len(results)} checks passed")
     return 0 if all(results) else 1

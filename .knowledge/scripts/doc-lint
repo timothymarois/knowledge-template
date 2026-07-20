@@ -6,8 +6,6 @@ Zero dependencies: standard library only.
 
     python3 .knowledge/scripts/doc-lint [PATH_TO_.knowledge]   # lint (defaults to the parent .knowledge/)
     python3 .knowledge/scripts/doc-lint --payload <path>       # an unadopted payload: skip the AGENTS.md check
-    python3 .knowledge/scripts/doc-lint --map                   # print the product map: contracts + drafts, status, diagram
-    python3 .knowledge/scripts/doc-lint --map --write           # write it to .knowledge/MAP.md (lint fails if stale)
 
 Its teeth-test lives beside it: python3 .knowledge/scripts/test_doc_lint.py
 Exits non-zero if any rule is broken. A red lint is a broken doc, not a style note.
@@ -24,15 +22,16 @@ NUMERIC = re.compile(r"(?<![A-Za-z0-9_-])\d+(?![A-Za-z0-9_-])")
 # The shipped payload. Every entry must exist in a project's .knowledge/ — a removal or rename is drift.
 REQUIRED_DIRS = ["prd", "prd-drafts", "research", "references", "guides", "scripts", "tmp"]
 REQUIRED_FILES = [
-    "README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md",
+    "README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md", "OVERVIEW.md",
     "prd/README.md", "prd-drafts/README.md", "research/README.md", "references/README.md",
     "guides/README.md", "scripts/README.md", "tmp/README.md",
     "guides/docs-prd.md", "guides/docs-research.md", "guides/docs-brief.md",
-    "guides/docs-codemap.md", "guides/docs-memory.md", "guides/docs-agents.md",
+    "guides/docs-codemap.md", "guides/docs-memory.md", "guides/docs-agents.md", "guides/docs-overview.md",
     "scripts/doc-lint", "scripts/test_doc_lint.py",
 ]
 # Always-loaded trio: each must end with its edit-gated standard pointer (so it can't be dropped).
-TRIO = {"BRIEF.md": "docs-brief.md", "CODEMAP.md": "docs-codemap.md", "MEMORY.md": "docs-memory.md"}
+TRIO = {"BRIEF.md": "docs-brief.md", "CODEMAP.md": "docs-codemap.md", "MEMORY.md": "docs-memory.md",
+        "OVERVIEW.md": "docs-overview.md"}
 # Each home catalog must link to the guide for writing or modifying its docs.
 CATALOG_GUIDE = {
     "prd/README.md": "docs-prd.md",
@@ -49,13 +48,14 @@ AGENTS_TRIO = ["BRIEF.md", "CODEMAP.md", "MEMORY.md"]
 # Shipped placeholder markers. If these survive adoption the docs were never filled in — and a green
 # lint would tell the project it is "ready" when nothing has been written. Skipped under --payload,
 # where they are supposed to be present.
-PLACEHOLDERS = {"BRIEF.md": ["<project>", "_(none)_"], "CODEMAP.md": ["<project>", "_(none)_"]}
+PLACEHOLDERS = {"BRIEF.md": ["<project>", "_(none)_"], "CODEMAP.md": ["<project>", "_(none)_"],
+                "OVERVIEW.md": ["<project>", "<the platform"]}
 RESEARCH_HEADINGS = {
     "What they do", "What we can borrow", "What to avoid", "Verdict for us", "Open questions", "Sources",
 }
 # Only these may sit at the .knowledge/ root — anything else added there is drift.
 ALLOWED_ROOT = set(REQUIRED_DIRS) | {"README.md", ".version", "BRIEF.md", "CODEMAP.md", "MEMORY.md",
-                                     "MAP.md"}  # MAP.md is optional; if present it must be current
+                                     "OVERVIEW.md"}
 # Every shipped README keeps these sections (matched by prefix) — a gutted catalog is drift.
 REQUIRED_SECTIONS = {
     "README.md": ["## The homes"],
@@ -344,7 +344,6 @@ class Lint:
         self.check_catalog_complete()
         self.check_catalog_links()
         self.check_research()
-        self.check_map()
         return not self.errors
 
     def check_sections(self):
@@ -425,126 +424,16 @@ class Lint:
                     self.err(path, f"source [{n}] is never cited (every source earns its place)")
 
 
-    def render_map(self):
-        """Render the product map as Markdown: what each system is, layer by layer, then a diagram.
-
-        Drafts are included and marked — a map that hides what is proposed is not the full picture.
-        This is a map of what is being built; it deliberately counts nothing.
-        """
-        def gloss(body):
-            """The first sentence of `## What this is` — the system in one line, in its own words."""
-            m = re.search(r"^## What this is\s*\n(.+?)(?=\n## |\Z)", body, re.S | re.M)
-            if not m:
-                return ""
-            text = " ".join(m.group(1).split())
-            cut = text.find(". ")
-            if cut != -1:
-                text = text[:cut + 1]
-            return text.rstrip(".") if len(text) < 160 else text[:157].rstrip() + "…"
-
-        prefixes = self.components()
-        docs, ns2stem = [], {}
-        for home in ("prd", "prd-drafts"):
-            for path, (fm, body) in sorted(self.collect_prd(home).items()):
-                stem = os.path.basename(path)[:-3]
-                docs.append({"home": home, "stem": stem, "name": fm.get("name", stem),
-                             "gloss": gloss(body), "body": body})
-                if fm.get("id"):
-                    ns2stem[fm["id"]] = stem
-        if not docs:
-            return "_No contracts yet — see [`prd/README.md`](./prd/README.md)._\n"
-
-        out = []
-        nd = sum(1 for d in docs if d["home"] == "prd-drafts")
-        out.append(f"**{len(docs)} systems** — {len(docs) - nd} ratified, {nd} proposed.")
-
-        groups = prefixes or sorted({d["stem"].split("-")[0] + "-" for d in docs})
-        placed = set()
-        for pref in groups:
-            members = [d for d in docs if d["stem"].startswith(pref)]
-            placed.update(d["stem"] for d in members)
-            if not members:
-                continue
-            out.append(f"\n## {pref.rstrip('-').title()}\n")
-            out.append("| System | What it is |")
-            out.append("|---|---|")
-            for d in members:
-                home = "prd-drafts" if d["home"] == "prd-drafts" else "prd"
-                tag = " _(draft)_" if d["home"] == "prd-drafts" else ""
-                out.append(f"| [{d['name']}](./{home}/{d['stem']}.md){tag} | {d['gloss']} |")
-        rest = [d for d in docs if d["stem"] not in placed]
-        if rest:
-            out.append("\n## Unlisted component\n")
-            out.append("| System | What it is |")
-            out.append("|---|---|")
-            for d in rest:
-                out.append(f"| {d['name']} | {d['gloss']} |")
-
-        def nid(s):
-            return re.sub(r"[^A-Za-z0-9]", "_", s)
-        edges = set()
-        for d in docs:
-            own = next((k for k, v in ns2stem.items() if v == d["stem"]), None)
-            for cited in sorted(set(R_ID_NS.findall(d["body"]))):
-                if cited != own and cited in ns2stem:
-                    edges.add((d["stem"], ns2stem[cited]))
-        out.append("\n## How it connects\n")
-        if not edges:
-            out.append("_No contract cites another yet, so there is nothing to draw between them._\n")
-        out.append("```mermaid")
-        out.append("flowchart LR")
-        for pref in groups:
-            members = [d for d in docs if d["stem"].startswith(pref)]
-            if not members:
-                continue
-            out.append(f'  subgraph {nid(pref)}["{pref.rstrip("-").title()}"]')
-            for d in members:
-                mark = " ·draft" if d["home"] == "prd-drafts" else ""
-                out.append(f'    {nid(d["stem"])}["{d["name"]}{mark}"]')
-            out.append("  end")
-        for a, b in sorted(edges):
-            out.append(f"  {nid(a)} --> {nid(b)}")
-        drafts = [d for d in docs if d["home"] == "prd-drafts"]
-        if drafts:
-            out.append("  classDef draft stroke-dasharray: 4 3;")
-            out.append("  class " + ",".join(nid(d["stem"]) for d in drafts) + " draft;")
-        out.append("```\n")
-        return "\n".join(out) + "\n"
-
-    def map_header(self):
-        return ("<!-- generated: python3 .knowledge/scripts/doc-lint --map --write .knowledge -->\n"
-                "# Product map\n\n"
-                "Every system we are building, in layer order — ratified contracts and open proposals.\n"
-                "**Generated — do not edit.** `doc-lint` fails the build when this file falls out of date.\n\n")
-
-    def check_map(self):
-        """MAP.md is optional — but a stale generated file is worse than no file at all."""
-        path = os.path.join(self.root, "MAP.md")
-        if not os.path.isfile(path):
-            return
-        if self.read(path) != self.map_header() + self.render_map():
-            self.err("MAP.md", "is out of date — regenerate with "
-                               "`python3 .knowledge/scripts/doc-lint --map --write .knowledge`")
-
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = [a for a in sys.argv[1:] if a.startswith("--")]
-    if [f for f in flags if f not in ("--payload", "--map", "--write")] or len(args) > 1:
-        print("usage: doc-lint [--payload] [--map [--write]] [PATH_TO_.knowledge]")
+    if [f for f in flags if f != "--payload"] or len(args) > 1:
+        print("usage: doc-lint [--payload] [PATH_TO_.knowledge]")
         return 2
     here = os.path.dirname(os.path.abspath(__file__))  # .knowledge/scripts
     root = os.path.abspath(args[0]) if args else os.path.dirname(here)
     lint = Lint(root, payload="--payload" in flags)
-    if "--map" in flags:
-        body = lint.render_map()
-        if "--write" in flags:
-            with open(os.path.join(root, "MAP.md"), "w", encoding="utf-8") as fh:
-                fh.write(lint.map_header() + body)
-            print(f"wrote {os.path.join(root, 'MAP.md')}")
-        else:
-            print(body, end="")
-        return 0
     if lint.check():
         print(f"doc-lint: OK ({root})")
         return 0

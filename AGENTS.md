@@ -186,3 +186,5 @@ The version is how downstream repos stay in sync without drift. To release a cha
    tree; every cross-reference resolves.
 5. If the model changed: `VERSION`, both `.version` stamps, `CHANGELOG.md`, and a `.changes/` migration are
    updated together.
+6. **Friction you hit is in `.knowledge/MEMORY.md`, not only in your reply.** Hit none? Say that in your
+   reply — never write "no friction" into the file.

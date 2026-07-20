@@ -35,4 +35,6 @@ memory. `MEMORY.md` is about *this repo's* traps and nothing else.
 - **Concrete, not vague.** Not "the X build is flaky" but "run `X` twice — the first run races the codegen
   and fails intermittently".
 - **Not a changelog.** Only what's *still* true and still bites.
+- **Never record the absence of friction.** No "none hit this task", no dated all-clear. A task that
+  hit nothing leaves this file untouched; say so in your reply instead.
 - **Only touch an entry to add, delete, or correct it.** Never reword an entry for its own sake.

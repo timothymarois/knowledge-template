@@ -108,8 +108,9 @@ Keep docs true in the same task that changes reality. Before creating or editing
 1. <the project's gate command> passes.
 2. Every rule here held.
 3. New guaranteed behavior is proven by a `prd/` requirement and its test.
-4. **Friction you hit is written into `.knowledge/MEMORY.md` — or you say plainly that you hit none.**
-   Telling the human in your reply does not count: the next agent reads the file, not this conversation.
+4. **Friction you hit is in `.knowledge/MEMORY.md`, not only in your reply** — the next agent reads the
+   file, not this conversation. Hit none? Say that in your reply. **Never write "no friction" into the
+   file** — `MEMORY.md` records traps, never their absence.
 ```
 
 ## CLAUDE.md — a router, not a copy

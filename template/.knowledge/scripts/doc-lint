@@ -426,30 +426,37 @@ class Lint:
 
 
     def render_map(self):
-        """Render the product map as Markdown: a table per layer, then a diagram.
+        """Render the product map as Markdown: what each system is, layer by layer, then a diagram.
 
         Drafts are included and marked — a map that hides what is proposed is not the full picture.
+        This is a map of what is being built; it deliberately counts nothing.
         """
+        def gloss(body):
+            """The first sentence of `## What this is` — the system in one line, in its own words."""
+            m = re.search(r"^## What this is\s*\n(.+?)(?=\n## |\Z)", body, re.S | re.M)
+            if not m:
+                return ""
+            text = " ".join(m.group(1).split())
+            cut = text.find(". ")
+            if cut != -1:
+                text = text[:cut + 1]
+            return text.rstrip(".") if len(text) < 160 else text[:157].rstrip() + "…"
+
         prefixes = self.components()
         docs, ns2stem = [], {}
         for home in ("prd", "prd-drafts"):
             for path, (fm, body) in sorted(self.collect_prd(home).items()):
                 stem = os.path.basename(path)[:-3]
-                rows = list(self.table_rows(body))
-                docs.append({"home": home, "stem": stem, "name": fm.get("name", stem), "body": body,
-                             "ok": sum(1 for r in rows if r[0] == "✅"),
-                             "no": sum(1 for r in rows if r[0] == "❌")})
+                docs.append({"home": home, "stem": stem, "name": fm.get("name", stem),
+                             "gloss": gloss(body), "body": body})
                 if fm.get("id"):
                     ns2stem[fm["id"]] = stem
         if not docs:
             return "_No contracts yet — see [`prd/README.md`](./prd/README.md)._\n"
 
         out = []
-        T = sum(d["ok"] for d in docs); N = sum(d["no"] for d in docs)
         nd = sum(1 for d in docs if d["home"] == "prd-drafts")
-        pct = f" ({round(100 * T / (T + N))}%)" if T + N else ""
-        out.append(f"**{len(docs)} systems** — {len(docs) - nd} ratified, {nd} proposed. "
-                   f"**{T + N} requirements**, {T} proven by a test{pct}.")
+        out.append(f"**{len(docs)} systems** — {len(docs) - nd} ratified, {nd} proposed.")
 
         groups = prefixes or sorted({d["stem"].split("-")[0] + "-" for d in docs})
         placed = set()
@@ -459,20 +466,19 @@ class Lint:
             if not members:
                 continue
             out.append(f"\n## {pref.rstrip('-').title()}\n")
-            out.append("| System | | Proven | Unproven |")
-            out.append("|---|---|--:|--:|")
+            out.append("| System | What it is |")
+            out.append("|---|---|")
             for d in members:
                 home = "prd-drafts" if d["home"] == "prd-drafts" else "prd"
                 tag = " _(draft)_" if d["home"] == "prd-drafts" else ""
-                out.append(f"| [{d['name']}](./{home}/{d['stem']}.md){tag} | `{d['stem']}` "
-                           f"| {d['ok']} | {d['no'] or ''} |")
+                out.append(f"| [{d['name']}](./{home}/{d['stem']}.md){tag} | {d['gloss']} |")
         rest = [d for d in docs if d["stem"] not in placed]
         if rest:
             out.append("\n## Unlisted component\n")
-            out.append("| System | | Proven | Unproven |")
-            out.append("|---|---|--:|--:|")
+            out.append("| System | What it is |")
+            out.append("|---|---|")
             for d in rest:
-                out.append(f"| {d['name']} | `{d['stem']}` | {d['ok']} | {d['no'] or ''} |")
+                out.append(f"| {d['name']} | {d['gloss']} |")
 
         def nid(s):
             return re.sub(r"[^A-Za-z0-9]", "_", s)
@@ -508,7 +514,7 @@ class Lint:
     def map_header(self):
         return ("<!-- generated: python3 .knowledge/scripts/doc-lint --map --write .knowledge -->\n"
                 "# Product map\n\n"
-                "Every contract and proposal, in layer order, with how much of each a test proves.\n"
+                "Every system we are building, in layer order — ratified contracts and open proposals.\n"
                 "**Generated — do not edit.** `doc-lint` fails the build when this file falls out of date.\n\n")
 
     def check_map(self):

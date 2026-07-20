@@ -17,8 +17,9 @@ or agent — reads that page top to bottom and knows what the product is made of
 file.
 
 **The whole system on one page lives in [`../MAP.md`](../MAP.md)** — every contract *and draft* in its
-layer, what each is, how much of it a test proves, and a diagram of how they connect. Drafts are included
-and marked: a map that hides what is proposed is not the full picture.
+layer, what each one is in a line, and a diagram of how they connect. Drafts are included and marked: a map
+that hides what is proposed is not the full picture. It is a map of **what is being built** and counts
+nothing — status belongs on the rows of a contract, not in a summary of it.
 
 It is **generated**, not written: `python3 ../scripts/doc-lint --map --write ..` regenerates it, and the
 lint fails while it is out of date, so it can never quietly drift. The file is optional — a project that

@@ -36,6 +36,7 @@ they were right, and where they split, the guide was ambiguous.
 | 2026-07-19 | `docs-agents` | Audit the two cold-adopted `AGENTS.md` against the boundos yardstick | — | **Ship-as-written survived 1/2**; **0/2 wrote a ✅/❌ pair**; **1/2 silently dropped existing rules**, including a credential-permission rule | Three `docs-agents` defects |
 | 2026-07-19 | `docs-agents` (after fix) | Cold adoption again | Claude Code | **✅/❌ pairs 0 → 2** (yardstick: 2); Hard gates verbatim with a separate project section; original rules preserved | — |
 | 2026-07-19 | `docs-agents` (head-to-head) | Delete a refined real-world `AGENTS.md`, have an agent rewrite it from the guide, diff against the original | Claude Code | **Sections 10/10 identical.** **10/15 rules independently reproduced** — and all 5 misses were rules not derivable from code | **Research can't surface owner rules** |
+| 2026-07-19 | `docs-agents` (revision path) | "Revise AGENTS.md: every new Vue component ships with a Vitest test" — on a repo with the new edit gate | Claude Code | **Conformed** — landed in *Best practices*, added a ✅/❌ pair (2 → 3), ship-as-written untouched, +7 lines | none |
 | 2026-07-19 | `docs-research` | Write a research note answering a market question | Claude Code | **Pass** — closed schema, sourcing at point of claim; **14/15 cited URLs return 200**, the 15th bot-blocked (403), none fabricated | none |
 
 Targets: a private Laravel marketplace app (25 drafts, 8 research notes) and a public standard-library
@@ -122,6 +123,17 @@ legacy fallbacks, no backend/frontend drift — are workflow and taste, which ar
 rules that are about people.** The guide now ends its procedure by requiring the agent to name those gaps
 and ask, instead of shipping a file that looks complete. It also gained a length signal: the rewrite ran
 248 lines against the original's 155, and long rulebooks stop being reread.
+
+**`AGENTS.md` had no edit gate.** The orientation trio each end with *"Editing this file? Follow the
+standard first"* — that pointer is the whole reason an agent reads a guide before rewriting a doc.
+`AGENTS.md` carried no such line, and `.knowledge/README.md`'s homes table had no row for it (reasonably —
+it lives at the repo root). So the one file that is the law of the project was also the one document that
+could be rewritten without ever opening its own standard. It now ends with the same pointer, the map has a
+row for it, and `doc-lint` checks it — the third of the three deliberately shallow `AGENTS.md` checks.
+
+Verified on the revision path rather than assumed: asked to add a new rule, an agent put it in *Best
+practices*, wrote it as a Do/Don't **with a ✅/❌ pair** in the project's own paths, left every
+ship-as-written section byte-identical, and grew the file by seven lines.
 
 ## Coverage
 

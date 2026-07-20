@@ -230,9 +230,13 @@ class Lint:
         if not os.path.isfile(path):
             self.err("AGENTS.md", "the repo root has no AGENTS.md (the entry point into .knowledge/)")
             return
-        missing = [f for f in AGENTS_TRIO if f".knowledge/{f}" not in self.read(path)]
+        text = self.read(path)
+        missing = [f for f in AGENTS_TRIO if f".knowledge/{f}" not in text]
         if missing:
             self.err("AGENTS.md", "must load the orientation trio — no reference to " + ", ".join(missing))
+        if "guides/docs-agents.md" not in text:
+            self.err("AGENTS.md", "must point at `.knowledge/guides/docs-agents.md` so a revision is "
+                                  "routed to the standard first (same edit gate as the trio)")
 
     def check(self):
         self.check_manifest()

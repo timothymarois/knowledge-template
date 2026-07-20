@@ -188,3 +188,6 @@ The version is how downstream repos stay in sync without drift. To release a cha
    updated together.
 6. **Friction you hit is in `.knowledge/MEMORY.md`, not only in your reply.** Hit none? Say that in your
    reply — never write "no friction" into the file.
+
+---
+*Revising this file? Follow the standard first: [`.knowledge/guides/docs-agents.md`](./.knowledge/guides/docs-agents.md) — and it needs the owner's approval.*

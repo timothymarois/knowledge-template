@@ -15,6 +15,7 @@ each lives in its `guides/*.md`.
 | `research/` | Prior art — dated notes on how others solved a problem | `guides/docs-research.md` |
 | `references/` | Visual targets — screenshots, UI to match | `references/README.md` |
 | `guides/` | The writing standards (`docs-*`) + project how-tos | `guides/README.md` |
+| `../AGENTS.md` | The project's law (at the repo root, not here) | `guides/docs-agents.md` |
 | `scripts/` | Tooling — the linter + its teeth-test | `scripts/README.md` |
 | `tmp/` | Git-ignored scratch | — |
 

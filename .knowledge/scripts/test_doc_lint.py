@@ -170,6 +170,8 @@ CODEMAP = """# Codemap — Sample Project
 AGENTS = """# AGENTS
 
 Always read first: `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, `.knowledge/MEMORY.md`.
+
+*Revising this file? Follow `.knowledge/guides/docs-agents.md` first.*
 """
 
 
@@ -391,6 +393,11 @@ def main():
         ("the repo has no AGENTS.md",
          lambda a: os.remove(os.path.join(os.path.dirname(a), "AGENTS.md")),
          False, "no AGENTS.md"),
+        ("AGENTS.md no longer points at its own standard",
+         lambda a: w_repo(a, "AGENTS.md",
+                          "# AGENTS\n\nRead `.knowledge/BRIEF.md`, `.knowledge/CODEMAP.md`, "
+                          "`.knowledge/MEMORY.md`.\n"),
+         False, "must point at"),
         ("AGENTS.md no longer loads the trio",
          lambda a: w_repo(a, "AGENTS.md", "# AGENTS\n\nBuild well. Nothing about the knowledge base.\n"),
          False, "must load the orientation trio"),

@@ -13,4 +13,5 @@ in between (oldest first), open its `.changes/` file, apply the steps, bump `.kn
 
 | Version | Date | Summary | Migration |
 |---|---|---|---|
+| 1.1.0 | 2026-07-21 | The always-loaded `README.md` now surfaces that `scripts/` holds your own project scripts alongside the versioned linter, and marks `tmp/` throwaway — so agents stop inventing a new top-level dir. Drop-in. | [`.changes/2026-07-21-v1.1.0.md`](./.changes/2026-07-21-v1.1.0.md) |
 | 1.0.0 | 2026-07-16 | First versioned release. Flat `.knowledge/`, catalog READMEs + `guides/` rules, isolated `prd-drafts/`, glyph-table PRDs, unbroken ID runs with struck removals, standalone rows, `doc-lint`. | [`.changes/2026-07-16-v1.0.0.md`](./.changes/2026-07-16-v1.0.0.md) |
